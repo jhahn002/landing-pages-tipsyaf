@@ -1,6 +1,6 @@
 # Pineapple Martini — Meta landing page brief
 
-Status: angle proposed, awaiting approval. Nothing built or published.
+Status: angle approved; working preview built (see README.md). Not published.
 Research date: 2026-10-13.
 
 ## Working brief
@@ -43,7 +43,31 @@ Research date: 2026-10-13.
 | Kava/kratom drinks: regulatory grey area, impairment and liver concerns | Press | WRAL, NBC, RichmondBizSense, WINK News | News coverage | Angle rationale only; no competitor named on page |
 | No independent TIPSY AF reviews found | Research gap | Web search | — | — |
 
-## Open conflicts / launch blockers
+## Decisions from Josh (2026-10-13)
+
+1. Trial renewal: homepage terms — $49.80/mo + $2.99 shipping.
+2. Trial reminder: day 25.
+3. Cancellation: cancel anytime.
+4. One serving per can.
+5. Designed for adults 18+ (company policy, not a legal requirement).
+6. "FDA reviewed ingredients", brain wave studies, $220M raised, patent pending: all confirmed true.
+7. Shipping: most orders ship same day; delivery usually 3–5 days.
+8. Delivery as a Shopify page template.
+
+## Remaining launch gaps
+
+See README.md → Launch gaps. Main blocker: Shopify trial plan renews at $47.88, not $49.80 + $2.99.
+
+## Suggested next test
+
+Run this page as a challenger to /pages/pineapple-martini on the same Meta ad set and audience.
+Hypothesis: naming both letdowns (mocktails that do nothing, kava/kratom drinks) and leading with the
+guarantee lifts trial starts per landing-page session. Primary outcome: trial starts + purchases per
+session from Shopify orders (not CTA clicks). Guardrails: trial cancellation before first renewal, refund
+rate. Fix the renewal price first, agree the run length and minimum orders before reading results.
+
+## Original conflicts (resolved above)
+
 
 1. **Trial renewal price:** PM page and Shopify plan = $47.88/mo + free shipping; homepage = $49.80/mo + $2.99 shipping.
 2. **Trial reminder day:** PM page Day 24, homepage Day 25.

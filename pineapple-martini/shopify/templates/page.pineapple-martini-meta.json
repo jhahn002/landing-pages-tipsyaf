@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "main": {
+      "type": "tipsy-pineapple-martini-meta",
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}
