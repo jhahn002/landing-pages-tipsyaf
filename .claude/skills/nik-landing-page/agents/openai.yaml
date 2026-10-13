@@ -1,0 +1,4 @@
+interface:
+  display_name: "Nik's Landing-Page Builder"
+  short_description: "Research, build, and check ecommerce landing pages"
+  default_prompt: "Use $nik-landing-page to research this product and build a branded, responsive landing page."
