@@ -11,10 +11,27 @@
   var errorEl = root.querySelector('[data-tpm-error]');
   var trialOnly = root.querySelector('[data-tpm-trial-only]');
   var sticky = root.querySelector('[data-tpm-sticky]');
+  var mixNote = root.querySelector('[data-tpm-mix-note]');
   var busy = false;
+
+  // The Mix option needs a mixed-pack variant for every purchase option (set in
+  // the theme editor). On the store, hide it until all three exist rather than
+  // offer something that can't be added. The preview keeps it visible.
+  var offerInputs = form.querySelectorAll('input[name="tpm-offer"]');
+  var mixReady = Array.prototype.every.call(offerInputs, function (i) {
+    return parseInt(i.getAttribute('data-variant-mix'), 10) > 0;
+  });
+  if (!mixReady && MODE !== 'preview') {
+    Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-mix-only]'), function (el) { el.remove(); });
+  }
 
   function selected() {
     return form.querySelector('input[name="tpm-offer"]:checked');
+  }
+
+  function selectedFlavor() {
+    var f = form.querySelector('input[name="tpm-flavor"]:checked');
+    return f ? f.value : null;
   }
 
   function syncOffer() {
@@ -22,6 +39,15 @@
     if (!opt) return;
     addBtn.textContent = opt.getAttribute('data-label');
     if (trialOnly) trialOnly.hidden = opt.value !== 'trial';
+    var flavor = selectedFlavor();
+    Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-media]'), function (m) {
+      m.hidden = m.getAttribute('data-tpm-media') !== flavor;
+    });
+    if (mixNote) {
+      var isMix = selectedFlavor() === 'mix';
+      mixNote.hidden = !isMix;
+      mixNote.textContent = isMix ? 'Your pack: ' + opt.getAttribute('data-mix-split') + '.' : '';
+    }
     showError('');
   }
 
@@ -47,16 +73,18 @@
     window.location.href = '/cart';
   }
 
-  function selectedFlavor() {
-    var f = form.querySelector('input[name="tpm-flavor"]:checked');
-    return f ? f.value : null;
-  }
-
   function addToCart(opt) {
     var flavor = selectedFlavor();
     var item = { id: parseInt(opt.getAttribute('data-variant-' + flavor), 10), quantity: 1 };
     var plan = parseInt(opt.getAttribute('data-plan'), 10);
     if (!isNaN(plan) && plan > 0) item.selling_plan = plan;
+
+    if (MODE === 'preview' && !item.id) {
+      window.alert('Preview only. The mixed ' + opt.getAttribute('data-mix-split') +
+        ' pack has no Shopify variant yet. Add its variant ID in the theme editor to enable it.');
+      return Promise.resolve();
+    }
+    if (!item.id) return Promise.reject(new Error('This option isn\'t available right now. Please pick another flavor.'));
 
     if (MODE === 'preview') {
       showError('');

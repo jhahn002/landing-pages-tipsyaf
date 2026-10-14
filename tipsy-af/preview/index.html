@@ -315,11 +315,12 @@ body { margin: 0; background: #fff; }
 
 .tpm-flavors { padding-top: 24px; }
 .tpm-flavors__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.tpm-flavor { border-radius: var(--tpm-radius); overflow: hidden; background: var(--tpm-panel); display: grid; align-content: start; }
+.tpm-flavor { border-radius: var(--tpm-radius); overflow: hidden; background: var(--tpm-panel); display: flex; flex-direction: column; }
 .tpm-flavor img { width: 100%; aspect-ratio: 1; object-fit: cover; }
-.tpm-flavor__body { padding: 14px 14px 18px; display: grid; gap: 6px; justify-items: start; }
+.tpm-flavor__body { padding: 14px 14px 18px; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; flex: 1; }
 .tpm-flavor__body p { font-size: 14px; color: var(--tpm-muted); }
-.tpm-flavor__body .tpm-btn { margin-top: 6px; }
+.tpm-flavor__body .tpm-btn { margin-top: auto; }
+.tpm-flavor__body p { margin-bottom: 8px; }
 .tpm-flavor__tag { background: var(--tpm-orange); border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 600; }
 .tpm-flavor__tag--new { background: var(--tpm-sun); }
 
@@ -348,7 +349,6 @@ body { margin: 0; background: #fff; }
 .tpm-chip input:focus-visible + .tpm-chip__box { outline: 3px solid var(--tpm-ink); outline-offset: 2px; }
 
 @media (min-width: 700px) {
-  .tpm-flavors__grid { max-width: 760px; }
   .tpm-science__steps { grid-template-columns: repeat(3, 1fr); gap: 32px; }
   .tpm-zero { grid-template-columns: repeat(7, 1fr); }
   .tpm-science__details { max-width: 760px; }
@@ -364,6 +364,39 @@ body { margin: 0; background: #fff; }
   .tpm-hero--split .tpm-hero__body { grid-area: 2 / 2; }
   .tpm-hero--split .tpm-hero__lede { order: 0; font-size: 19px; font-weight: 400; margin: 0; }
 }
+
+/* Mix option */
+.tpm-mixcard {
+  grid-column: 1 / -1; display: grid; grid-template-columns: auto 1fr; gap: 12px 16px; align-items: center;
+  background: var(--tpm-ink); color: var(--tpm-paper); border-radius: var(--tpm-radius); padding: 16px 18px;
+}
+.tpm-mixcard__cans { display: flex; }
+.tpm-mixcard__cans img { width: 56px; height: 56px; border-radius: 50%; border: 2px solid var(--tpm-ink); object-fit: cover; }
+.tpm-mixcard__cans img + img { margin-left: -18px; }
+.tpm-mixcard__body p { font-size: 14px; color: #c9c9c9; }
+.tpm-mixcard .tpm-btn { grid-column: 1 / -1; background: var(--tpm-sun); color: var(--tpm-ink); border-color: var(--tpm-sun); }
+.tpm-mixcard .tpm-btn:hover { background: var(--tpm-pill); }
+.tpm-chip--mix { grid-column: 1 / -1; }
+.tpm-chip__pair { display: flex; flex: none; }
+.tpm-chip__pair img { border: 2px solid var(--tpm-paper); }
+.tpm-chip__pair img + img { margin-left: -16px; }
+.tpm-chip__sub { display: block; font-weight: 400; font-size: 13px; color: var(--tpm-muted); }
+.tpm-mixnote { margin: -4px 0 14px; font-size: 14px; background: #fffbe0; border-radius: 12px; padding: 10px 14px; }
+.tpm-mixnote[hidden] { display: none; }
+@media (min-width: 900px) {
+  .tpm-flavors__grid { grid-template-columns: repeat(3, 1fr); max-width: none; gap: 16px; }
+  .tpm-mixcard { grid-column: auto; grid-template-columns: 1fr; align-content: center; justify-items: start; padding: 32px; gap: 18px; }
+  .tpm-mixcard__cans img { width: 96px; height: 96px; }
+  .tpm-mixcard__cans img + img { margin-left: -28px; }
+  .tpm-mixcard__body h3 { font-family: var(--tpm-font-brand); font-size: 24px; line-height: 1.15; text-transform: uppercase; margin-bottom: 8px; }
+  .tpm-mixcard__body p { font-size: 16px; }
+}
+.tpm-buy__media [hidden] { display: none !important; }
+.tpm-buy__pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+/* The Pineapple Martini flavor shot has a thin white edge baked in; crop it off. */
+.tpm img[src*="Pineapple_Martini_Yellow_Orange_Bg"] { clip-path: inset(1.2% round 20px); }
+.tpm-chip img[src*="Pineapple_Martini_Yellow_Orange_Bg"], .tpm-mixcard img[src*="Pineapple_Martini_Yellow_Orange_Bg"] { clip-path: inset(2% round 50%); }
+.tpm-chip__box > img[src*="Pineapple_Martini_Yellow_Orange_Bg"], .tpm-chip__pair img[src*="Pineapple_Martini_Yellow_Orange_Bg"] { clip-path: inset(2% round 7px); }
 
 </style>
 </head>
@@ -411,8 +444,8 @@ body { margin: 0; background: #fff; }
 
   <section class="tpm-sec tpm-flavors" aria-labelledby="tpm-flavors-title">
     <div class="tpm-wrap">
-      <h2 class="tpm-h2" id="tpm-flavors-title">Two cocktails. Pick one or mix them.</h2>
-      <p class="tpm-sub">Subscribers can switch or mix flavors in their account at any time.</p>
+      <h2 class="tpm-h2" id="tpm-flavors-title">Two cocktails. Pick one or get both.</h2>
+      <p class="tpm-sub">Every pack comes in one flavor or as a half-and-half mix.</p>
       <div class="tpm-flavors__grid">
         <article class="tpm-flavor tpm-flavor--bo">
           <img src="https://gettipsy.com/cdn/shop/files/Blood_Orange.png?width=600"
@@ -440,6 +473,17 @@ body { margin: 0; background: #fff; }
             <button type="button" class="tpm-btn tpm-btn--ghost tpm-btn--small" data-tpm-pick="pm">Choose<span class="tpm-visually-hidden"> Pineapple Martini</span></button>
           </div>
         </article>
+        <div class="tpm-mixcard" data-tpm-mix-only>
+          <div class="tpm-mixcard__cans" aria-hidden="true">
+            <img src="https://gettipsy.com/cdn/shop/files/Blood_Orange.png?width=300" width="300" height="300" loading="lazy" alt="">
+            <img src="https://gettipsy.com/cdn/shop/files/Pineapple_Martini_Yellow_Orange_Bg.png?width=300" width="300" height="300" loading="lazy" alt="">
+          </div>
+          <div class="tpm-mixcard__body">
+            <h3>Can't pick? Get the mix.</h3>
+            <p>Half Blood Orange Margarita, half Pineapple Martini, same price.</p>
+          </div>
+          <button type="button" class="tpm-btn tpm-btn--primary tpm-btn--small" data-tpm-pick="mix">Choose<span class="tpm-visually-hidden"> the mix</span></button>
+        </div>
       </div>
     </div>
   </section>
@@ -614,11 +658,18 @@ body { margin: 0; background: #fff; }
   <section class="tpm-sec tpm-buy" id="tpm-buy" aria-labelledby="tpm-buy-title">
     <div class="tpm-wrap tpm-split">
       <div class="tpm-buy__media">
-        <img src="https://gettipsy.com/cdn/shop/files/TIPSY12Pack.png?width=900"
-          srcset="https://gettipsy.com/cdn/shop/files/TIPSY12Pack.png?width=600 600w, https://gettipsy.com/cdn/shop/files/TIPSY12Pack.png?width=1080 1080w"
-          sizes="(min-width: 900px) 440px, 60vw"
-          width="1080" height="1080" loading="lazy"
-          alt="A 12-pack of TIPSY AF Blood Orange Margarita cans">
+        <img data-tpm-media="bo" src="https://gettipsy.com/cdn/shop/files/Blood_Orange.png?width=900"
+          srcset="https://gettipsy.com/cdn/shop/files/Blood_Orange.png?width=600 600w, https://gettipsy.com/cdn/shop/files/Blood_Orange.png?width=900 900w"
+          sizes="440px" width="900" height="900" loading="lazy"
+          alt="Can of TIPSY AF Blood Orange Margarita">
+        <img data-tpm-media="pm" hidden src="https://gettipsy.com/cdn/shop/files/Pineapple_Martini_Yellow_Orange_Bg.png?width=900"
+          srcset="https://gettipsy.com/cdn/shop/files/Pineapple_Martini_Yellow_Orange_Bg.png?width=600 600w, https://gettipsy.com/cdn/shop/files/Pineapple_Martini_Yellow_Orange_Bg.png?width=900 900w"
+          sizes="440px" width="900" height="900" loading="lazy"
+          alt="Can of TIPSY AF Pineapple Martini">
+        <div class="tpm-buy__pair" data-tpm-media="mix" data-tpm-mix-only hidden>
+          <img src="https://gettipsy.com/cdn/shop/files/Blood_Orange.png?width=600" width="600" height="600" loading="lazy" alt="Can of TIPSY AF Blood Orange Margarita">
+          <img src="https://gettipsy.com/cdn/shop/files/Pineapple_Martini_Yellow_Orange_Bg.png?width=600" width="600" height="600" loading="lazy" alt="Can of TIPSY AF Pineapple Martini">
+        </div>
       </div>
       <div>
         <h2 class="tpm-h2" id="tpm-buy-title">Get TIPSY</h2>
@@ -640,6 +691,16 @@ body { margin: 0; background: #fff; }
                 Pineapple Martini
               </span>
             </label>
+            <label class="tpm-chip tpm-chip--mix" data-tpm-mix-only>
+              <input type="radio" name="tpm-flavor" value="mix">
+              <span class="tpm-chip__box">
+                <span class="tpm-chip__pair" aria-hidden="true">
+                  <img src="https://gettipsy.com/cdn/shop/files/Blood_Orange.png?width=120" width="40" height="40" alt="">
+                  <img src="https://gettipsy.com/cdn/shop/files/Pineapple_Martini_Yellow_Orange_Bg.png?width=120" width="40" height="40" alt="">
+                </span>
+                <span>Mix of both <span class="tpm-chip__sub">Half and half</span></span>
+              </span>
+            </label>
           </fieldset>
 
           <fieldset>
@@ -647,7 +708,8 @@ body { margin: 0; background: #fff; }
 
             <label class="tpm-opt">
               <input type="radio" name="tpm-offer" value="trial" checked
-                data-variant-bo="44868866212048" data-variant-pm="45108737507536" data-plan="1777991888"
+                data-variant-bo="44868866212048" data-variant-pm="45108737507536" data-variant-mix="" data-plan="1777991888"
+                data-mix-split="3 Blood Orange Margarita + 3 Pineapple Martini"
                 data-label="Start my 6-pack trial · $29.94">
               <span class="tpm-opt__box">
                 <span class="tpm-opt__head"><span class="tpm-opt__name">6-pack trial</span><span class="tpm-opt__price">$29.94</span></span>
@@ -658,7 +720,8 @@ body { margin: 0; background: #fff; }
 
             <label class="tpm-opt">
               <input type="radio" name="tpm-offer" value="autoship"
-                data-variant-bo="44868867064016" data-variant-pm="45108737605840" data-plan="1778024656"
+                data-variant-bo="44868867064016" data-variant-pm="45108737605840" data-variant-mix="" data-plan="1778024656"
+                data-mix-split="6 Blood Orange Margarita + 6 Pineapple Martini"
                 data-label="Subscribe · $49.80/mo">
               <span class="tpm-opt__box">
                 <span class="tpm-opt__head"><span class="tpm-opt__name">12-pack auto ship</span><span class="tpm-opt__price">$49.80<small>/mo</small></span></span>
@@ -668,7 +731,8 @@ body { margin: 0; background: #fff; }
 
             <label class="tpm-opt">
               <input type="radio" name="tpm-offer" value="onetime"
-                data-variant-bo="44868867457232" data-variant-pm="45108737540304" data-plan=""
+                data-variant-bo="44868867457232" data-variant-pm="45108737540304" data-variant-mix="" data-plan=""
+                data-mix-split="6 Blood Orange Margarita + 6 Pineapple Martini"
                 data-label="Add 12-pack to cart · $60.00">
               <span class="tpm-opt__box">
                 <span class="tpm-opt__head"><span class="tpm-opt__name">12-pack, one time</span><span class="tpm-opt__price">$60.00</span></span>
@@ -676,6 +740,8 @@ body { margin: 0; background: #fff; }
               </span>
             </label>
           </fieldset>
+
+          <p class="tpm-mixnote" data-tpm-mix-note hidden></p>
 
           <ol class="tpm-timeline" data-tpm-trial-only aria-label="How the trial works">
             <li><strong>Today</strong><span>Your 6-pack ships</span></li>
@@ -689,7 +755,6 @@ body { margin: 0; background: #fff; }
           <ul class="tpm-assure">
             <li>Most orders ship the same day. Delivery usually takes 3–5 days.</li>
             <li>100-day money-back guarantee, even on opened cans.</li>
-            <li>Subscribers can mix and match flavors in their account.</li>
           </ul>
         </form>
       </div>
@@ -723,7 +788,7 @@ body { margin: 0; background: #fff; }
       </details>
       <details class="tpm-details">
         <summary>Which flavor should I start with?</summary>
-        <p>Blood Orange Margarita is our fan favorite: bright citrus with a salted edge. Pineapple Martini is newer: refreshing pineapple with a dry martini finish. On a subscription you can switch or mix flavors in your account anytime.</p>
+        <p>Blood Orange Margarita is our fan favorite: bright citrus with a salted edge. Pineapple Martini is newer: refreshing pineapple with a dry martini finish. Can't decide? Choose the mix: a 6-pack trial is 3 of each, and a 12-pack is 6 of each, at the same price.</p>
       </details>
       <details class="tpm-details">
         <summary>How does the trial work?</summary>
@@ -735,7 +800,7 @@ body { margin: 0; background: #fff; }
       </details>
       <details class="tpm-details">
         <summary>Already a subscriber?</summary>
-        <p><a href="https://gettipsy.com/a/loop_subscriptions/customer">Manage your subscription</a> to change flavors or get your subscriber discounts.</p>
+        <p><a href="https://gettipsy.com/a/loop_subscriptions/customer">Manage your subscription</a> or get your subscriber discounts.</p>
       </details>
     </div>
   </section>
@@ -767,10 +832,27 @@ body { margin: 0; background: #fff; }
   var errorEl = root.querySelector('[data-tpm-error]');
   var trialOnly = root.querySelector('[data-tpm-trial-only]');
   var sticky = root.querySelector('[data-tpm-sticky]');
+  var mixNote = root.querySelector('[data-tpm-mix-note]');
   var busy = false;
+
+  // The Mix option needs a mixed-pack variant for every purchase option (set in
+  // the theme editor). On the store, hide it until all three exist rather than
+  // offer something that can't be added. The preview keeps it visible.
+  var offerInputs = form.querySelectorAll('input[name="tpm-offer"]');
+  var mixReady = Array.prototype.every.call(offerInputs, function (i) {
+    return parseInt(i.getAttribute('data-variant-mix'), 10) > 0;
+  });
+  if (!mixReady && MODE !== 'preview') {
+    Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-mix-only]'), function (el) { el.remove(); });
+  }
 
   function selected() {
     return form.querySelector('input[name="tpm-offer"]:checked');
+  }
+
+  function selectedFlavor() {
+    var f = form.querySelector('input[name="tpm-flavor"]:checked');
+    return f ? f.value : null;
   }
 
   function syncOffer() {
@@ -778,6 +860,15 @@ body { margin: 0; background: #fff; }
     if (!opt) return;
     addBtn.textContent = opt.getAttribute('data-label');
     if (trialOnly) trialOnly.hidden = opt.value !== 'trial';
+    var flavor = selectedFlavor();
+    Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-media]'), function (m) {
+      m.hidden = m.getAttribute('data-tpm-media') !== flavor;
+    });
+    if (mixNote) {
+      var isMix = selectedFlavor() === 'mix';
+      mixNote.hidden = !isMix;
+      mixNote.textContent = isMix ? 'Your pack: ' + opt.getAttribute('data-mix-split') + '.' : '';
+    }
     showError('');
   }
 
@@ -803,16 +894,18 @@ body { margin: 0; background: #fff; }
     window.location.href = '/cart';
   }
 
-  function selectedFlavor() {
-    var f = form.querySelector('input[name="tpm-flavor"]:checked');
-    return f ? f.value : null;
-  }
-
   function addToCart(opt) {
     var flavor = selectedFlavor();
     var item = { id: parseInt(opt.getAttribute('data-variant-' + flavor), 10), quantity: 1 };
     var plan = parseInt(opt.getAttribute('data-plan'), 10);
     if (!isNaN(plan) && plan > 0) item.selling_plan = plan;
+
+    if (MODE === 'preview' && !item.id) {
+      window.alert('Preview only. The mixed ' + opt.getAttribute('data-mix-split') +
+        ' pack has no Shopify variant yet. Add its variant ID in the theme editor to enable it.');
+      return Promise.resolve();
+    }
+    if (!item.id) return Promise.reject(new Error('This option isn\'t available right now. Please pick another flavor.'));
 
     if (MODE === 'preview') {
       showError('');

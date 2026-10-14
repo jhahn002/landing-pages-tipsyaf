@@ -1,1 +1,11 @@
-{"title": "TIPSY AF | The zero proof cocktail you can feel", "section": "tipsy-af-meta", "template": "tipsy-af-meta", "section_name": "TIPSY AF Meta landing page"}
+{
+  "title": "TIPSY AF | The zero proof cocktail you can feel",
+  "section": "tipsy-af-meta",
+  "template": "tipsy-af-meta",
+  "section_name": "TIPSY AF Meta landing page",
+  "settings": [
+    {"id": "mix_trial_variant", "label": "Mix 6-pack trial: variant ID", "info": "Variant of the mixed 6-pack starter kit (3 Blood Orange + 3 Pineapple Martini). Leave empty to hide the Mix option."},
+    {"id": "mix_autoship_variant", "label": "Mix 12-pack auto ship: variant ID", "info": "Variant of the mixed 12-pack auto ship product (6 + 6)."},
+    {"id": "mix_onetime_variant", "label": "Mix 12-pack one-time: variant ID", "info": "Variant of the mixed 12-pack one-time product (6 + 6)."}
+  ]
+}

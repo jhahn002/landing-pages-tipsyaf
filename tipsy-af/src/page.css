@@ -295,11 +295,12 @@
 
 .tpm-flavors { padding-top: 24px; }
 .tpm-flavors__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.tpm-flavor { border-radius: var(--tpm-radius); overflow: hidden; background: var(--tpm-panel); display: grid; align-content: start; }
+.tpm-flavor { border-radius: var(--tpm-radius); overflow: hidden; background: var(--tpm-panel); display: flex; flex-direction: column; }
 .tpm-flavor img { width: 100%; aspect-ratio: 1; object-fit: cover; }
-.tpm-flavor__body { padding: 14px 14px 18px; display: grid; gap: 6px; justify-items: start; }
+.tpm-flavor__body { padding: 14px 14px 18px; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; flex: 1; }
 .tpm-flavor__body p { font-size: 14px; color: var(--tpm-muted); }
-.tpm-flavor__body .tpm-btn { margin-top: 6px; }
+.tpm-flavor__body .tpm-btn { margin-top: auto; }
+.tpm-flavor__body p { margin-bottom: 8px; }
 .tpm-flavor__tag { background: var(--tpm-orange); border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 600; }
 .tpm-flavor__tag--new { background: var(--tpm-sun); }
 
@@ -328,7 +329,6 @@
 .tpm-chip input:focus-visible + .tpm-chip__box { outline: 3px solid var(--tpm-ink); outline-offset: 2px; }
 
 @media (min-width: 700px) {
-  .tpm-flavors__grid { max-width: 760px; }
   .tpm-science__steps { grid-template-columns: repeat(3, 1fr); gap: 32px; }
   .tpm-zero { grid-template-columns: repeat(7, 1fr); }
   .tpm-science__details { max-width: 760px; }
@@ -344,3 +344,36 @@
   .tpm-hero--split .tpm-hero__body { grid-area: 2 / 2; }
   .tpm-hero--split .tpm-hero__lede { order: 0; font-size: 19px; font-weight: 400; margin: 0; }
 }
+
+/* Mix option */
+.tpm-mixcard {
+  grid-column: 1 / -1; display: grid; grid-template-columns: auto 1fr; gap: 12px 16px; align-items: center;
+  background: var(--tpm-ink); color: var(--tpm-paper); border-radius: var(--tpm-radius); padding: 16px 18px;
+}
+.tpm-mixcard__cans { display: flex; }
+.tpm-mixcard__cans img { width: 56px; height: 56px; border-radius: 50%; border: 2px solid var(--tpm-ink); object-fit: cover; }
+.tpm-mixcard__cans img + img { margin-left: -18px; }
+.tpm-mixcard__body p { font-size: 14px; color: #c9c9c9; }
+.tpm-mixcard .tpm-btn { grid-column: 1 / -1; background: var(--tpm-sun); color: var(--tpm-ink); border-color: var(--tpm-sun); }
+.tpm-mixcard .tpm-btn:hover { background: var(--tpm-pill); }
+.tpm-chip--mix { grid-column: 1 / -1; }
+.tpm-chip__pair { display: flex; flex: none; }
+.tpm-chip__pair img { border: 2px solid var(--tpm-paper); }
+.tpm-chip__pair img + img { margin-left: -16px; }
+.tpm-chip__sub { display: block; font-weight: 400; font-size: 13px; color: var(--tpm-muted); }
+.tpm-mixnote { margin: -4px 0 14px; font-size: 14px; background: #fffbe0; border-radius: 12px; padding: 10px 14px; }
+.tpm-mixnote[hidden] { display: none; }
+@media (min-width: 900px) {
+  .tpm-flavors__grid { grid-template-columns: repeat(3, 1fr); max-width: none; gap: 16px; }
+  .tpm-mixcard { grid-column: auto; grid-template-columns: 1fr; align-content: center; justify-items: start; padding: 32px; gap: 18px; }
+  .tpm-mixcard__cans img { width: 96px; height: 96px; }
+  .tpm-mixcard__cans img + img { margin-left: -28px; }
+  .tpm-mixcard__body h3 { font-family: var(--tpm-font-brand); font-size: 24px; line-height: 1.15; text-transform: uppercase; margin-bottom: 8px; }
+  .tpm-mixcard__body p { font-size: 16px; }
+}
+.tpm-buy__media [hidden] { display: none !important; }
+.tpm-buy__pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+/* The Pineapple Martini flavor shot has a thin white edge baked in; crop it off. */
+.tpm img[src*="Pineapple_Martini_Yellow_Orange_Bg"] { clip-path: inset(1.2% round 20px); }
+.tpm-chip img[src*="Pineapple_Martini_Yellow_Orange_Bg"], .tpm-mixcard img[src*="Pineapple_Martini_Yellow_Orange_Bg"] { clip-path: inset(2% round 50%); }
+.tpm-chip__box > img[src*="Pineapple_Martini_Yellow_Orange_Bg"], .tpm-chip__pair img[src*="Pineapple_Martini_Yellow_Orange_Bg"] { clip-path: inset(2% round 7px); }

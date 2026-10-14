@@ -35,8 +35,8 @@
 
   <section class="tpm-sec tpm-flavors" aria-labelledby="tpm-flavors-title">
     <div class="tpm-wrap">
-      <h2 class="tpm-h2" id="tpm-flavors-title">Two cocktails. Pick one or mix them.</h2>
-      <p class="tpm-sub">Subscribers can switch or mix flavors in their account at any time.</p>
+      <h2 class="tpm-h2" id="tpm-flavors-title">Two cocktails. Pick one or get both.</h2>
+      <p class="tpm-sub">Every pack comes in one flavor or as a half-and-half mix.</p>
       <div class="tpm-flavors__grid">
         <article class="tpm-flavor tpm-flavor--bo">
           <img src="https://gettipsy.com/cdn/shop/files/Blood_Orange.png?width=600"
@@ -64,6 +64,17 @@
             <button type="button" class="tpm-btn tpm-btn--ghost tpm-btn--small" data-tpm-pick="pm">Choose<span class="tpm-visually-hidden"> Pineapple Martini</span></button>
           </div>
         </article>
+        <div class="tpm-mixcard" data-tpm-mix-only>
+          <div class="tpm-mixcard__cans" aria-hidden="true">
+            <img src="https://gettipsy.com/cdn/shop/files/Blood_Orange.png?width=300" width="300" height="300" loading="lazy" alt="">
+            <img src="https://gettipsy.com/cdn/shop/files/Pineapple_Martini_Yellow_Orange_Bg.png?width=300" width="300" height="300" loading="lazy" alt="">
+          </div>
+          <div class="tpm-mixcard__body">
+            <h3>Can't pick? Get the mix.</h3>
+            <p>Half Blood Orange Margarita, half Pineapple Martini, same price.</p>
+          </div>
+          <button type="button" class="tpm-btn tpm-btn--primary tpm-btn--small" data-tpm-pick="mix">Choose<span class="tpm-visually-hidden"> the mix</span></button>
+        </div>
       </div>
     </div>
   </section>
@@ -238,11 +249,18 @@
   <section class="tpm-sec tpm-buy" id="tpm-buy" aria-labelledby="tpm-buy-title">
     <div class="tpm-wrap tpm-split">
       <div class="tpm-buy__media">
-        <img src="https://gettipsy.com/cdn/shop/files/TIPSY12Pack.png?width=900"
-          srcset="https://gettipsy.com/cdn/shop/files/TIPSY12Pack.png?width=600 600w, https://gettipsy.com/cdn/shop/files/TIPSY12Pack.png?width=1080 1080w"
-          sizes="(min-width: 900px) 440px, 60vw"
-          width="1080" height="1080" loading="lazy"
-          alt="A 12-pack of TIPSY AF Blood Orange Margarita cans">
+        <img data-tpm-media="bo" src="https://gettipsy.com/cdn/shop/files/Blood_Orange.png?width=900"
+          srcset="https://gettipsy.com/cdn/shop/files/Blood_Orange.png?width=600 600w, https://gettipsy.com/cdn/shop/files/Blood_Orange.png?width=900 900w"
+          sizes="440px" width="900" height="900" loading="lazy"
+          alt="Can of TIPSY AF Blood Orange Margarita">
+        <img data-tpm-media="pm" hidden src="https://gettipsy.com/cdn/shop/files/Pineapple_Martini_Yellow_Orange_Bg.png?width=900"
+          srcset="https://gettipsy.com/cdn/shop/files/Pineapple_Martini_Yellow_Orange_Bg.png?width=600 600w, https://gettipsy.com/cdn/shop/files/Pineapple_Martini_Yellow_Orange_Bg.png?width=900 900w"
+          sizes="440px" width="900" height="900" loading="lazy"
+          alt="Can of TIPSY AF Pineapple Martini">
+        <div class="tpm-buy__pair" data-tpm-media="mix" data-tpm-mix-only hidden>
+          <img src="https://gettipsy.com/cdn/shop/files/Blood_Orange.png?width=600" width="600" height="600" loading="lazy" alt="Can of TIPSY AF Blood Orange Margarita">
+          <img src="https://gettipsy.com/cdn/shop/files/Pineapple_Martini_Yellow_Orange_Bg.png?width=600" width="600" height="600" loading="lazy" alt="Can of TIPSY AF Pineapple Martini">
+        </div>
       </div>
       <div>
         <h2 class="tpm-h2" id="tpm-buy-title">Get TIPSY</h2>
@@ -264,6 +282,16 @@
                 Pineapple Martini
               </span>
             </label>
+            <label class="tpm-chip tpm-chip--mix" data-tpm-mix-only>
+              <input type="radio" name="tpm-flavor" value="mix">
+              <span class="tpm-chip__box">
+                <span class="tpm-chip__pair" aria-hidden="true">
+                  <img src="https://gettipsy.com/cdn/shop/files/Blood_Orange.png?width=120" width="40" height="40" alt="">
+                  <img src="https://gettipsy.com/cdn/shop/files/Pineapple_Martini_Yellow_Orange_Bg.png?width=120" width="40" height="40" alt="">
+                </span>
+                <span>Mix of both <span class="tpm-chip__sub">Half and half</span></span>
+              </span>
+            </label>
           </fieldset>
 
           <fieldset>
@@ -271,7 +299,8 @@
 
             <label class="tpm-opt">
               <input type="radio" name="tpm-offer" value="trial" checked
-                data-variant-bo="44868866212048" data-variant-pm="45108737507536" data-plan="1777991888"
+                data-variant-bo="44868866212048" data-variant-pm="45108737507536" data-variant-mix="[[mix_trial_variant]]" data-plan="1777991888"
+                data-mix-split="3 Blood Orange Margarita + 3 Pineapple Martini"
                 data-label="Start my 6-pack trial · $29.94">
               <span class="tpm-opt__box">
                 <span class="tpm-opt__head"><span class="tpm-opt__name">6-pack trial</span><span class="tpm-opt__price">$29.94</span></span>
@@ -282,7 +311,8 @@
 
             <label class="tpm-opt">
               <input type="radio" name="tpm-offer" value="autoship"
-                data-variant-bo="44868867064016" data-variant-pm="45108737605840" data-plan="1778024656"
+                data-variant-bo="44868867064016" data-variant-pm="45108737605840" data-variant-mix="[[mix_autoship_variant]]" data-plan="1778024656"
+                data-mix-split="6 Blood Orange Margarita + 6 Pineapple Martini"
                 data-label="Subscribe · $49.80/mo">
               <span class="tpm-opt__box">
                 <span class="tpm-opt__head"><span class="tpm-opt__name">12-pack auto ship</span><span class="tpm-opt__price">$49.80<small>/mo</small></span></span>
@@ -292,7 +322,8 @@
 
             <label class="tpm-opt">
               <input type="radio" name="tpm-offer" value="onetime"
-                data-variant-bo="44868867457232" data-variant-pm="45108737540304" data-plan=""
+                data-variant-bo="44868867457232" data-variant-pm="45108737540304" data-variant-mix="[[mix_onetime_variant]]" data-plan=""
+                data-mix-split="6 Blood Orange Margarita + 6 Pineapple Martini"
                 data-label="Add 12-pack to cart · $60.00">
               <span class="tpm-opt__box">
                 <span class="tpm-opt__head"><span class="tpm-opt__name">12-pack, one time</span><span class="tpm-opt__price">$60.00</span></span>
@@ -300,6 +331,8 @@
               </span>
             </label>
           </fieldset>
+
+          <p class="tpm-mixnote" data-tpm-mix-note hidden></p>
 
           <ol class="tpm-timeline" data-tpm-trial-only aria-label="How the trial works">
             <li><strong>Today</strong><span>Your 6-pack ships</span></li>
@@ -313,7 +346,6 @@
           <ul class="tpm-assure">
             <li>Most orders ship the same day. Delivery usually takes 3–5 days.</li>
             <li>100-day money-back guarantee, even on opened cans.</li>
-            <li>Subscribers can mix and match flavors in their account.</li>
           </ul>
         </form>
       </div>
@@ -347,7 +379,7 @@
       </details>
       <details class="tpm-details">
         <summary>Which flavor should I start with?</summary>
-        <p>Blood Orange Margarita is our fan favorite: bright citrus with a salted edge. Pineapple Martini is newer: refreshing pineapple with a dry martini finish. On a subscription you can switch or mix flavors in your account anytime.</p>
+        <p>Blood Orange Margarita is our fan favorite: bright citrus with a salted edge. Pineapple Martini is newer: refreshing pineapple with a dry martini finish. Can't decide? Choose the mix: a 6-pack trial is 3 of each, and a 12-pack is 6 of each, at the same price.</p>
       </details>
       <details class="tpm-details">
         <summary>How does the trial work?</summary>
@@ -359,7 +391,7 @@
       </details>
       <details class="tpm-details">
         <summary>Already a subscriber?</summary>
-        <p><a href="/a/loop_subscriptions/customer">Manage your subscription</a> to change flavors or get your subscriber discounts.</p>
+        <p><a href="/a/loop_subscriptions/customer">Manage your subscription</a> or get your subscriber discounts.</p>
       </details>
     </div>
   </section>
