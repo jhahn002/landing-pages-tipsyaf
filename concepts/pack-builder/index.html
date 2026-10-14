@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Pack builder concepts | TIPSY AF</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+@font-face { font-family: 'TPM Condensed'; src: url('https://cdn.shopify.com/s/files/1/0647/7696/2256/files/Coolvetica_Hv_Comp.woff2?v=1758909708') format('woff2'); font-display: swap; }
+:root {
+  --ink: #1f1e21; --muted: #6b6a6e; --paper: #fff; --panel: #f4f3f1; --line: #e6e4e0; --accent: #ffe748;
+  --cond: 'TPM Condensed', 'League Gothic', Impact, sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--panel); color: var(--ink); font: 500 16px/1.45 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; letter-spacing: -0.01em; -webkit-font-smoothing: antialiased; }
+img { display: block; max-width: 100%; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 10px; }
+.vh { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+header.top { position: sticky; top: 0; z-index: 10; background: var(--panel); padding: 12px 16px 10px; border-bottom: 1px solid var(--line); }
+header.top h1 { font-size: 18px; margin: 0 0 2px; letter-spacing: -0.02em; }
+header.top p { margin: 0 0 10px; font-size: 13px; color: var(--muted); }
+.tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs button { flex: none; border: 0; border-radius: 999px; padding: 9px 14px; background: #fff; font-weight: 700; font-size: 14px; cursor: pointer; }
+.tabs button[aria-selected="true"] { background: var(--ink); color: #fff; }
+
+main { max-width: 440px; margin: 0 auto; padding: 18px 16px 120px; }
+.concept[hidden] { display: none; }
+.concept > h2 { font-family: var(--cond); text-transform: uppercase; font-weight: 400; font-size: 40px; line-height: .9; margin: 0 0 6px; }
+.concept > .why { font-size: 14px; color: var(--muted); margin: 0 0 18px; }
+.card { background: #fff; border-radius: 24px; padding: 18px 16px; box-shadow: 0 1px 0 rgba(0,0,0,.03); }
+.label { font-family: var(--cond); text-transform: uppercase; font-size: 22px; line-height: 1; margin: 0 0 10px; }
+.mode { display: flex; gap: 4px; background: var(--panel); border-radius: 999px; padding: 4px; margin-bottom: 16px; }
+.mode button { flex: 1; border: 0; background: none; border-radius: 999px; padding: 10px 6px; font-weight: 700; font-size: 14px; cursor: pointer; }
+.mode button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+.can { height: 100%; width: auto; filter: drop-shadow(0 6px 6px rgba(0,0,0,.22)); }
+.summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.summary small { display: block; font-size: 12px; color: var(--muted); }
+.summary strong { font-size: 15px; }
+.cta { border: 0; border-radius: 999px; min-height: 52px; padding: 0 22px; background: var(--accent); font-weight: 700; font-size: 16px; cursor: pointer; white-space: nowrap; transition: opacity .2s, transform .15s; }
+.cta:disabled { opacity: .35; cursor: not-allowed; }
+.cta:not(:disabled):active { transform: scale(.97); }
+.note { font-size: 12px; color: var(--muted); margin: 14px 4px 0; }
+
+/* ---------- 1. Fill the case ---------- */
+.case { position: relative; background: #2a2a2d; border-radius: 18px; padding: 14px 12px 12px; margin-bottom: 14px; }
+.case__grid { display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(2, auto); gap: 8px; }
+.case__half-label { display: flex; justify-content: space-between; color: rgba(255,255,255,.6); font-size: 12px; font-weight: 600; margin-top: 10px; }
+.case__half-label span { flex: 1; text-align: center; }
+.case__divider { position: absolute; top: 14px; bottom: 34px; left: 50%; width: 2px; margin-left: -1px; background: rgba(255,255,255,.12); }
+.ctop { aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 50% 45%, #3a3a3e 0 45%, #333336 46%); box-shadow: inset 0 0 0 2px rgba(255,255,255,.06); position: relative; }
+.ctop.is-full { background: radial-gradient(circle at 42% 38%, #f4f4f6 0 20%, #c9c9ce 46%, #a9a9ae 60%, var(--c) 62% 100%); box-shadow: inset 0 0 0 2px rgba(0,0,0,.15), 0 3px 6px rgba(0,0,0,.35); }
+.ctop.is-full::after { content: ""; position: absolute; left: 34%; top: 22%; width: 32%; height: 14%; border-radius: 8px; background: rgba(0,0,0,.18); }
+@media (prefers-reduced-motion: no-preference) { .ctop.is-drop { animation: drop .45s cubic-bezier(.3,1.5,.5,1) both; } }
+@keyframes drop { from { transform: translateY(-24px) scale(.6); opacity: 0; } }
+.case__half { cursor: pointer; }
+.flist { display: grid; gap: 8px; }
+.frow { display: grid; grid-template-columns: 52px 1fr auto; gap: 12px; align-items: center; padding: 8px 8px 8px 8px; border-radius: 16px; background: var(--panel); }
+.frow__img { height: 56px; border-radius: 12px; background: var(--bg); display: flex; justify-content: center; align-items: flex-end; overflow: hidden; }
+.frow__img img { height: 52px; transform: translateY(5px); }
+.frow__name { font-weight: 700; font-size: 15px; line-height: 1.2; }
+.frow__note { font-size: 12px; color: var(--muted); }
+.addbtn { border: 0; border-radius: 12px; min-width: 76px; min-height: 42px; padding: 0 12px; background: var(--ink); color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; }
+.addbtn:disabled { background: #d6d5d9; color: #fff; cursor: not-allowed; }
+.addbtn .ct { display: inline-block; margin-left: 4px; background: var(--accent); color: var(--ink); border-radius: 6px; padding: 0 6px; font-size: 12px; }
+
+/* ---------- 2. Two slots ---------- */
+.slots { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.slots.one { grid-template-columns: 1fr; }
+.slot { position: relative; border: 2px dashed #cfcdd2; border-radius: 20px; min-height: 210px; padding: 12px; display: grid; justify-items: center; align-content: space-between; text-align: center; background: #fff; cursor: pointer; transition: border-color .2s, background-color .2s; }
+.slot.is-active { border-style: solid; border-color: var(--ink); box-shadow: 0 0 0 4px rgba(255,231,72,.7); }
+.slot.is-filled { border-style: solid; border-color: transparent; background: var(--bg); }
+.slot__tag { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.slot.is-filled .slot__tag { color: rgba(0,0,0,.55); }
+.slot__img { height: 110px; display: flex; align-items: flex-end; justify-content: center; }
+.slot__plus { width: 52px; height: 52px; border-radius: 50%; background: var(--panel); display: grid; place-items: center; font-size: 28px; font-weight: 400; margin: 28px 0; }
+.slot__name { font-weight: 700; font-size: 14px; line-height: 1.2; min-height: 34px; display: grid; align-items: center; }
+.slot__x { position: absolute; top: 8px; right: 8px; width: 28px; height: 28px; border-radius: 50%; border: 0; background: rgba(255,255,255,.8); font-size: 16px; line-height: 1; cursor: pointer; }
+@media (prefers-reduced-motion: no-preference) { .slot.is-pop .slot__img img { animation: pop .5s cubic-bezier(.3,1.5,.5,1); } }
+@keyframes pop { 0% { transform: scale(.6) rotate(-8deg); opacity: 0; } 60% { transform: scale(1.08) rotate(3deg); } 100% { transform: none; } }
+.picker { margin-top: 14px; }
+.picker__head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.picker__head span { font-size: 13px; color: var(--muted); }
+.strip { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 2px 2px 6px; margin: 0 -16px; padding-left: 16px; padding-right: 16px; }
+.strip::-webkit-scrollbar { display: none; }
+.chipcan { flex: none; width: 96px; scroll-snap-align: start; border: 2px solid transparent; border-radius: 18px; background: var(--panel); padding: 8px 6px 10px; display: grid; justify-items: center; gap: 6px; cursor: pointer; text-align: center; }
+.chipcan__img { width: 100%; height: 86px; border-radius: 12px; background: var(--bg); display: flex; align-items: flex-end; justify-content: center; overflow: hidden; }
+.chipcan__img img { height: 80px; transform: translateY(6px); }
+.chipcan span { font-size: 12px; font-weight: 700; line-height: 1.2; }
+.chipcan:hover { border-color: var(--ink); }
+
+/* ---------- 3. Swipe + tray ---------- */
+.shelf { position: relative; background: var(--ink); border-radius: 22px; padding: 16px 0 14px; overflow: hidden; container-type: inline-size; }
+.shelf::after { content: ""; position: absolute; left: 0; right: 0; bottom: 100px; height: 6px; background: rgba(255,255,255,.12); }
+.shelf__track { display: grid; grid-auto-flow: column; grid-auto-columns: 42cqw; padding: 0 29cqw; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent); mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent); }
+.shelf__track::-webkit-scrollbar { display: none; }
+.shelf__item { scroll-snap-align: center; scroll-snap-stop: always; display: grid; justify-items: center; text-align: center; position: relative; }
+.shelf__item::before { content: ""; position: absolute; top: 0; left: 50%; width: 150px; height: 150px; margin-left: -75px; border-radius: 50%; background: radial-gradient(closest-side, var(--c), transparent); opacity: 0; transition: opacity .3s; }
+.shelf__item.is-center::before { opacity: .6; }
+.shelf__img { position: relative; height: 140px; display: flex; align-items: flex-end; transition: scale .3s, filter .3s; scale: .82; filter: grayscale(.5) brightness(.65); }
+.shelf__item.is-center .shelf__img { scale: 1; filter: none; }
+.shelf__name { position: relative; color: rgba(255,255,255,.55); font-weight: 600; font-size: 13px; margin-top: 18px; min-height: 34px; line-height: 1.25; padding: 0 4px; transition: color .3s; }
+.shelf__item.is-center .shelf__name { color: #fff; }
+.shelf__add { display: flex; justify-content: center; margin-top: 8px; }
+.shelf__add button { border: 0; border-radius: 999px; min-height: 46px; padding: 0 22px; background: var(--accent); font-weight: 700; cursor: pointer; }
+.shelf__add button:disabled { background: #4a494d; color: rgba(255,255,255,.6); cursor: not-allowed; }
+.tray { margin-top: 14px; }
+.tray__bar { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.tray.one .tray__bar { grid-template-columns: 1fr; }
+.seg { position: relative; height: 74px; border-radius: 16px; border: 2px dashed #cfcdd2; display: flex; align-items: center; gap: 8px; padding: 0 10px; overflow: hidden; font-size: 13px; font-weight: 700; color: var(--muted); }
+.seg.is-full { border: 0; background: var(--bg); color: var(--ink); }
+.seg__cans { display: flex; height: 60px; align-items: flex-end; flex: none; padding-right: 4px; }
+.seg__cans img { height: 54px; margin-right: -12px; }
+.seg__cans img:last-child { margin-right: 0; }
+.seg__cans img:nth-child(n+4) { display: none; }
+.seg__text { flex: 1; min-width: 0; line-height: 1.2; font-size: 12px; }
+.seg__text small { display: block; font-weight: 500; color: rgba(0,0,0,.55); }
+.seg__x { border: 0; background: rgba(255,255,255,.75); width: 26px; height: 26px; border-radius: 50%; cursor: pointer; flex: none; }
+@media (prefers-reduced-motion: no-preference) { .seg.is-new { animation: slidein .45s cubic-bezier(.3,1.4,.5,1); } }
+@keyframes slidein { from { transform: translateY(-30px) scale(.9); opacity: 0; } }
+.tray__count { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+
+/* ---------- 4. Stepper list + meter ---------- */
+.meter { display: grid; grid-template-columns: 88px 1fr; gap: 14px; align-items: center; margin-bottom: 14px; }
+.ring { width: 88px; height: 88px; position: relative; }
+.ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring circle { fill: none; stroke-width: 10; }
+.ring .bg { stroke: var(--panel); }
+.ring .seg1, .ring .seg2 { stroke-linecap: butt; transition: stroke-dasharray .45s cubic-bezier(.3,1.3,.5,1); }
+.ring__txt { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; line-height: 1; }
+.ring__txt b { font-family: var(--cond); font-weight: 400; font-size: 30px; }
+.ring__txt small { font-size: 11px; color: var(--muted); }
+.meter__msg { font-weight: 700; font-size: 17px; line-height: 1.25; }
+.meter__msg small { display: block; font-weight: 500; font-size: 13px; color: var(--muted); margin-top: 2px; }
+.srow { display: grid; grid-template-columns: 52px 1fr auto; gap: 12px; align-items: center; padding: 8px; border-radius: 16px; background: var(--panel); transition: background-color .2s, box-shadow .2s; }
+.srow.has { background: #fff; box-shadow: inset 0 0 0 2px var(--ink); }
+.stepper { display: flex; align-items: center; gap: 6px; }
+.stepper button { width: 38px; height: 38px; border-radius: 50%; border: 0; background: #fff; font-size: 20px; font-weight: 600; cursor: pointer; box-shadow: inset 0 0 0 1.5px var(--line); }
+.srow.has .stepper button { background: var(--panel); }
+.stepper button.plus { background: var(--ink); color: #fff; box-shadow: none; }
+.stepper button:disabled { opacity: .3; cursor: not-allowed; }
+.stepper output { min-width: 34px; text-align: center; font-weight: 700; font-size: 14px; }
+.stepper output small { display: block; font-size: 10px; color: var(--muted); font-weight: 600; }
+
+@media (min-width: 900px) {
+  main { max-width: 1180px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
+  .concept[hidden] { display: block; }
+  .tabs { display: none; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Pack builder concepts</h1>
+  <p>Internal mockups for picking two six-packs. Flavors 3–5 are placeholders. Not connected to the cart.</p>
+  <div class="tabs" role="tablist" aria-label="Concepts">
+    <button role="tab" aria-selected="true" data-tab="1">1. Fill the case</button>
+    <button role="tab" aria-selected="false" data-tab="2">2. Two slots</button>
+    <button role="tab" aria-selected="false" data-tab="3">3. Swipe + tray</button>
+    <button role="tab" aria-selected="false" data-tab="4">4. Counter list</button>
+  </div>
+</header>
+
+<main>
+  <section class="concept" data-concept="1" aria-labelledby="c1">
+    <h2 id="c1">1. Fill the case</h2>
+    <p class="why">A top-down 12-can case. Each "Add 6" drops a six-pack's can tops into the next empty half, so people literally see the box fill up. Tap a half to empty it.</p>
+    <div class="card" data-builder="case"></div>
+  </section>
+
+  <section class="concept" data-concept="2" aria-labelledby="c2" hidden>
+    <h2 id="c2">2. Two slots</h2>
+    <p class="why">Two empty six-pack slots with a plus. Tap a slot, then pick a flavor from the strip. The obvious "fill these two boxes" pattern, and it works with any number of flavors.</p>
+    <div class="card" data-builder="slots"></div>
+  </section>
+
+  <section class="concept" data-concept="3" aria-labelledby="c3" hidden>
+    <h2 id="c3">3. Swipe + tray</h2>
+    <p class="why">Keeps today's dark swipe shelf. Swipe to a flavor, tap "Add six-pack", and it drops into a two-part tray underneath. Feels like building a cart in an app.</p>
+    <div class="card" data-builder="tray"></div>
+  </section>
+
+  <section class="concept" data-concept="4" aria-labelledby="c4" hidden>
+    <h2 id="c4">4. Counter list</h2>
+    <p class="why">A plain list with − / + steppers counting six-packs, and a ring that fills in each flavor's color. The most scalable: works the same with 3 flavors or 12.</p>
+    <div class="card" data-builder="list"></div>
+  </section>
+</main>
+
+<script>
+(function () {
+  var PM = '../../tipsy-af-v3/assets/tipsy-can-pineapple.webp';
+  var BO = '../../tipsy-af-v3/assets/tipsy-can-blood-orange.webp';
+  var FLAVORS = [
+    { id: 'bo', name: 'Blood Orange Margarita', short: 'Blood Orange', note: 'Bright citrus, salted edge', c: '#ff8a1f', bg: '#ffd9b8', img: BO },
+    { id: 'pm', name: 'Pineapple Martini', short: 'Pineapple', note: 'Pineapple, dry martini finish', c: '#f5c400', bg: '#fff1b3', img: PM },
+    { id: 'f3', name: 'Future flavor 3', short: 'Flavor 3', note: 'Placeholder', c: '#e2457a', bg: '#ffd3e1', img: PM, tint: 'hue-rotate(290deg) saturate(1.4)' },
+    { id: 'f4', name: 'Future flavor 4', short: 'Flavor 4', note: 'Placeholder', c: '#2fae73', bg: '#cdeedd', img: PM, tint: 'hue-rotate(75deg) saturate(1.3)' },
+    { id: 'f5', name: 'Future flavor 5', short: 'Flavor 5', note: 'Placeholder', c: '#7a5cf0', bg: '#ddd5ff', img: PM, tint: 'hue-rotate(205deg) saturate(1.3)' }
+  ];
+  var byId = {}; FLAVORS.forEach(function (f) { byId[f.id] = f; });
+  var PRICES = { 1: { label: '6-can trial', price: '$29.94', sub: 'then 12 cans for $49.80/mo' }, 2: { label: '12-pack', price: '$49.80/mo', sub: 'auto ship, or $60 one time' } };
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function canImg(f, cls) { return '<img class="' + (cls || 'can') + '" src="' + f.img + '" alt=""' + (f.tint ? ' style="filter:' + f.tint + ' drop-shadow(0 6px 6px rgba(0,0,0,.22))"' : '') + '>'; }
+  function el(html) { var d = document.createElement('div'); d.innerHTML = html; return d.firstElementChild; }
+
+  // Shared header: trial (1 six-pack) vs 12-pack (2 six-packs)
+  function modeHtml(n) {
+    return '<div class="mode" role="group" aria-label="Pack size"><button type="button" data-mode="1" aria-pressed="' + (n === 1) + '">6 cans</button><button type="button" data-mode="2" aria-pressed="' + (n === 2) + '">12 cans</button></div>';
+  }
+  function summaryHtml(packs, need) {
+    var full = packs.length === need;
+    var p = PRICES[need];
+    var what = 'Nothing picked yet';
+    if (packs.length) {
+      var seen = {}, order = [];
+      packs.forEach(function (id) { if (!seen[id]) { seen[id] = 0; order.push(id); } seen[id]++; });
+      what = order.map(function (id) { return byId[id].name + (seen[id] > 1 ? ' ×' + seen[id] : ''); }).join(' + ');
+    }
+    return '<div class="summary"><div><small>' + p.label + ' · ' + p.price + '</small><strong>' + what + '</strong></div>' +
+      '<button class="cta" type="button"' + (full ? '' : ' disabled') + '>' + (full ? 'Continue' : 'Pick ' + (need - packs.length) + ' more') + '</button></div>';
+  }
+
+  // ---------- 1. Fill the case ----------
+  (function () {
+    var root = document.querySelector('[data-builder="case"]');
+    var need = 2, packs = [], fresh = -1;
+    function render() {
+      var tops = [];
+      // case is 2 rows x 6: left 3 columns = six-pack 1, right 3 = six-pack 2
+      for (var r = 0; r < 2; r++) for (var c = 0; c < 6; c++) {
+        var half = c < 3 ? 0 : 1;
+        if (need === 1 && half === 1) { tops.push('<span class="ctop" style="opacity:.25"></span>'); continue; }
+        var id = packs[half];
+        var delay = ((c % 3) + r * 3) * 40;
+        tops.push('<span class="ctop' + (id ? ' is-full' : '') + (half === fresh ? ' is-drop' : '') + '" style="--c:' + (id ? byId[id].c : '') + ';animation-delay:' + delay + 'ms"></span>');
+      }
+      var names = [0, 1].map(function (h) {
+        if (need === 1 && h === 1) return '<span>—</span>';
+        return '<span>' + (packs[h] ? byId[packs[h]].short + ' ×6' : 'Empty') + '</span>';
+      }).join('');
+      var full = packs.length >= need;
+      root.innerHTML = modeHtml(need) +
+        '<p class="label">Fill your case</p>' +
+        '<div class="case"><div class="case__grid">' + tops.join('') + '</div><div class="case__divider"></div><div class="case__half-label">' + names + '</div>' +
+        '<button type="button" class="vh" data-clear="0">Empty first six-pack</button><button type="button" class="vh" data-clear="1">Empty second six-pack</button></div>' +
+        '<div class="flist">' + FLAVORS.map(function (f) {
+          var count = packs.filter(function (p) { return p === f.id; }).length;
+          return '<div class="frow"><span class="frow__img" style="--bg:' + f.bg + '">' + canImg(f) + '</span><div><div class="frow__name">' + f.name + '</div><div class="frow__note">' + f.note + '</div></div>' +
+            '<button type="button" class="addbtn" data-add="' + f.id + '"' + (full ? ' disabled' : '') + '>Add 6' + (count ? '<span class="ct">×' + count + '</span>' : '') + '</button></div>';
+        }).join('') + '</div>' + summaryHtml(packs, need) +
+        '<p class="note">Tap a half of the case to empty it.</p>';
+      fresh = -1;
+    }
+    root.addEventListener('click', function (e) {
+      var m = e.target.closest('[data-mode]'); if (m) { need = +m.dataset.mode; packs = packs.slice(0, need); render(); return; }
+      var a = e.target.closest('[data-add]'); if (a && packs.length < need) { packs.push(a.dataset.add); fresh = packs.length - 1; render(); return; }
+      var cl = e.target.closest('[data-clear]'); if (cl) { packs.splice(+cl.dataset.clear, 1); render(); return; }
+      var grid = e.target.closest('.case__grid');
+      if (grid) {
+        var tops = Array.prototype.indexOf.call(grid.children, e.target.closest('.ctop'));
+        if (tops >= 0) { var half = (tops % 6) < 3 ? 0 : 1; if (packs[half]) { packs.splice(half, 1); render(); } }
+      }
+    });
+    render();
+  })();
+
+  // ---------- 2. Two slots ----------
+  (function () {
+    var root = document.querySelector('[data-builder="slots"]');
+    var need = 2, packs = [], active = 0, popped = -1;
+    function render() {
+      if (active >= need) active = need - 1;
+      var slots = [];
+      for (var i = 0; i < need; i++) {
+        var f = byId[packs[i]];
+        slots.push('<div class="slot' + (f ? ' is-filled' : '') + (i === active && !f ? ' is-active' : '') + (i === popped ? ' is-pop' : '') + '" data-slot="' + i + '" role="button" tabindex="0" aria-label="Six-pack ' + (i + 1) + (f ? ': ' + f.name : ', empty') + '" style="--bg:' + (f ? f.bg : '') + '">' +
+          '<span class="slot__tag">Six-pack ' + (i + 1) + '</span>' +
+          (f ? '<span class="slot__img">' + canImg(f) + '</span>' : '<span class="slot__plus">+</span>') +
+          '<span class="slot__name">' + (f ? f.name : (i === active ? 'Pick a flavor below' : 'Tap to fill')) + '</span>' +
+          (f ? '<button type="button" class="slot__x" data-x="' + i + '" aria-label="Remove">×</button>' : '') + '</div>');
+      }
+      var allFull = packs.filter(Boolean).length === need;
+      root.innerHTML = modeHtml(need) + '<p class="label">Build your box</p><div class="slots' + (need === 1 ? ' one' : '') + '">' + slots.join('') + '</div>' +
+        (allFull ? '' : '<div class="picker"><div class="picker__head"><strong>Six-pack ' + (active + 1) + '</strong><span>Swipe for more</span></div><div class="strip">' +
+          FLAVORS.map(function (f) { return '<button type="button" class="chipcan" data-pick="' + f.id + '"><span class="chipcan__img" style="--bg:' + f.bg + '">' + canImg(f) + '</span><span>' + f.name + '</span></button>'; }).join('') + '</div></div>') +
+        summaryHtml(packs.filter(Boolean), need) + '<p class="note">Same flavor twice is fine: pick it for both slots.</p>';
+      popped = -1;
+    }
+    root.addEventListener('click', function (e) {
+      var m = e.target.closest('[data-mode]'); if (m) { need = +m.dataset.mode; packs = packs.slice(0, need); render(); return; }
+      var x = e.target.closest('[data-x]'); if (x) { packs[+x.dataset.x] = undefined; active = +x.dataset.x; render(); return; }
+      var p = e.target.closest('[data-pick]');
+      if (p) { packs[active] = p.dataset.pick; popped = active; for (var k = 0; k < need; k++) if (!packs[k]) { active = k; break; } render(); return; }
+      var s = e.target.closest('[data-slot]'); if (s) { active = +s.dataset.slot; render(); }
+    });
+    root.addEventListener('keydown', function (e) { var s = e.target.closest('[data-slot]'); if (s && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); s.click(); } });
+    render();
+  })();
+
+  // ---------- 3. Swipe + tray ----------
+  (function () {
+    var root = document.querySelector('[data-builder="tray"]');
+    var need = 2, packs = [], center = 0, fresh = -1;
+    root.innerHTML = modeHtml(need) + '<p class="label">Swipe, then add</p><div class="shelf"><div class="shelf__track">' +
+      FLAVORS.map(function (f, i) { return '<div class="shelf__item" data-i="' + i + '" style="--c:' + f.c + '"><span class="shelf__img">' + canImg(f) + '</span><span class="shelf__name">' + f.name + '</span></div>'; }).join('') +
+      '</div><div class="shelf__add"><button type="button" data-add>Add six-pack</button></div></div><div class="tray"></div><div class="sum"></div>';
+    var track = root.querySelector('.shelf__track');
+    function paintCenter() {
+      var mid = track.scrollLeft + track.clientWidth / 2, best = 0, bd = Infinity;
+      Array.prototype.forEach.call(track.children, function (it, i) { var d = Math.abs(it.offsetLeft + it.offsetWidth / 2 - mid); if (d < bd) { bd = d; best = i; } });
+      center = best;
+      Array.prototype.forEach.call(track.children, function (it, i) { it.classList.toggle('is-center', i === center); });
+    }
+    function renderTray() {
+      var segs = [];
+      for (var i = 0; i < need; i++) {
+        var f = byId[packs[i]];
+        segs.push(f ? '<div class="seg is-full' + (i === fresh ? ' is-new' : '') + '" style="--bg:' + f.bg + '"><span class="seg__cans">' + canImg(f) + canImg(f) + canImg(f) + '</span><span class="seg__text">' + f.name + '<small>6 cans</small></span><button type="button" class="seg__x" data-x="' + i + '" aria-label="Remove ' + f.name + '">×</button></div>'
+          : '<div class="seg">Six-pack ' + (i + 1) + ' · empty</div>');
+      }
+      root.querySelector('.tray').className = 'tray' + (need === 1 ? ' one' : '');
+      root.querySelector('.tray').innerHTML = '<div class="tray__count"><span>Your box</span><span>' + packs.length * 6 + ' of ' + need * 6 + ' cans</span></div><div class="tray__bar">' + segs.join('') + '</div>';
+      root.querySelector('.sum').innerHTML = summaryHtml(packs, need);
+      root.querySelector('[data-add]').disabled = packs.length >= need;
+      root.querySelectorAll('[data-mode]').forEach(function (b) { b.setAttribute('aria-pressed', +b.dataset.mode === need); });
+      fresh = -1;
+    }
+    track.addEventListener('scroll', function () { window.requestAnimationFrame(paintCenter); }, { passive: true });
+    track.addEventListener('click', function (e) { var it = e.target.closest('.shelf__item'); if (it) track.scrollTo({ left: it.offsetLeft + it.offsetWidth / 2 - track.clientWidth / 2, behavior: reduce ? 'auto' : 'smooth' }); });
+    root.addEventListener('click', function (e) {
+      var m = e.target.closest('[data-mode]'); if (m) { need = +m.dataset.mode; packs = packs.slice(0, need); renderTray(); return; }
+      if (e.target.closest('[data-add]') && packs.length < need) { packs.push(FLAVORS[center].id); fresh = packs.length - 1; renderTray(); return; }
+      var x = e.target.closest('[data-x]'); if (x) { packs.splice(+x.dataset.x, 1); renderTray(); }
+    });
+    renderTray();
+    requestAnimationFrame(paintCenter);
+    window.addEventListener('resize', paintCenter);
+  })();
+
+  // ---------- 4. Counter list ----------
+  (function () {
+    var root = document.querySelector('[data-builder="list"]');
+    var need = 2, counts = {};
+    function total() { var t = 0; for (var k in counts) t += counts[k]; return t; }
+    function render() {
+      var t = total();
+      var order = []; FLAVORS.forEach(function (f) { for (var i = 0; i < (counts[f.id] || 0); i++) order.push(f.id); });
+      var C = 2 * Math.PI * 38, segLen = C / need;
+      var arcs = order.map(function (id, i) {
+        return '<circle class="seg' + (i + 1) + '" cx="44" cy="44" r="38" stroke="' + byId[id].c + '" stroke-dasharray="' + (segLen - 3) + ' ' + C + '" stroke-dashoffset="' + (-i * segLen) + '"></circle>';
+      }).join('');
+      var msg = t === need ? 'Your box is full' : (t === 0 ? 'Add ' + need + ' six-pack' + (need > 1 ? 's' : '') : 'Add 1 more six-pack');
+      var sub = t === need ? 'Swap with − and +' : (need === 2 ? 'Two of the same is fine' : 'Pick one flavor to try');
+      root.innerHTML = modeHtml(need) +
+        '<div class="meter"><div class="ring"><svg viewBox="0 0 88 88" aria-hidden="true"><circle class="bg" cx="44" cy="44" r="38"></circle>' + arcs + '</svg><div class="ring__txt"><b>' + t * 6 + '</b><small>of ' + need * 6 + '</small></div></div>' +
+        '<div class="meter__msg">' + msg + '<small>' + sub + '</small></div></div>' +
+        '<div class="flist">' + FLAVORS.map(function (f) {
+          var n = counts[f.id] || 0;
+          return '<div class="srow' + (n ? ' has' : '') + '"><span class="frow__img" style="--bg:' + f.bg + '">' + canImg(f) + '</span><div><div class="frow__name">' + f.name + '</div><div class="frow__note">' + f.note + '</div></div>' +
+            '<div class="stepper"><button type="button" data-dec="' + f.id + '" aria-label="Remove a six-pack of ' + f.name + '"' + (n ? '' : ' disabled') + '>−</button>' +
+            '<output aria-live="polite">' + n * 6 + '<small>cans</small></output>' +
+            '<button type="button" class="plus" data-inc="' + f.id + '" aria-label="Add a six-pack of ' + f.name + '"' + (t >= need ? ' disabled' : '') + '>+</button></div></div>';
+        }).join('') + '</div>' + summaryHtml(order, need);
+    }
+    root.addEventListener('click', function (e) {
+      var m = e.target.closest('[data-mode]'); if (m) { need = +m.dataset.mode; if (total() > need) counts = {}; render(); return; }
+      var inc = e.target.closest('[data-inc]'); if (inc && total() < need) { counts[inc.dataset.inc] = (counts[inc.dataset.inc] || 0) + 1; render(); return; }
+      var dec = e.target.closest('[data-dec]'); if (dec && counts[dec.dataset.dec]) { counts[dec.dataset.dec]--; render(); }
+    });
+    render();
+  })();
+
+  // Tabs (phones); desktop shows all four.
+  var tabs = document.querySelectorAll('[data-tab]');
+  function show(n) {
+    tabs.forEach(function (t) { t.setAttribute('aria-selected', t.dataset.tab === n); });
+    document.querySelectorAll('[data-concept]').forEach(function (c) { c.hidden = c.dataset.concept !== n; });
+    var track = document.querySelector('.shelf__track');
+    if (n === '3' && track) setTimeout(function () { track.dispatchEvent(new Event('scroll')); }, 0);
+    window.scrollTo(0, 0);
+  }
+  tabs.forEach(function (t) { t.addEventListener('click', function () { show(t.dataset.tab); }); });
+})();
+</script>
+</body>
+</html>
