@@ -153,6 +153,7 @@
     "rewards": {{ s.rewards | default: '' | json }},
     "offerStyle": {{ s.offer_style | json }},
     "packerStyle": {{ s.packer_style | json }},
+    "defaultOffer": {{ s.default_offer | default: 'trial' | json }},
     "labels": { "toFlavors": {{ s.button_label | json }}, "toCustomize": {{ s.flavors_button | default: 'Continue' | json }} },
     "mixFallback": {{ s.mix_fallback | json }},
     "flavorStyle": ""
@@ -178,6 +179,11 @@
     { "type": "text", "id": "heading", "label": "Heading", "default": "Get TIPSY" },
     { "type": "text", "id": "button_label", "label": "Button", "info": "Opens the flavor step with the chosen quantity. Also the button label on the quantity step.", "default": "Choose flavors" },
     { "type": "text", "id": "assurance", "label": "Guarantee line", "default": "100-day money-back guarantee, even on opened cans. Most orders ship the same day." },
+    { "type": "select", "id": "default_offer", "label": "Selected to start", "options": [
+      { "value": "trial", "label": "6-pack trial" },
+      { "value": "autoship", "label": "12-pack auto ship" },
+      { "value": "onetime", "label": "12-pack one time" }
+    ], "default": "trial" },
     { "type": "select", "id": "offer_style", "label": "Offer layout", "options": [
       { "value": "", "label": "Spotlight" },
       { "value": "ticket", "label": "Ticket" },

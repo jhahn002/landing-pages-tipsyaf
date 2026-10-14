@@ -1,0 +1,325 @@
+{
+  "sections": {
+    "hero": {
+      "type": "tpm-hero",
+      "settings": {
+        "image_mobile": "shopify://shop_images/weavy-Gemini_2.5_Flash_Nano_Banana_-2025-10-13_at_13.42.14.jpg",
+        "image_desktop": "shopify://shop_images/weavy-Gemini_2.5_Flash_Nano_Banana_-2025-10-02_at_09.38.40.jpg",
+        "title_1": "Your 5pm glass.",
+        "title_2": "Minus the wine.",
+        "lede": "The end-of-day unwind, poured from a can. A zero proof cocktail you can feel in 10–15 minutes, done in about an hour.",
+        "pill_title": "Try 6 cans",
+        "pill_sub": "$29.94 trial",
+        "terms": "Then 12 cans every month for $49.80 + $2.99 shipping."
+      }
+    },
+    "ritual": {
+      "type": "tpm-steps",
+      "settings": {
+        "image": "shopify://shop_images/TIPSY_wide.jpg",
+        "heading": "Keep the ritual. Change the pour.",
+        "text": "Same time, same glass, same couch. Just no wine in it.",
+        "button_label": "Try it tonight"
+      },
+      "blocks": {
+        "ritual_1": {
+          "type": "step",
+          "settings": {
+            "title": "Pour it like a drink",
+            "text": "Over ice, into your wine glass. It's a Blood Orange Margarita or a Pineapple Martini, so it looks and tastes like one."
+          }
+        },
+        "ritual_2": {
+          "type": "step",
+          "settings": {
+            "title": "Feel it in 10–15 minutes",
+            "text": "For most people the first-drink ease shows up around the 10 minute mark."
+          }
+        },
+        "ritual_3": {
+          "type": "step",
+          "settings": {
+            "title": "Done in about an hour",
+            "text": "One can is one serving. Want more of the evening? Have another."
+          }
+        }
+      },
+      "block_order": [
+        "ritual_1",
+        "ritual_2",
+        "ritual_3"
+      ]
+    },
+    "feel": {
+      "type": "tpm-feel",
+      "settings": {
+        "heading": "How the hour feels",
+        "note": "One can, start to finish. Have another to keep it going."
+      }
+    },
+    "compare": {
+      "type": "tpm-compare",
+      "settings": {
+        "heading_start": "What's in",
+        "heading_highlight": "your glass",
+        "heading_end": "tonight",
+        "text": "Your options at 5pm, side by side.",
+        "us_label": "TIPSY AF",
+        "col_1": "Glass of wine",
+        "col_2": "NA wine",
+        "col_3": "",
+        "col_4": "",
+        "col_5": "",
+        "button_label": "Ready for 5pm",
+        "note": "Compared by category. Individual wines and non-alcoholic brands vary."
+      },
+      "blocks": {
+        "compare_1": {
+          "type": "row",
+          "settings": {
+            "label": "A feeling you notice",
+            "us": "yes",
+            "col_1": "yes",
+            "col_2": "no"
+          }
+        },
+        "compare_2": {
+          "type": "row",
+          "settings": {
+            "label": "Zero alcohol",
+            "us": "yes",
+            "col_1": "no",
+            "col_2": "varies"
+          }
+        },
+        "compare_3": {
+          "type": "row",
+          "settings": {
+            "label": "No hangover",
+            "us": "yes",
+            "col_1": "varies",
+            "col_2": "yes"
+          }
+        },
+        "compare_4": {
+          "type": "row",
+          "settings": {
+            "label": "Tastes like a cocktail",
+            "us": "yes",
+            "col_1": "no",
+            "col_2": "no"
+          }
+        },
+        "compare_5": {
+          "type": "row",
+          "settings": {
+            "label": "Under 40 calories",
+            "us": "yes",
+            "col_1": "no",
+            "col_2": "varies"
+          }
+        }
+      },
+      "block_order": [
+        "compare_1",
+        "compare_2",
+        "compare_3",
+        "compare_4",
+        "compare_5"
+      ]
+    },
+    "proof": {
+      "type": "tpm-proof",
+      "settings": {
+        "heading": "In their own words",
+        "text": "From people who tried TIPSY AF.",
+        "button_label": "Join them",
+        "image_a": "shopify://shop_images/tipsy_at_home.jpg",
+        "image_b": "shopify://shop_images/tipsy_maragritas.png"
+      },
+      "blocks": {
+        "proof_1": {
+          "type": "quote",
+          "settings": {
+            "quote": "10 minutes later I felt it and I was so relaxed.",
+            "name": "Dominic H.",
+            "style": "yellow"
+          }
+        },
+        "proof_2": {
+          "type": "quote",
+          "settings": {
+            "quote": "I was skeptical, but I loved it! Nice little buzz, but doesn't make me crave alcohol.",
+            "name": "Carolyn L.",
+            "style": "plain"
+          }
+        },
+        "proof_3": {
+          "type": "quote",
+          "settings": {
+            "quote": "Feels like I am two cocktails deep without any alcohol.",
+            "name": "Jack M.",
+            "style": "dark"
+          }
+        },
+        "proof_4": {
+          "type": "quote",
+          "settings": {
+            "quote": "When I found these it made alcohol a thing of the past… for good!",
+            "name": "Shelli M.",
+            "style": "plain"
+          }
+        }
+      },
+      "block_order": [
+        "proof_1",
+        "proof_2",
+        "proof_3",
+        "proof_4"
+      ]
+    },
+    "lineup": {
+      "type": "tpm-lineup",
+      "settings": {
+        "heading": "Two cocktails. Zero proof."
+      },
+      "blocks": {
+        "lineup_1": {
+          "type": "item",
+          "settings": {
+            "flavor": "bo",
+            "chip": "Fan favorite",
+            "title": "Blood Orange Margarita",
+            "desc": "Bright citrus, salted edge · 30 cal",
+            "price": "From $29.94"
+          }
+        },
+        "lineup_2": {
+          "type": "item",
+          "settings": {
+            "flavor": "pm",
+            "chip": "New",
+            "title": "Pineapple Martini",
+            "desc": "Pineapple, dry martini finish · 35 cal",
+            "price": "From $29.94"
+          }
+        },
+        "lineup_3": {
+          "type": "item",
+          "settings": {
+            "flavor": "mix",
+            "chip": "Can't decide",
+            "title": "The Mix",
+            "desc": "Half and half, same price",
+            "price": "From $49.80"
+          }
+        }
+      },
+      "block_order": [
+        "lineup_1",
+        "lineup_2",
+        "lineup_3"
+      ]
+    },
+    "buy": {
+      "type": "tpm-buy",
+      "settings": {
+        "heading": "Start with 6",
+        "default_offer": "trial",
+        "bo_trial_product": "6-pack-trial",
+        "bo_autoship_product": "12-pack-auto-ship-save",
+        "bo_onetime_product": "12-pack-one-time-order",
+        "pm_trial_product": "6-pack-pineapple-martini-starter-kit",
+        "pm_autoship_product": "12-pack-pineapple-martini-auto-ship-save",
+        "pm_onetime_product": "12-pack-pineapple-martini",
+        "sticky_text": "Your 5pm glass · <strong>$29.94</strong> to try"
+      }
+    },
+    "promise": {
+      "type": "tpm-promise",
+      "settings": {
+        "heading": "Not for you? It's on us.",
+        "text": "<p>Try it with our 100-day money-back guarantee, even on opened cans. Most orders ship the same day.</p>",
+        "link_label": "Read the guarantee",
+        "link_url": "/pages/returns-refunds-policy"
+      }
+    },
+    "faq": {
+      "type": "tpm-faq",
+      "settings": {
+        "heading": "Questions"
+      },
+      "blocks": {
+        "faq_1": {
+          "type": "question",
+          "settings": {
+            "question": "Does it taste like wine?",
+            "answer": "<p>No. It's a cocktail: Blood Orange Margarita (30 calories) or Pineapple Martini (35 calories). If a wine glass is part of your ritual, it pours nicely over ice in one.</p>"
+          }
+        },
+        "faq_2": {
+          "type": "question",
+          "settings": {
+            "question": "Will I actually feel it?",
+            "answer": "<p>Most people feel it around the 10–15 minute mark, and everyone feels it a little differently. Start with one can and give it time before having another. It comes with our <a href=\"/pages/returns-refunds-policy\">100-day money-back guarantee</a>.</p>"
+          }
+        },
+        "faq_3": {
+          "type": "question",
+          "settings": {
+            "question": "How many should I drink?",
+            "answer": "<p>One can is one serving. Start with one, give it 10–15 minutes, and have another if you want to turn it up. Each can lasts about an hour.</p>"
+          }
+        },
+        "faq_4": {
+          "type": "question",
+          "settings": {
+            "question": "Can I drive after drinking it?",
+            "answer": "<p>We don't recommend it. Your blood alcohol will be zero, but you can still be considered under the influence. Once the feeling has passed, you can drive.</p>"
+          }
+        },
+        "faq_5": {
+          "type": "question",
+          "settings": {
+            "question": "How does the trial work?",
+            "answer": "<p>You get 6 cans for $29.94. We remind you on day 25. On day 28 it renews as a 12-pack at $49.80/mo plus $2.99 shipping. See our <a href=\"/pages/returns-refunds-policy\">policy</a> for cancellation and refund terms.</p>"
+          }
+        },
+        "faq_6": {
+          "type": "question",
+          "settings": {
+            "question": "What's in each can?",
+            "answer": "<p><strong>Blood Orange Margarita</strong> (30 calories, 8g sugar): Filtered Water, Organic Cane Sugar, Orange Juice Concentrate, Natural Flavors, Botanical Extracts, Key Lime Juice Concentrate, Citric Acid, Proprietary Mushroom Blend (Chaga, Maitake, Shiitake, Reishi, Turkey Tail), L-Theanine, GABA, Theobromine, Stevia Extract (Reb M).</p><p><strong>Pineapple Martini</strong> (35 calories, 9g sugar): Carbonated Water, Sugar, Pineapple Juice Concentrate, Natural Flavors, Botanical Extracts, Citric Acid, Proprietary Mushroom Blend (Chaga, Maitake, Shiitake, Reishi, Turkey Tail), Beta Carotene (Color), L-Theanine, GABA, Theobromine, Stevia Leaf Extract.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "faq_1",
+        "faq_2",
+        "faq_3",
+        "faq_4",
+        "faq_5",
+        "faq_6"
+      ]
+    },
+    "statement": {
+      "type": "tpm-statement",
+      "settings": {
+        "text": "Same 5pm. New pour.",
+        "button_label": "Try 6 cans for $29.94"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "ritual",
+    "feel",
+    "compare",
+    "proof",
+    "lineup",
+    "buy",
+    "promise",
+    "faq",
+    "statement"
+  ]
+}

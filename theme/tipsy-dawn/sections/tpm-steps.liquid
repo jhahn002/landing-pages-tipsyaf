@@ -1,0 +1,50 @@
+{{ 'tpm-v3.css' | asset_url | stylesheet_tag }}
+{%- assign s = section.settings -%}
+<div class="tpm">
+  <section class="tpm-sec tpm-steps" aria-labelledby="tpm-steps-title-{{ section.id }}">
+    <div class="tpm-wrap tpm-steps__inner">
+      {%- if s.image != blank -%}
+        <div class="tpm-steps__media">
+          {{ s.image | image_url: width: 900 | image_tag: widths: '450, 900, 1300', sizes: '(min-width: 900px) 45vw, 100vw', loading: 'lazy' }}
+        </div>
+      {%- endif -%}
+      <div class="tpm-steps__copy">
+        <h2 class="tpm-h2" id="tpm-steps-title-{{ section.id }}">{{ s.heading | escape }}</h2>
+        {%- if s.text != blank -%}<p class="tpm-steps__lede">{{ s.text | escape }}</p>{%- endif -%}
+        <ol class="tpm-how">
+          {%- for block in section.blocks -%}
+            <li {{ block.shopify_attributes }}><span class="tpm-how__n">{{ forloop.index }}</span><div><h3>{{ block.settings.title | escape }}</h3><p>{{ block.settings.text | escape }}</p></div></li>
+          {%- endfor -%}
+        </ol>
+        {%- if s.button_label != blank -%}
+          <button type="button" class="tpm-knobbtn" data-tpm-start><span>{{ s.button_label | escape }}</span>{% render 'tpm-knob', tone: 'light' %}</button>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TIPSY steps",
+  "tag": "div",
+  "class": "section-tpm",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Keep the ritual. Change the pour." },
+    { "type": "textarea", "id": "text", "label": "Text" },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "button_label", "label": "Button", "info": "Opens the checkout flow. Leave empty to hide." }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Pour it the way you like" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Over ice, into your favorite glass." }
+      ]
+    }
+  ],
+  "presets": [{ "name": "TIPSY steps", "blocks": [{ "type": "step" }] }]
+}
+{% endschema %}

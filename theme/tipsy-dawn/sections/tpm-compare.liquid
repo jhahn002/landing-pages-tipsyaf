@@ -2,13 +2,19 @@
 {%- liquid
   assign s = section.settings
   assign cols = 'col_1,col_2,col_3,col_4,col_5' | split: ','
+  assign col_count = 0
+  for c in cols
+    if s[c] != blank
+      assign col_count = col_count | plus: 1
+    endif
+  endfor
 -%}
 <div class="tpm">
   <section class="tpm-sec tpm-compare" aria-labelledby="tpm-compare-title-{{ section.id }}" data-tpm-animate>
     <div class="tpm-wrap tpm-wrap--narrow">
       <h2 class="tpm-cond tpm-center" id="tpm-compare-title-{{ section.id }}">{{ s.heading_start | escape }} <span class="tpm-hl">{{ s.heading_highlight | escape }}</span> {{ s.heading_end | escape }}</h2>
       {%- if s.text != blank -%}<p class="tpm-compare__sub">{{ s.text | escape }}</p>{%- endif -%}
-      <div class="tpm-ct">
+      <div class="tpm-ct{% if col_count <= 2 %} tpm-ct--fit{% endif %}" style="--n: {{ col_count }}">
         <div class="tpm-ct__scroll" data-tpm-ct tabindex="0" role="table" aria-label="{{ s.us_label | escape }} compared with other ways to unwind. Scroll sideways for more.">
           <div class="tpm-ct__row tpm-ct__row--head" role="row">
             <span role="columnheader" class="tpm-ct__label"><span class="tpm-visually-hidden">Benefit</span></span>
@@ -27,7 +33,7 @@
             </div>
           {%- endfor -%}
         </div>
-        <p class="tpm-ct__hint" data-tpm-ct-hint aria-hidden="true">Swipe to compare <svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></p>
+        {%- if col_count > 2 -%}<p class="tpm-ct__hint" data-tpm-ct-hint aria-hidden="true">Swipe to compare <svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></p>{%- endif -%}
       </div>
       <div class="tpm-center">
         {%- if s.button_label != blank -%}

@@ -1,0 +1,30 @@
+{{ 'tpm-v3.css' | asset_url | stylesheet_tag }}
+{%- assign s = section.settings -%}
+<div class="tpm">
+  <section class="tpm-sec tpm-promise" aria-labelledby="tpm-promise-title-{{ section.id }}">
+    <div class="tpm-wrap tpm-wrap--narrow">
+      <div class="tpm-promise__card">
+        <h2 class="tpm-promise__title" id="tpm-promise-title-{{ section.id }}">{{ s.heading | escape }}</h2>
+        {%- if s.text != blank -%}<div class="tpm-promise__text">{{ s.text }}</div>{%- endif -%}
+        {%- if s.link_label != blank and s.link_url != blank -%}
+          <a class="tpm-promise__link" href="{{ s.link_url }}">{{ s.link_label | escape }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TIPSY guarantee",
+  "tag": "div",
+  "class": "section-tpm",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Not for you? It's on us." },
+    { "type": "richtext", "id": "text", "label": "Text", "info": "Keep this in line with the Returns & Refunds policy.", "default": "<p>Try it with our 100-day money-back guarantee, even on opened cans.</p>" },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "Read the guarantee" },
+    { "type": "url", "id": "link_url", "label": "Link" }
+  ],
+  "presets": [{ "name": "TIPSY guarantee" }]
+}
+{% endschema %}

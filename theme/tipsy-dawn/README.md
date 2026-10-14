@@ -53,6 +53,8 @@ Shared styles and script: `assets/tpm-v3.css`, `assets/tpm-v3.js` (ported from `
 | **TIPSY buy box** | Products for each flavor × plan, labels, checkout flow, quiz, sticky bar |
 | TIPSY FAQ | Questions and answers |
 | TIPSY statement band | Text, button |
+| TIPSY steps | Heading, text, image, numbered steps, optional button |
+| TIPSY guarantee | Heading, text, policy link |
 
 **Checkout flow:** three steps in a full-screen modal. **1. Choose your quantity** (the 6-pack
 trial or a 12-pack, the same choice the buy box shows) → **2. Choose your flavors**, a dark step where

@@ -58,6 +58,8 @@
     if (!allowMixed) state.packs = state.packs.map(function () { return state.packs[0] || last; });
     state.seq = Math.min(state.seq, n - 1);
   }
+  if (DATA.defaultOffer && DATA.defaultOffer !== state.offer) setOffer(DATA.defaultOffer);
+
   function packFlavor() {
     var f = state.packs.filter(Boolean);
     if (!f.length) return PACK_FLAVORS[0];
