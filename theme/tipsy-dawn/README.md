@@ -47,11 +47,16 @@ Pull first if anyone has edited the theme in the editor (`config/settings_data.j
 ## Migration plan
 
 1. **Base** — fresh Dawn + font library. ✅
-2. **Control product page** ✅ — `templates/product.control.json`. Moves the live home page (`templates/index.json` on the live theme:
-   `703a-hero-banner`, `703-hero-banner-mobile`, `704-features`, `705-scroll-bar`,
-   `706-product-imagery`, `pm-offer-selector`, `707-two-column-images`, `708-experience-v2`,
-   `709-founders`, `710-ugc`, `pm-flavour-drop`) into a product template, looking the same as it
-   does today, so new versions can be tested against it.
+2. **Control product page** ✅ — `templates/product.control.json`: the live home page ("The Mood
+   Boosting Stress Melting Zero Proof Cocktail") as a product template, so new versions can be
+   tested against it. It has the live home page's enabled sections (`703-hero-banner-mobile`,
+   `704-features`, `705-scroll-bar`, `706-product-imagery`, `707-two-column-images`,
+   `708-experience-v2`, `709-founders`, `pm-flavour-drop`) and its own layout
+   (`layout/control.liquid`) with the live header/footer (`sections/control-header-group.json`,
+   `sections/control-footer-group.json`) and the old font override (`snippets/legacy-fonts.liquid`),
+   so none of that leaks into the rest of the theme. Preview on any product with `?view=control`,
+   or assign the template to a product. Full-page screenshots match the live home page to within
+   0.2% of pixels.
 3. **Home page** — rebuild the v3 landing page (`tipsy-af-v3`,
    https://jhahn002.github.io/landing-pages-tipsyaf/tipsy-af-v3/preview/index.html) as editable sections.
 4. **Product page variants** on Dawn's `main-product`.
@@ -71,5 +76,5 @@ Pull first if anyone has edited the theme in the editor (`config/settings_data.j
 - [ ] Check **Settings → Customer events** in the Shopify admin. Pixels installed there are
       store-wide and keep working with any theme.
 
-App embeds are switched on per theme (**Theme settings → App embeds**), so each one has to be
-turned on in this theme before it goes live.
+App embeds are switched on per theme (**Theme settings → App embeds**). The six above are on in
+this theme; any app added to the live theme later has to be switched on here too.
