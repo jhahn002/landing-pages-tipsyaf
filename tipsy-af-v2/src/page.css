@@ -1,0 +1,247 @@
+/* TIPSY AF landing page, v2 (calm, product-first system). Scoped to .tpm. */
+
+.tpm {
+  --tpm-ink: #222124;
+  --tpm-muted: #6b6a6e;
+  --tpm-paper: #ffffff;
+  --tpm-panel: #f4f3f1;
+  --tpm-line: #e4e2df;
+  --tpm-accent: #ffe748;
+  --tpm-accent-ink: #222124;
+  --tpm-error: #b42318;
+  --tpm-radius: 20px;
+  --tpm-radius-sm: 12px;
+  --tpm-font: 'Figtree', 'TPM Sofia', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --tpm-font-display: 'TPM Condensed', 'League Gothic', Impact, sans-serif;
+
+  color: var(--tpm-ink);
+  background: var(--tpm-paper);
+  font-family: var(--tpm-font);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+}
+.tpm *, .tpm *::before, .tpm *::after { box-sizing: border-box; }
+.tpm img { display: block; max-width: 100%; height: auto; }
+/* Resets use :where() so they carry no specificity and never beat component rules. */
+.tpm :where(h1, h2, h3, p, ul, ol, figure, blockquote, fieldset) { margin: 0; padding: 0; }
+.tpm :where(ul, ol) { list-style: none; }
+.tpm :where(a) { color: inherit; }
+.tpm :where(fieldset) { border: 0; }
+.tpm :focus-visible { outline: 3px solid var(--tpm-ink); outline-offset: 3px; border-radius: 8px; }
+.tpm-visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.tpm-wrap { width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 16px; }
+.tpm-wrap--narrow { max-width: 720px; }
+.tpm-sec { padding: 56px 0; }
+.tpm-sec--tight { padding: 24px 0; }
+.tpm-center { text-align: center; }
+
+.tpm-h2 {
+  font-weight: 500; font-size: clamp(30px, 7.6vw, 52px); line-height: 1.08;
+  letter-spacing: -0.03em; margin-bottom: 12px; text-wrap: balance;
+}
+.tpm-sub { font-size: 18px; color: var(--tpm-muted); margin-bottom: 24px; max-width: 36em; }
+.tpm h3 { font-weight: 600; font-size: 19px; line-height: 1.25; letter-spacing: -0.02em; }
+
+/* Buttons: pills. Dark is the default action, accent is for dark backgrounds. */
+.tpm-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 52px; padding: 12px 28px; border-radius: 999px; border: 1.5px solid transparent;
+  font: inherit; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; text-decoration: none;
+  cursor: pointer; transition: background-color .15s ease, transform .15s ease;
+}
+.tpm-btn:active { transform: scale(.98); }
+.tpm-btn--dark { background: var(--tpm-ink); color: var(--tpm-paper); }
+.tpm-btn--dark:hover { background: #3a393d; }
+.tpm-btn--accent { background: var(--tpm-accent); color: var(--tpm-accent-ink); }
+.tpm-btn--accent:hover { background: #fff07a; }
+.tpm-btn--outline { background: transparent; color: var(--tpm-ink); border-color: var(--tpm-ink); }
+.tpm-btn--outline:hover { background: var(--tpm-paper); }
+.tpm-btn--sm { min-height: 44px; padding: 8px 20px; font-size: 15px; }
+.tpm-btn--block { width: 100%; }
+.tpm-btn[disabled] { opacity: .6; cursor: progress; }
+
+.tpm-chip-label {
+  display: inline-block; background: var(--tpm-paper); color: var(--tpm-ink);
+  border-radius: 6px; padding: 3px 8px; font-size: 13px; font-weight: 500; line-height: 1.3;
+}
+
+/* Hero: one rounded media card, copy on the image */
+.tpm-hero { position: relative; margin: 12px 16px 0; border-radius: var(--tpm-radius); overflow: hidden; background: #131826; color: #fff; display: flex; flex-direction: column; }
+.tpm-hero__media { position: relative; height: 210px; }
+.tpm-hero__media img { width: 100%; height: 100% !important; object-fit: cover; object-position: 48% 70%; }
+.tpm-hero__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(19,24,38,0) 55%, #131826 100%); }
+.tpm-hero__content { position: relative; padding: 4px 20px 24px; display: grid; gap: 14px; justify-items: start; max-width: 620px; }
+.tpm-hero__title { font-weight: 500; font-size: clamp(36px, 10vw, 72px); line-height: 1.02; letter-spacing: -0.035em; text-wrap: balance; }
+.tpm-hero__lede { font-size: 17px; line-height: 1.45; color: rgba(255,255,255,.88); }
+.tpm-hero__terms { font-size: 13px; color: rgba(255,255,255,.72); margin-top: -4px; }
+
+/* Trust row */
+.tpm-trust { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--tpm-line); margin: 16px; border-radius: var(--tpm-radius-sm); overflow: hidden; }
+.tpm-trust li { background: var(--tpm-panel); padding: 14px 16px; display: grid; gap: 2px; }
+.tpm-trust strong { font-weight: 600; font-size: 18px; letter-spacing: -0.02em; }
+.tpm-trust span { font-size: 13px; color: var(--tpm-muted); line-height: 1.3; }
+
+/* Product cards */
+.tpm-products { display: grid; gap: 12px; margin-top: 8px; }
+.tpm-product { min-width: 0; position: relative; background: var(--tpm-panel); border-radius: var(--tpm-radius); padding: 14px 18px 20px; display: flex; flex-direction: column; gap: 6px; }
+.tpm-product .tpm-chip-label { align-self: flex-start; }
+.tpm-product__img { height: 240px; overflow: hidden; display: flex; align-items: center; justify-content: center; margin: 4px 0 10px; }
+.tpm-product__img img { height: 100%; width: auto; object-fit: contain; mix-blend-mode: multiply; }
+/* The square Pineapple shot has extra white around the can and an off-white
+   background: zoom it to match the portrait Blood Orange shot and lift the whites. */
+.tpm img[src*="Front_1x1_Pineapple_Martini"] { filter: brightness(1.04) contrast(1.04); }
+.tpm-product__img img[src*="Front_1x1_Pineapple_Martini"] { height: 112%; margin: -6% 0; }
+.tpm-product__img--pair img { height: 100%; max-width: none; }
+.tpm-product__img--pair img[src*="Front_1x1_Pineapple_Martini"] { height: 112%; margin: -6% 0 -6% -28%; }
+.tpm-product__price { font-weight: 600; }
+.tpm-product__desc { font-size: 15px; color: var(--tpm-muted); }
+.tpm-product__actions { display: flex; gap: 8px; margin-top: auto; padding-top: 12px; flex-wrap: wrap; }
+
+/* Panels */
+.tpm-panel { background: var(--tpm-panel); border-radius: var(--tpm-radius); padding: 28px 22px; }
+.tpm-science { display: grid; gap: 8px; }
+.tpm-checks { display: grid; gap: 18px; }
+.tpm-checks li { position: relative; padding-left: 30px; display: grid; gap: 2px; }
+.tpm-checks li::before { content: "✓"; position: absolute; left: 0; top: 0; font-weight: 600; }
+.tpm-checks strong { font-weight: 600; font-size: 18px; letter-spacing: -0.02em; }
+.tpm-checks span { color: var(--tpm-muted); font-size: 15px; }
+
+/* Experience curve */
+.tpm-curve { background: var(--tpm-panel); border-radius: var(--tpm-radius); padding: 20px 16px 14px; margin-bottom: 28px; color: var(--tpm-ink); }
+.tpm-curve svg { width: 100%; height: auto; max-height: 300px; display: block; }
+.tpm-curve figcaption { font-size: 13px; color: var(--tpm-muted); margin-top: 6px; }
+.tpm-steps { display: grid; gap: 22px; }
+.tpm-steps li { display: grid; gap: 6px; }
+.tpm-steps__n { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--tpm-ink); display: grid; place-items: center; font-size: 14px; font-weight: 600; }
+.tpm-steps p { color: var(--tpm-muted); }
+
+/* Moments */
+.tpm-moments { display: grid; grid-auto-flow: column; grid-auto-columns: 82%; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; margin: 8px -16px 0; padding-left: 16px; padding-right: 16px; scrollbar-width: none; }
+.tpm-moments::-webkit-scrollbar { display: none; }
+.tpm-moment { position: relative; border-radius: var(--tpm-radius); overflow: hidden; aspect-ratio: 4 / 5; scroll-snap-align: start; background: #1b1a1d; color: #fff; }
+.tpm-moment img { position: absolute; inset: 0; width: 100%; height: 100% !important; object-fit: cover; }
+.tpm-moment::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,.65) 100%); }
+.tpm-moment .tpm-chip-label { position: absolute; top: 12px; left: 12px; z-index: 1; }
+.tpm-moment h3 { position: absolute; left: 16px; right: 16px; bottom: 16px; z-index: 1; font-weight: 500; font-size: 22px; }
+
+/* Compare */
+.tpm-compare { display: grid; gap: 12px; margin-top: 12px; }
+.tpm-compare__col { border: 1px solid var(--tpm-line); border-radius: var(--tpm-radius); padding: 22px; display: grid; gap: 6px; align-content: start; }
+.tpm-compare__col p { color: var(--tpm-muted); }
+.tpm-compare__col--us { background: var(--tpm-ink); border-color: var(--tpm-ink); color: #fff; }
+.tpm-compare__col--us p { color: rgba(255,255,255,.8); }
+
+/* Founder */
+.tpm-founder img { width: 100%; max-width: 560px; border-radius: var(--tpm-radius); margin: 20px auto 18px; }
+.tpm-founder h3 { font-size: 16px; margin-bottom: 4px; }
+.tpm-founder p { color: var(--tpm-muted); }
+
+/* Reviews */
+.tpm-reviews { display: grid; grid-auto-flow: column; grid-auto-columns: 78%; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 8px -16px 0; padding: 0 16px 8px; scrollbar-width: none; }
+.tpm-reviews::-webkit-scrollbar { display: none; }
+.tpm-review { background: var(--tpm-panel); border-radius: var(--tpm-radius); padding: 22px; scroll-snap-align: start; display: flex; flex-direction: column; justify-content: space-between; gap: 18px; }
+.tpm-review blockquote { font-size: 18px; line-height: 1.4; letter-spacing: -0.015em; }
+.tpm-review figcaption { font-size: 14px; color: var(--tpm-muted); }
+
+/* Buy */
+.tpm-buy__inner { display: grid; gap: 20px; }
+.tpm-buy__media { display: none; }
+.tpm-buy__media [hidden] { display: none !important; }
+.tpm-buy__media img { mix-blend-mode: multiply; max-height: 460px; width: auto; margin: 0 auto; }
+.tpm-buy__pair { display: flex; justify-content: center; }
+.tpm-buy__pair img { max-height: 420px; width: auto; }
+.tpm-buy__pair img[src*="Front_1x1_Pineapple_Martini"] { max-height: 470px; margin: -25px 0 -25px -120px; }
+.tpm-legend { font-size: 14px; font-weight: 600; margin-bottom: 8px; padding: 0; }
+.tpm-offer fieldset { display: grid; gap: 8px; margin-bottom: 18px; }
+.tpm-flavor-pick { display: flex !important; background: var(--tpm-paper); border-radius: 999px; padding: 4px !important; gap: 4px !important; }
+.tpm-flavor-pick .tpm-legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.tpm-seg { position: relative; cursor: pointer; flex: 1 1 auto; }
+.tpm-seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.tpm-seg span { display: block; text-align: center; padding: 10px 12px; border-radius: 999px; font-size: 15px; white-space: nowrap; font-weight: 600; transition: background-color .15s ease; }
+.tpm-seg input:checked + span { background: var(--tpm-ink); color: #fff; }
+.tpm-seg input:focus-visible + span { outline: 3px solid var(--tpm-ink); outline-offset: 2px; }
+.tpm-opt { display: block; position: relative; cursor: pointer; }
+.tpm-opt input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.tpm-opt__box { display: grid; gap: 2px; padding: 14px 16px 14px 46px; border: 1.5px solid var(--tpm-line); border-radius: var(--tpm-radius-sm); background: var(--tpm-paper); position: relative; }
+.tpm-opt__box::before { content: ""; position: absolute; left: 16px; top: 17px; width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid #9a999d; }
+.tpm-opt input:checked + .tpm-opt__box { border-color: var(--tpm-ink); }
+.tpm-opt input:checked + .tpm-opt__box::before { border-color: var(--tpm-ink); background: var(--tpm-ink); box-shadow: inset 0 0 0 3px var(--tpm-paper); }
+.tpm-opt input:focus-visible + .tpm-opt__box { outline: 3px solid var(--tpm-ink); outline-offset: 2px; }
+.tpm-opt__head { display: flex; justify-content: space-between; gap: 12px; font-weight: 600; font-size: 17px; }
+.tpm-opt__price { white-space: nowrap; }
+.tpm-opt__desc { font-size: 14px; color: var(--tpm-muted); }
+.tpm-mixnote { font-size: 14px; background: var(--tpm-paper); border-radius: var(--tpm-radius-sm); padding: 10px 14px; margin: -6px 0 14px; }
+.tpm-mixnote[hidden] { display: none; }
+.tpm-timeline { display: grid; grid-template-columns: repeat(3, 1fr); margin-bottom: 16px; border-top: 1.5px solid var(--tpm-ink); }
+.tpm-timeline[hidden] { display: none; }
+.tpm-timeline li { padding: 10px 8px 0 0; display: grid; gap: 2px; align-content: start; position: relative; }
+.tpm-timeline li::before { content: ""; position: absolute; top: -6px; left: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--tpm-ink); }
+.tpm-timeline strong { font-size: 14px; font-weight: 600; }
+.tpm-timeline span { font-size: 13px; color: var(--tpm-muted); line-height: 1.3; }
+.tpm-error { color: var(--tpm-error); font-size: 14px; margin-top: 8px; }
+.tpm-error:empty { display: none; }
+.tpm-assure { margin-top: 12px; font-size: 14px; color: var(--tpm-muted); }
+
+/* FAQ */
+.tpm-faq { display: grid; gap: 12px; }
+.tpm-details { border-bottom: 1px solid var(--tpm-line); }
+.tpm-details summary { cursor: pointer; list-style: none; padding: 18px 36px 18px 0; position: relative; font-weight: 600; font-size: 18px; letter-spacing: -0.02em; }
+.tpm-details summary::-webkit-details-marker { display: none; }
+.tpm-details summary::after { content: "+"; position: absolute; right: 4px; top: 14px; font-size: 26px; font-weight: 400; line-height: 1; }
+.tpm-details[open] summary::after { content: "–"; }
+.tpm-details > p { color: var(--tpm-muted); margin-bottom: 14px; }
+
+/* Closing statement band */
+.tpm-statement { background: var(--tpm-ink); color: #fff; text-align: center; padding: 48px 12px 56px; margin-top: 40px; display: grid; justify-items: center; gap: 24px; overflow: hidden; }
+.tpm-statement p { font-family: var(--tpm-font-display); text-transform: uppercase; font-size: clamp(56px, 17vw, 200px); line-height: .88; letter-spacing: 0; }
+
+/* Sticky CTA (phones only) */
+.tpm-sticky {
+  position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 50;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 8px 8px 8px 18px; background: var(--tpm-paper); border-radius: 999px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.16);
+  transform: translateY(160%); transition: transform .2s ease;
+}
+.tpm-sticky.is-visible { transform: translateY(0); }
+.tpm-sticky[hidden] { display: none; }
+.tpm-sticky__text { font-size: 15px; }
+.tpm.has-sticky { padding-bottom: 0; }
+
+@media (min-width: 700px) {
+  .tpm-trust { grid-template-columns: repeat(4, 1fr); }
+  .tpm-products { grid-template-columns: repeat(3, 1fr); }
+  .tpm-compare { grid-template-columns: repeat(3, 1fr); }
+  .tpm-steps { grid-template-columns: repeat(4, 1fr); }
+  .tpm-moments { grid-auto-flow: row; grid-template-columns: repeat(3, 1fr); grid-auto-columns: auto; overflow: visible; margin: 8px 0 0; padding: 0; }
+  .tpm-reviews { grid-auto-flow: row; grid-template-columns: repeat(4, 1fr); grid-auto-columns: auto; overflow: visible; margin: 8px 0 0; padding: 0; }
+}
+
+@media (min-width: 900px) {
+  .tpm-wrap { padding: 0 20px; }
+  .tpm-sec { padding: 96px 0; }
+  .tpm-sec--tight { padding: 40px 0; }
+  .tpm-hero { margin: 16px 20px 0; min-height: 640px; flex-direction: row; align-items: center; }
+  .tpm-hero__media { position: absolute; top: 0; right: 0; bottom: 0; left: 38%; height: auto; }
+  .tpm-hero__media img { object-position: 46% 60%; }
+  .tpm-hero__media::after { background: linear-gradient(90deg, #131826 0%, rgba(19,24,38,0) 30%); }
+  .tpm-hero__content { padding: 56px; gap: 18px; }
+  .tpm-hero__lede { font-size: 20px; max-width: 30em; }
+  .tpm-trust { margin: 16px 20px; }
+  .tpm-product__img { height: 300px; }
+  .tpm-panel { padding: 56px; }
+  .tpm-science { grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+  .tpm-curve { padding: 32px 32px 20px; }
+  .tpm-buy__inner { grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  .tpm-buy__media { display: block; }
+  .tpm-faq { grid-template-columns: 1fr 2fr; gap: 56px; align-items: start; }
+  .tpm-sticky { display: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tpm *, .tpm-sticky { transition: none !important; }
+}
