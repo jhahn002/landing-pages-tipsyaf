@@ -1,0 +1,60 @@
+{{ 'tpm-v3.css' | asset_url | stylesheet_tag }}
+{%- assign s = section.settings -%}
+<div class="tpm">
+  <section class="tpm-sec tpm-feel" aria-labelledby="tpm-feel-title-{{ section.id }}">
+    <div class="tpm-wrap">
+      <div class="tpm-feel__card" data-tpm-animate>
+        <div class="tpm-feel__head">
+          <h2 class="tpm-h2" id="tpm-feel-title-{{ section.id }}">{{ s.heading | escape }}</h2>
+          {%- if s.note != blank -%}<p class="tpm-feel__note">{{ s.note | escape }}</p>{%- endif -%}
+        </div>
+        <figure class="tpm-chart">
+          <svg viewBox="0 0 680 300" role="img" aria-labelledby="tpm-chart-desc-{{ section.id }}">
+            <desc id="tpm-chart-desc-{{ section.id }}">Illustration of one can over about an hour: you feel it around minute 10 to 15, it peaks around minute 20, then eases off and ends around minute 60.</desc>
+            <defs>
+              <linearGradient id="tpm-chart-fill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#ffe748" stop-opacity=".85"/>
+                <stop offset="1" stop-color="#ffe748" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <g class="tpm-chart__grid">
+              <line x1="40" y1="250" x2="620" y2="250"/>
+              <line x1="233" y1="40" x2="233" y2="250"/>
+              <line x1="427" y1="40" x2="427" y2="250"/>
+              <line x1="620" y1="40" x2="620" y2="250"/>
+            </g>
+            <path class="tpm-chart__area" d="M40 248 C 90 246, 120 210, 150 160 S 210 64, 233 62 S 330 74, 380 120 S 470 168, 520 196 S 590 246, 620 248 L 620 250 L 40 250 Z"/>
+            <path class="tpm-chart__line" pathLength="1" d="M40 248 C 90 246, 120 210, 150 160 S 210 64, 233 62 S 330 74, 380 120 S 470 168, 520 196 S 590 246, 620 248"/>
+            <g class="tpm-chart__pt" style="--d:.35s"><circle cx="150" cy="160" r="7"/><text x="134" y="168" text-anchor="end">{{ s.label_1 | escape }}</text></g>
+            <g class="tpm-chart__pt" style="--d:.6s"><circle cx="233" cy="62" r="7"/><text x="233" y="34" text-anchor="middle">{{ s.label_2 | escape }}</text></g>
+            <g class="tpm-chart__pt" style="--d:.95s"><circle cx="520" cy="196" r="7"/><text x="536" y="178" text-anchor="start">{{ s.label_3 | escape }}</text></g>
+            <g class="tpm-chart__axis">
+              <text x="40" y="278">0 min</text>
+              <text x="233" y="278" text-anchor="middle">20</text>
+              <text x="427" y="278" text-anchor="middle">40</text>
+              <text x="620" y="278" text-anchor="end">60 min</text>
+            </g>
+          </svg>
+          {%- if s.caption != blank -%}<figcaption>{{ s.caption | escape }}</figcaption>{%- endif -%}
+        </figure>
+      </div>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TIPSY how it feels",
+  "tag": "div",
+  "class": "section-tpm",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "What one can feels like" },
+    { "type": "text", "id": "note", "label": "Text", "default": "One can is one serving. Have another to keep it going." },
+    { "type": "text", "id": "label_1", "label": "Chart label: start", "default": "You feel it" },
+    { "type": "text", "id": "label_2", "label": "Chart label: top", "default": "Peak" },
+    { "type": "text", "id": "label_3", "label": "Chart label: end", "default": "Easing off" },
+    { "type": "text", "id": "caption", "label": "Caption", "default": "Illustration. Everyone feels it a little differently." }
+  ],
+  "presets": [{ "name": "TIPSY how it feels" }]
+}
+{% endschema %}

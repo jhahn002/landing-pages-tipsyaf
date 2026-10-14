@@ -1,0 +1,59 @@
+{%- comment -%}
+  Prints one offer's data as JSON for the TIPSY buy section.
+  key: 'trial' | 'autoship' | 'onetime'; s: the buy section's settings (reads <flavor>_<key>_product).
+  Variant = the product's first available variant. Subscription plan = the product's first
+  selling plan (trial and autoship only). Price = the plan price, else the variant price.
+{%- endcomment -%}
+{%- liquid
+  assign price = nil
+  assign plan_id = nil
+  assign flavors = 'bo,pm,mix' | split: ','
+-%}
+{%- capture variants -%}
+  {%- for f in flavors -%}
+    {%- liquid
+      assign pkey = f | append: '_' | append: key | append: '_product'
+      assign p = s[pkey]
+      assign vid = ''
+      if p != blank
+        assign v = p.selected_or_first_available_variant
+        assign vid = v.id | append: ''
+        if price == nil and f != 'mix'
+          assign price = v.price
+          if key != 'onetime'
+            assign plan = p.selling_plan_groups.first.selling_plans.first
+            if plan
+              assign plan_id = plan.id
+              for alloc in v.selling_plan_allocations
+                if alloc.selling_plan.id == plan.id
+                  assign price = alloc.price
+                endif
+              endfor
+            endif
+          endif
+        endif
+      endif
+    -%}
+    {{- f | json }}: {{ vid | json -}}{%- unless forloop.last -%}, {% endunless -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- liquid
+  assign name_key = key | append: '_name'
+  assign sub_key = key | append: '_sub'
+  assign badge_key = key | append: '_badge'
+  assign split_key = key | append: '_split'
+  assign terms_key = key | append: '_terms'
+  if price == nil
+    assign price = 0
+  endif
+-%}
+{{ key | json }}: {
+  "name": {{ s[name_key] | json }},
+  "price": {{ price | divided_by: 100.0 }},
+  "sub": {{ s[sub_key] | json }},
+  "badge": {{ s[badge_key] | default: '' | json }},
+  "plan": {% if plan_id %}{{ plan_id }}{% else %}null{% endif %},
+  "variants": { {{ variants }} },
+  "split": {{ s[split_key] | json }},
+  "terms": {{ s[terms_key] | json }}
+}

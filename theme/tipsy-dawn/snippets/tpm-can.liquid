@@ -1,0 +1,15 @@
+{%- comment -%}
+  Can cut-out for the v3 sections. key: 'bo' or 'pm'. Optional: alt (default empty), lazy (true/false).
+{%- endcomment -%}
+{%- liquid
+  if key == 'pm'
+    assign can_file = 'tipsy-can-pineapple.webp'
+    assign can_w = 415
+    assign can_h = 1086
+  else
+    assign can_file = 'tipsy-can-blood-orange.webp'
+    assign can_w = 289
+    assign can_h = 755
+  endif
+-%}
+<img src="{{ can_file | asset_url }}" width="{{ can_w }}" height="{{ can_h }}"{% if lazy %} loading="lazy"{% endif %} alt="{{ alt | escape }}">

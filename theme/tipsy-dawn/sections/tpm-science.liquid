@@ -1,0 +1,63 @@
+{{ 'tpm-v3.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign s = section.settings
+  assign ins = s.ingredients_in | newline_to_br | split: '<br />'
+  assign outs = s.ingredients_out | newline_to_br | split: '<br />'
+  assign badges = s.badges | newline_to_br | split: '<br />'
+-%}
+<div class="tpm">
+  <section class="tpm-sec tpm-science" aria-labelledby="tpm-science-title-{{ section.id }}">
+    <div class="tpm-wrap">
+      <h2 class="tpm-cond tpm-science__title" id="tpm-science-title-{{ section.id }}">{{ s.heading | escape | newline_to_br }}</h2>
+      <div class="tpm-explode">
+        <div class="tpm-explode__can">{% render 'tpm-can', key: s.can, lazy: true, alt: 'Can of TIPSY AF' %}</div>
+        <ul class="tpm-explode__in" aria-label="What's in it">
+          {%- for i in ins -%}{%- assign t = i | strip -%}{%- if t != blank -%}<li>{{ t | escape }}</li>{%- endif -%}{%- endfor -%}
+        </ul>
+        <ul class="tpm-explode__out" aria-label="What's not in it">
+          {%- for i in outs -%}{%- assign t = i | strip -%}{%- if t != blank -%}<li>{{ t | escape }}</li>{%- endif -%}{%- endfor -%}
+        </ul>
+      </div>
+      <div class="tpm-science__copy">
+        <ol class="tpm-how">
+          {%- for block in section.blocks -%}
+            <li {{ block.shopify_attributes }}><span class="tpm-how__n">{{ forloop.index }}</span><div><h3>{{ block.settings.title | escape }}</h3><p>{{ block.settings.text | escape }}</p></div></li>
+          {%- endfor -%}
+        </ol>
+        <ul class="tpm-badges" aria-label="Proof points">
+          {%- for i in badges -%}{%- assign t = i | strip -%}{%- if t != blank -%}<li>{{ t | escape }}</li>{%- endif -%}{%- endfor -%}
+        </ul>
+        {%- if s.button_label != blank -%}
+          <button type="button" class="tpm-knobbtn" data-tpm-quiz-open><span>{{ s.button_label | escape }}</span>{% render 'tpm-knob', tone: 'light' %}</button>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TIPSY science",
+  "tag": "div",
+  "class": "section-tpm",
+  "settings": [
+    { "type": "textarea", "id": "heading", "label": "Heading", "default": "Mushroom science.\nZero grey area." },
+    { "type": "select", "id": "can", "label": "Can", "options": [{ "value": "pm", "label": "Pineapple Martini" }, { "value": "bo", "label": "Blood Orange Margarita" }], "default": "pm" },
+    { "type": "textarea", "id": "ingredients_in", "label": "What's in it", "info": "One per line.", "default": "Chaga\nMaitake\nShiitake\nReishi\nTurkey tail\nL-theanine\nGABA\nTheobromine" },
+    { "type": "textarea", "id": "ingredients_out", "label": "What's not in it", "info": "One per line. Shown struck through.", "default": "Alcohol\nKava\nKratom\nTHC\nCaffeine" },
+    { "type": "textarea", "id": "badges", "label": "Proof points", "info": "One per line.", "default": "Patent pending\nFDA-reviewed ingredients\nBrain wave studies\n$220M mushroom company team" },
+    { "type": "text", "id": "button_label", "label": "Button", "info": "Opens the quiz. Leave empty to hide.", "default": "Find my match" }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Grown to feel good" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Mushrooms cultivated to make their own feel-good actives." }
+      ]
+    }
+  ],
+  "presets": [{ "name": "TIPSY science", "blocks": [{ "type": "step" }] }]
+}
+{% endschema %}

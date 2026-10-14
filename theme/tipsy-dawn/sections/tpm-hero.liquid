@@ -1,0 +1,53 @@
+{{ 'tpm-v3.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign s = section.settings
+  assign mobile_img = s.image_mobile | default: s.image_desktop
+-%}
+<div class="tpm">
+  <section class="tpm-hero" aria-labelledby="tpm-hero-title-{{ section.id }}">
+    {%- if mobile_img != blank -%}
+      <picture class="tpm-hero__media">
+        {%- if s.image_desktop != blank -%}
+          <source media="(min-width: 900px)" srcset="{{ s.image_desktop | image_url: width: 1600 }} 1600w, {{ s.image_desktop | image_url: width: 2200 }} 2200w" sizes="100vw">
+        {%- endif -%}
+        {{ mobile_img | image_url: width: 864 | image_tag: widths: '600, 864, 1200', sizes: '100vw', fetchpriority: 'high', loading: 'eager', alt: mobile_img.alt }}
+      </picture>
+    {%- endif -%}
+    <div class="tpm-hero__content">
+      <h1 class="tpm-hero__title" id="tpm-hero-title-{{ section.id }}">
+        <span>{{ s.title_1 | escape }}</span>
+        <em>{{ s.title_2 | escape }}</em>
+      </h1>
+      {%- if s.lede != blank -%}<p class="tpm-hero__lede">{{ s.lede | escape }}</p>{%- endif -%}
+      {%- if s.pill_title != blank -%}
+        <button type="button" class="tpm-pillcard" data-tpm-start>
+          <span class="tpm-pillcard__thumb" aria-hidden="true">{% render 'tpm-cans', key: 'mix' %}</span>
+          <span class="tpm-pillcard__text"><strong>{{ s.pill_title | escape }}</strong><span>{{ s.pill_sub | escape }}</span></span>
+          {% render 'tpm-knob' %}
+        </button>
+      {%- endif -%}
+      {%- if s.terms != blank -%}<p class="tpm-hero__terms">{{ s.terms | escape }}</p>{%- endif -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TIPSY hero",
+  "tag": "div",
+  "class": "section-tpm",
+  "settings": [
+    { "type": "image_picker", "id": "image_mobile", "label": "Image (phone)", "info": "Tall image. Falls back to the desktop image." },
+    { "type": "image_picker", "id": "image_desktop", "label": "Image (desktop)", "info": "Wide image, shown from 900px." },
+    { "type": "text", "id": "title_1", "label": "Headline", "default": "Zero proof." },
+    { "type": "text", "id": "title_2", "label": "Headline, italic line", "default": "Real feeling." },
+    { "type": "textarea", "id": "lede", "label": "Text", "default": "The first-drink feeling in 10–15 minutes, from functional mushrooms. No alcohol. No hangover." },
+    { "type": "header", "content": "Product card" },
+    { "type": "paragraph", "content": "Opens the checkout flow. Leave the title empty to hide it." },
+    { "type": "text", "id": "pill_title", "label": "Title", "default": "Try 6 cans" },
+    { "type": "text", "id": "pill_sub", "label": "Subtitle", "default": "$29.94 trial" },
+    { "type": "text", "id": "terms", "label": "Terms under the card", "default": "Then 12 cans for $49.80/mo + $2.99 shipping. Cancel anytime." }
+  ],
+  "presets": [{ "name": "TIPSY hero" }]
+}
+{% endschema %}

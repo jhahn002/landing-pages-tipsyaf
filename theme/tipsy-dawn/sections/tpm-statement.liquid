@@ -1,0 +1,22 @@
+{{ 'tpm-v3.css' | asset_url | stylesheet_tag }}
+<div class="tpm">
+  <section class="tpm-statement" aria-label="TIPSY AF">
+    <p>{{ section.settings.text | escape }}</p>
+    {%- if section.settings.button_label != blank -%}
+      <button type="button" class="tpm-knobbtn tpm-knobbtn--accent" data-tpm-start><span>{{ section.settings.button_label | escape }}</span>{% render 'tpm-knob' %}</button>
+    {%- endif -%}
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TIPSY statement band",
+  "tag": "div",
+  "class": "section-tpm",
+  "settings": [
+    { "type": "text", "id": "text", "label": "Text", "default": "The first-drink feeling. Zero booze." },
+    { "type": "text", "id": "button_label", "label": "Button", "info": "Opens the checkout flow. Leave empty to hide.", "default": "Try 6 cans for $29.94" }
+  ],
+  "presets": [{ "name": "TIPSY statement band" }]
+}
+{% endschema %}

@@ -1,0 +1,263 @@
+{%- comment -%}
+  TIPSY buy box. Also holds the checkout flow, the quiz and the sticky bar that every other
+  tpm-* section's buttons open, and the product data they use. Add it once per page.
+  Products are picked in the settings: variants, subscription plans and prices come from them.
+{%- endcomment -%}
+{{ 'tpm-v3.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'tpm-v3.js' | asset_url }}" defer="defer"></script>
+{%- liquid
+  assign s = section.settings
+  assign keys = 'bo,pm' | split: ','
+-%}
+<div class="tpm">
+  <section class="tpm-sec tpm-buy" id="tpm-buy" aria-labelledby="tpm-buy-title">
+    <div class="tpm-wrap">
+      <div class="tpm-buy__inner">
+        <div class="tpm-buy__media" aria-hidden="true" data-tpm-buy-media></div>
+        <div>
+          <h2 class="tpm-h2" id="tpm-buy-title">{{ s.heading | escape }}</h2>
+          <div data-tpm-picker></div>
+          <button type="button" class="tpm-knobbtn tpm-knobbtn--accent tpm-knobbtn--block" data-tpm-start data-tpm-start-step="2"><span>{{ s.button_label | escape }}</span>{% render 'tpm-knob' %}</button>
+          {%- if s.assurance != blank -%}<p class="tpm-assure">{{ s.assurance | escape }}</p>{%- endif -%}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <dialog class="tpm-quiz" data-tpm-quiz aria-labelledby="tpm-quiz-title">
+    <form method="dialog" class="tpm-quiz__inner">
+      <div class="tpm-quiz__top">
+        <p class="tpm-quiz__step" data-tpm-quiz-step>Question 1 of 2</p>
+        <button type="submit" class="tpm-quiz__close" value="close" aria-label="Close">×</button>
+      </div>
+      <div class="tpm-quiz__panel" data-tpm-q="1">
+        <h2 class="tpm-quiz__title" id="tpm-quiz-title">{{ s.quiz_q1 | escape }}</h2>
+        <div class="tpm-quiz__choices">
+          <button type="button" class="tpm-choice" data-tpm-answer="flavor:bo">{% render 'tpm-can', key: 'bo' %}<span><strong>{{ s.quiz_bo | escape }}</strong><span>{{ s.quiz_bo_sub | escape }}</span></span></button>
+          <button type="button" class="tpm-choice" data-tpm-answer="flavor:pm">{% render 'tpm-can', key: 'pm' %}<span><strong>{{ s.quiz_pm | escape }}</strong><span>{{ s.quiz_pm_sub | escape }}</span></span></button>
+          <button type="button" class="tpm-choice" data-tpm-answer="flavor:mix" data-tpm-mix-only><span class="tpm-choice__pair">{% render 'tpm-cans', key: 'mix' %}</span><span><strong>{{ s.quiz_mix | escape }}</strong><span>{{ s.quiz_mix_sub | escape }}</span></span></button>
+        </div>
+      </div>
+      <div class="tpm-quiz__panel" data-tpm-q="2" hidden>
+        <h2 class="tpm-quiz__title">{{ s.quiz_q2 | escape }}</h2>
+        <div class="tpm-quiz__choices">
+          <button type="button" class="tpm-choice tpm-choice--text" data-tpm-answer="offer:trial"><span><strong>{{ s.quiz_trial | escape }}</strong><span>{{ s.quiz_trial_sub | escape }}</span></span></button>
+          <button type="button" class="tpm-choice tpm-choice--text" data-tpm-answer="offer:onetime"><span><strong>{{ s.quiz_onetime | escape }}</strong><span>{{ s.quiz_onetime_sub | escape }}</span></span></button>
+          <button type="button" class="tpm-choice tpm-choice--text" data-tpm-answer="offer:autoship"><span><strong>{{ s.quiz_autoship | escape }}</strong><span>{{ s.quiz_autoship_sub | escape }}</span></span></button>
+        </div>
+      </div>
+      <div class="tpm-quiz__panel tpm-quiz__result" data-tpm-q="3" hidden>
+        <h2 class="tpm-quiz__title">Your match</h2>
+        <p class="tpm-quiz__match" data-tpm-quiz-match></p>
+        <button type="button" class="tpm-knobbtn tpm-knobbtn--accent" data-tpm-quiz-apply><span>Use my match</span>{% render 'tpm-knob' %}</button>
+        <button type="button" class="tpm-quiz__restart" data-tpm-quiz-restart>Start over</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="tpm-sheet" data-tpm-checkout aria-labelledby="tpm-sheet-title">
+    <div class="tpm-sheet__inner">
+      <header class="tpm-sheet__top">
+        <button type="button" class="tpm-iconbtn" data-tpm-back aria-label="Back"><svg viewBox="0 0 24 24"><path d="M19 12H6M11 6l-6 6 6 6"/></svg></button>
+        <ol class="tpm-stepsbar" aria-label="Checkout steps">
+          <li data-tpm-stepdot="1">Flavor</li><li data-tpm-stepdot="2">Add-ons</li><li data-tpm-stepdot="3">Review</li>
+        </ol>
+        <button type="button" class="tpm-iconbtn" data-tpm-close aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </header>
+      <div class="tpm-sheet__body">
+        <section class="tpm-step" data-tpm-step="1">
+          <h2 class="tpm-sheet__title" id="tpm-sheet-title">{{ s.step1_title | escape }}</h2>
+          <div data-tpm-picker></div>
+        </section>
+        <section class="tpm-step" data-tpm-step="2" hidden>
+          <h2 class="tpm-sheet__title">{{ s.step2_title | escape }}</h2>
+          <div class="tpm-rewards" data-tpm-rewards hidden>
+            <p class="tpm-rewards__msg" data-tpm-rewards-msg></p>
+            <div class="tpm-rewards__bar"><span data-tpm-rewards-fill></span></div>
+            <ol class="tpm-rewards__marks" data-tpm-rewards-marks></ol>
+          </div>
+          <div class="tpm-addons" data-tpm-addons></div>
+        </section>
+        <section class="tpm-step" data-tpm-step="3" hidden>
+          <h2 class="tpm-sheet__title">{{ s.step3_title | escape }}</h2>
+          <ul class="tpm-review" data-tpm-review></ul>
+          <ol class="tpm-timeline" data-tpm-timeline aria-label="How the trial works">
+            <li><strong>Today</strong><span>{{ s.timeline_1 | escape }}</span></li>
+            <li><strong>Day 25</strong><span>{{ s.timeline_2 | escape }}</span></li>
+            <li><strong>Day 28</strong><span>{{ s.timeline_3 | escape }}</span></li>
+          </ol>
+          {%- if s.sheet_assurance != blank -%}<p class="tpm-sheet__assure">{{ s.sheet_assurance | escape }}</p>{%- endif -%}
+        </section>
+      </div>
+      <footer class="tpm-sheet__foot">
+        <p class="tpm-error" data-tpm-error role="alert"></p>
+        <div class="tpm-sheet__total"><span>Due today</span><strong data-tpm-total></strong></div>
+        <button type="button" class="tpm-knobbtn tpm-knobbtn--accent" data-tpm-next><span data-tpm-next-label>Continue</span>{% render 'tpm-knob' %}</button>
+      </footer>
+    </div>
+  </dialog>
+
+  <script type="application/json" data-tpm-data>
+  {
+    "flavors": {
+      {%- for f in keys -%}
+        {%- liquid
+          assign name_key = f | append: '_name'
+          assign short_key = f | append: '_short'
+          assign note_key = f | append: '_note'
+          assign img_key = f | append: '_image'
+          if s[img_key] != blank
+            assign img = s[img_key] | image_url: width: 600
+          elsif f == 'pm'
+            assign img = 'tipsy-can-pineapple.webp' | asset_url
+          else
+            assign img = 'tipsy-can-blood-orange.webp' | asset_url
+          endif
+        -%}
+      {{ f | json }}: {"name": {{ s[name_key] | json }}, "short": {{ s[short_key] | json }}, "note": {{ s[note_key] | json }}, "img": {{ img | json }}},
+      {%- endfor %}
+      "mix": {"name": {{ s.mix_name | json }}, "short": {{ s.mix_short | json }}, "note": {{ s.mix_note | json }}}
+    },
+    "offers": {
+      {% render 'tpm-offer-data', key: 'trial', s: s %},
+      {% render 'tpm-offer-data', key: 'autoship', s: s %},
+      {% render 'tpm-offer-data', key: 'onetime', s: s %}
+    },
+    "addons": [
+      {%- assign first_addon = true -%}
+      {%- for f in keys -%}
+        {%- liquid
+          assign pkey = f | append: '_onetime_product'
+          assign p = s[pkey]
+          if p == blank
+            continue
+          endif
+          assign v = p.selected_or_first_available_variant
+          if f == 'pm'
+            assign img = 'tipsy-can-pineapple.webp' | asset_url
+          else
+            assign img = 'tipsy-can-blood-orange.webp' | asset_url
+          endif
+          assign img_key = f | append: '_image'
+          if s[img_key] != blank
+            assign img = s[img_key] | image_url: width: 600
+          endif
+          assign name_key = f | append: '_name'
+          assign addon_name = s[name_key] | append: ' 12-pack'
+        -%}
+        {%- unless first_addon %},{% endunless %}
+      {"id": {{ f | append: '12' | json }}, "name": {{ addon_name | json }}, "note": {{ s.addon_note | json }}, "price": {{ v.price | divided_by: 100.0 }}, "variant": {{ v.id | append: '' | json }}, "img": {{ img | json }}}
+        {%- assign first_addon = false -%}
+      {%- endfor %}
+    ],
+    "rewards": {{ s.rewards | default: '' | json }},
+    "offerStyle": {{ s.offer_style | json }},
+    "flavorStyle": ""
+  }
+  </script>
+
+  {%- if s.sticky_text != blank -%}
+    <div class="tpm-sticky" data-tpm-sticky hidden>
+      <span class="tpm-sticky__text">{{ s.sticky_text }}</span>
+      <button type="button" class="tpm-btn tpm-btn--accent tpm-btn--sm" data-tpm-start>{{ s.sticky_button | escape }}</button>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "TIPSY buy box",
+  "tag": "div",
+  "class": "section-tpm",
+  "limit": 1,
+  "settings": [
+    { "type": "paragraph", "content": "Holds the checkout flow, quiz and sticky bar used by every TIPSY section's buttons. Use one per page." },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Get TIPSY" },
+    { "type": "text", "id": "button_label", "label": "Button", "default": "Continue" },
+    { "type": "text", "id": "assurance", "label": "Guarantee line", "default": "100-day money-back guarantee, even on opened cans. Most orders ship the same day." },
+    { "type": "select", "id": "offer_style", "label": "Offer layout", "options": [
+      { "value": "", "label": "Spotlight" },
+      { "value": "ticket", "label": "Ticket" },
+      { "value": "stamp", "label": "Stamp" },
+      { "value": "cards", "label": "Cards" }
+    ], "default": "" },
+
+    { "type": "header", "content": "Blood Orange Margarita" },
+    { "type": "text", "id": "bo_name", "label": "Name", "default": "Blood Orange Margarita" },
+    { "type": "text", "id": "bo_short", "label": "Short name", "default": "Blood Orange" },
+    { "type": "text", "id": "bo_note", "label": "Taste note", "default": "Bright citrus, salted edge" },
+    { "type": "image_picker", "id": "bo_image", "label": "Can image", "info": "Transparent cut-out. Leave empty for the built-in can." },
+    { "type": "product", "id": "bo_trial_product", "label": "6-pack trial product" },
+    { "type": "product", "id": "bo_autoship_product", "label": "12-pack auto ship product" },
+    { "type": "product", "id": "bo_onetime_product", "label": "12-pack one-time product", "info": "Also offered as an add-on." },
+
+    { "type": "header", "content": "Pineapple Martini" },
+    { "type": "text", "id": "pm_name", "label": "Name", "default": "Pineapple Martini" },
+    { "type": "text", "id": "pm_short", "label": "Short name", "default": "Pineapple" },
+    { "type": "text", "id": "pm_note", "label": "Taste note", "default": "Pineapple, dry martini finish" },
+    { "type": "image_picker", "id": "pm_image", "label": "Can image", "info": "Transparent cut-out. Leave empty for the built-in can." },
+    { "type": "product", "id": "pm_trial_product", "label": "6-pack trial product" },
+    { "type": "product", "id": "pm_autoship_product", "label": "12-pack auto ship product" },
+    { "type": "product", "id": "pm_onetime_product", "label": "12-pack one-time product", "info": "Also offered as an add-on." },
+
+    { "type": "header", "content": "The Mix" },
+    { "type": "paragraph", "content": "The Mix shows everywhere on the page only when all three Mix products are set." },
+    { "type": "text", "id": "mix_name", "label": "Name", "default": "The Mix" },
+    { "type": "text", "id": "mix_short", "label": "Short name", "default": "Mix" },
+    { "type": "text", "id": "mix_note", "label": "Taste note", "default": "Half of each flavor" },
+    { "type": "product", "id": "mix_trial_product", "label": "6-pack trial product" },
+    { "type": "product", "id": "mix_autoship_product", "label": "12-pack auto ship product" },
+    { "type": "product", "id": "mix_onetime_product", "label": "12-pack one-time product" },
+
+    { "type": "header", "content": "Plans" },
+    { "type": "paragraph", "content": "Prices and subscription plans come from the products above. These are the labels." },
+    { "type": "text", "id": "trial_name", "label": "Trial: name", "default": "6-pack trial" },
+    { "type": "text", "id": "trial_sub", "label": "Trial: subline", "default": "then $49.80/mo" },
+    { "type": "text", "id": "trial_badge", "label": "Trial: badge", "default": "Start here" },
+    { "type": "text", "id": "trial_split", "label": "Trial: Mix contents", "default": "3 Blood Orange Margarita + 3 Pineapple Martini" },
+    { "type": "textarea", "id": "trial_terms", "label": "Trial: terms", "default": "6 cans today. On day 28 it becomes 12 cans every month for $49.80 + $2.99 shipping. Reminder on day 25. Cancel anytime." },
+    { "type": "text", "id": "autoship_name", "label": "Auto ship: name", "default": "12-pack auto ship" },
+    { "type": "text", "id": "autoship_sub", "label": "Auto ship: subline", "default": "$4.15/can, monthly" },
+    { "type": "text", "id": "autoship_badge", "label": "Auto ship: badge" },
+    { "type": "text", "id": "autoship_split", "label": "Auto ship: Mix contents", "default": "6 Blood Orange Margarita + 6 Pineapple Martini" },
+    { "type": "textarea", "id": "autoship_terms", "label": "Auto ship: terms", "default": "12 cans every month for $49.80 + $2.99 shipping. 17% off one-time. Cancel anytime." },
+    { "type": "text", "id": "onetime_name", "label": "One time: name", "default": "12-pack" },
+    { "type": "text", "id": "onetime_sub", "label": "One time: subline", "default": "$5.00/can, one time" },
+    { "type": "text", "id": "onetime_badge", "label": "One time: badge" },
+    { "type": "text", "id": "onetime_split", "label": "One time: Mix contents", "default": "6 Blood Orange Margarita + 6 Pineapple Martini" },
+    { "type": "textarea", "id": "onetime_terms", "label": "One time: terms", "default": "12 cans, one time. No subscription." },
+
+    { "type": "header", "content": "Checkout flow" },
+    { "type": "text", "id": "step1_title", "label": "Step 1 title", "default": "Pick your cocktail" },
+    { "type": "text", "id": "step2_title", "label": "Step 2 title (add-ons)", "default": "Make it a round" },
+    { "type": "text", "id": "addon_note", "label": "Add-on note", "default": "One time, $5.00/can" },
+    { "type": "text", "id": "rewards", "label": "Checkout rewards", "info": "Optional. Spend thresholds shown as a progress bar in the add-ons step, e.g. 75:Free shipping|110:Free gift. Set up the matching automatic discounts first. Leave empty to hide." },
+    { "type": "text", "id": "step3_title", "label": "Step 3 title", "default": "Your order" },
+    { "type": "text", "id": "timeline_1", "label": "Trial timeline: today", "default": "6 cans ship" },
+    { "type": "text", "id": "timeline_2", "label": "Trial timeline: day 25", "default": "We remind you" },
+    { "type": "text", "id": "timeline_3", "label": "Trial timeline: day 28", "default": "12 cans, $49.80 + $2.99 shipping" },
+    { "type": "text", "id": "sheet_assurance", "label": "Guarantee line", "default": "100-day money-back guarantee, even on opened cans. Cancel subscriptions anytime." },
+
+    { "type": "header", "content": "Quiz" },
+    { "type": "text", "id": "quiz_q1", "label": "Question 1", "default": "Which sounds better?" },
+    { "type": "text", "id": "quiz_bo", "label": "Blood Orange answer", "default": "Bright citrus, a little salty" },
+    { "type": "text", "id": "quiz_bo_sub", "label": "Blood Orange answer, subline", "default": "Like a margarita" },
+    { "type": "text", "id": "quiz_pm", "label": "Pineapple answer", "default": "Fruity and dry" },
+    { "type": "text", "id": "quiz_pm_sub", "label": "Pineapple answer, subline", "default": "Like a pineapple martini" },
+    { "type": "text", "id": "quiz_mix", "label": "Mix answer", "default": "I can't decide" },
+    { "type": "text", "id": "quiz_mix_sub", "label": "Mix answer, subline", "default": "Half and half" },
+    { "type": "text", "id": "quiz_q2", "label": "Question 2", "default": "How often would you have one?" },
+    { "type": "text", "id": "quiz_trial", "label": "Trial answer", "default": "I just want to try it" },
+    { "type": "text", "id": "quiz_trial_sub", "label": "Trial answer, subline", "default": "6 cans to start" },
+    { "type": "text", "id": "quiz_onetime", "label": "One-time answer", "default": "Now and then" },
+    { "type": "text", "id": "quiz_onetime_sub", "label": "One-time answer, subline", "default": "A 12-pack, no subscription" },
+    { "type": "text", "id": "quiz_autoship", "label": "Auto ship answer", "default": "Most weeks" },
+    { "type": "text", "id": "quiz_autoship_sub", "label": "Auto ship answer, subline", "default": "12 cans every month, best price" },
+
+    { "type": "header", "content": "Sticky bar" },
+    { "type": "inline_richtext", "id": "sticky_text", "label": "Text", "info": "Shown between the hero and the buy box. Leave empty to hide the bar.", "default": "6-can trial · <strong>$29.94</strong>" },
+    { "type": "text", "id": "sticky_button", "label": "Button", "default": "Try it" }
+  ],
+  "presets": [{ "name": "TIPSY buy box" }]
+}
+{% endschema %}

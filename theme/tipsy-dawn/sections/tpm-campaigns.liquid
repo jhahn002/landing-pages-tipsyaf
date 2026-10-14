@@ -1,0 +1,52 @@
+{{ 'tpm-v3.css' | asset_url | stylesheet_tag }}
+<div class="tpm">
+  <section class="tpm-sec tpm-campaigns" aria-label="{{ section.settings.label | escape }}">
+    <div class="tpm-track" data-tpm-carousel>
+      {%- for block in section.blocks -%}
+        {%- assign b = block.settings -%}
+        <article class="tpm-camp{% if b.image == blank %} tpm-camp--split{% endif %}"{% if b.flavor == 'mix' %} data-tpm-mix-only{% endif %} {{ block.shopify_attributes }}>
+          {%- if b.image != blank -%}
+            {{ b.image | image_url: width: 900 | image_tag: class: 'tpm-camp__bg', widths: '600, 900, 1200', sizes: '(min-width: 900px) 33vw, 85vw', loading: 'lazy', alt: b.image.alt }}
+          {%- else -%}
+            <div class="tpm-camp__cans" aria-hidden="true">{% render 'tpm-cans', key: b.flavor %}</div>
+          {%- endif -%}
+          <h2 class="tpm-camp__title">{{ b.title | escape }}</h2>
+          <button type="button" class="tpm-pillcard tpm-pillcard--sm" data-tpm-pick="{{ b.flavor }}">
+            <span class="tpm-pillcard__thumb" aria-hidden="true">{% render 'tpm-cans', key: b.flavor %}</span>
+            <span class="tpm-pillcard__text"><strong>{{ b.button_label | escape }}</strong></span>
+            {% render 'tpm-knob' %}
+          </button>
+        </article>
+      {%- endfor -%}
+    </div>
+    <div class="tpm-progress" aria-hidden="true"><span data-tpm-progress></span></div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TIPSY campaign cards",
+  "tag": "div",
+  "class": "section-tpm",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Label for screen readers", "default": "Why TIPSY AF" }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Background image", "info": "Leave empty to show the cans on a plain card." },
+        { "type": "text", "id": "title", "label": "Title", "default": "Feel it in 10 minutes" },
+        { "type": "select", "id": "flavor", "label": "Flavor the button picks", "options": [
+          { "value": "bo", "label": "Blood Orange Margarita" },
+          { "value": "pm", "label": "Pineapple Martini" },
+          { "value": "mix", "label": "The Mix (hidden until the Mix products are set)" }
+        ], "default": "pm" },
+        { "type": "text", "id": "button_label", "label": "Button label", "default": "Pineapple Martini" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "TIPSY campaign cards", "blocks": [{ "type": "card" }] }]
+}
+{% endschema %}

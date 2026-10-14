@@ -1,0 +1,52 @@
+{{ 'tpm-v3.css' | asset_url | stylesheet_tag }}
+<div class="tpm">
+  <section class="tpm-lineup" aria-labelledby="tpm-lineup-title-{{ section.id }}">
+    <h2 class="tpm-h2 tpm-center" id="tpm-lineup-title-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
+    <div class="tpm-track tpm-track--lineup" data-tpm-carousel>
+      {%- for block in section.blocks -%}
+        {%- assign b = block.settings -%}
+        <article class="tpm-item tpm-item--{{ b.flavor }}"{% if b.flavor == 'mix' %} data-tpm-mix-only{% endif %} {{ block.shopify_attributes }}>
+          {%- if b.chip != blank -%}<span class="tpm-outline-chip">{{ b.chip | escape }}</span>{%- endif -%}
+          <div class="tpm-item__can{% if b.flavor == 'mix' %} tpm-item__can--pair{% endif %}">
+            {%- render 'tpm-cans', key: b.flavor, lazy: true, alt: 'Can of TIPSY AF', alt_bo: 'Can of TIPSY AF Blood Orange Margarita', alt_pm: 'Can of TIPSY AF Pineapple Martini' -%}
+          </div>
+          <h3>{{ b.title | escape }}</h3>
+          <p class="tpm-item__desc">{{ b.desc | escape }}</p>
+          <p class="tpm-item__price">{{ b.price | escape }}</p>
+          <button type="button" class="tpm-knobbtn tpm-knobbtn--light" data-tpm-pick="{{ b.flavor }}"><span>{{ section.settings.button_label | escape }}</span>{% render 'tpm-knob' %}<span class="tpm-visually-hidden"> {{ b.title | escape }}</span></button>
+        </article>
+      {%- endfor -%}
+    </div>
+    <div class="tpm-progress tpm-progress--light" aria-hidden="true"><span data-tpm-progress></span></div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TIPSY lineup",
+  "tag": "div",
+  "class": "section-tpm",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "The lineup" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Choose" }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Flavor",
+      "settings": [
+        { "type": "select", "id": "flavor", "label": "Flavor", "info": "The Mix stays hidden until the Mix products are set in the TIPSY buy box.", "options": [
+          { "value": "bo", "label": "Blood Orange Margarita" },
+          { "value": "pm", "label": "Pineapple Martini" },
+          { "value": "mix", "label": "The Mix" }
+        ], "default": "bo" },
+        { "type": "text", "id": "chip", "label": "Tag", "default": "Fan favorite" },
+        { "type": "text", "id": "title", "label": "Name", "default": "Blood Orange Margarita" },
+        { "type": "text", "id": "desc", "label": "Description", "default": "Bright citrus, salted edge · 30 cal" },
+        { "type": "text", "id": "price", "label": "Price line", "default": "From $29.94" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "TIPSY lineup", "blocks": [{ "type": "item" }] }]
+}
+{% endschema %}

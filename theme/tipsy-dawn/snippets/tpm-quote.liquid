@@ -1,0 +1,5 @@
+{%- comment -%} One review tile in the TIPSY reviews collage. block: the quote block; position: 1-4 (grid slot). {%- endcomment -%}
+<figure class="tpm-tile{% if block.settings.style != 'plain' %} tpm-tile--{{ block.settings.style }}{% endif %} tpm-proof__q{{ position }}" {{ block.shopify_attributes }}>
+  <blockquote>“{{ block.settings.quote | escape }}”</blockquote>
+  <figcaption>{{ block.settings.name | escape }}</figcaption>
+</figure>

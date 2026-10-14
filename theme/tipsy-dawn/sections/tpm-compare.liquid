@@ -1,0 +1,80 @@
+{{ 'tpm-v3.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign s = section.settings
+  assign cols = 'col_1,col_2,col_3,col_4,col_5' | split: ','
+-%}
+<div class="tpm">
+  <section class="tpm-sec tpm-compare" aria-labelledby="tpm-compare-title-{{ section.id }}" data-tpm-animate>
+    <div class="tpm-wrap tpm-wrap--narrow">
+      <h2 class="tpm-cond tpm-center" id="tpm-compare-title-{{ section.id }}">{{ s.heading_start | escape }} <span class="tpm-hl">{{ s.heading_highlight | escape }}</span> {{ s.heading_end | escape }}</h2>
+      {%- if s.text != blank -%}<p class="tpm-compare__sub">{{ s.text | escape }}</p>{%- endif -%}
+      <div class="tpm-ct">
+        <div class="tpm-ct__scroll" data-tpm-ct tabindex="0" role="table" aria-label="{{ s.us_label | escape }} compared with other ways to unwind. Scroll sideways for more.">
+          <div class="tpm-ct__row tpm-ct__row--head" role="row">
+            <span role="columnheader" class="tpm-ct__label"><span class="tpm-visually-hidden">Benefit</span></span>
+            <span role="columnheader" class="tpm-ct__us tpm-ct__us--head"><span class="tpm-ct__cans" aria-hidden="true">{% render 'tpm-cans', key: 'mix' %}</span>{{ s.us_label | escape }}</span>
+            {%- for c in cols -%}
+              {%- if s[c] != blank -%}<span role="columnheader" class="tpm-ct__h">{{ s[c] | escape }}</span>{%- endif -%}
+            {%- endfor -%}
+          </div>
+          {%- for block in section.blocks -%}
+            <div class="tpm-ct__row" role="row" {{ block.shopify_attributes }}>
+              <span role="rowheader" class="tpm-ct__label">{{ block.settings.label | escape }}</span>
+              <span role="cell" class="tpm-ct__us">{% render 'tpm-ct-cell', value: block.settings.us, us: true %}</span>
+              {%- for c in cols -%}
+                {%- if s[c] != blank -%}<span role="cell">{% render 'tpm-ct-cell', value: block.settings[c] %}</span>{%- endif -%}
+              {%- endfor -%}
+            </div>
+          {%- endfor -%}
+        </div>
+        <p class="tpm-ct__hint" data-tpm-ct-hint aria-hidden="true">Swipe to compare <svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></p>
+      </div>
+      <div class="tpm-center">
+        {%- if s.button_label != blank -%}
+          <button type="button" class="tpm-knobbtn tpm-knobbtn--accent" data-tpm-start><span>{{ s.button_label | escape }}</span>{% render 'tpm-knob' %}</button>
+        {%- endif -%}
+        {%- if s.note != blank -%}<p class="tpm-compare__note">{{ s.note | escape }}</p>{%- endif -%}
+      </div>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TIPSY comparison chart",
+  "tag": "div",
+  "class": "section-tpm",
+  "settings": [
+    { "type": "text", "id": "heading_start", "label": "Heading", "default": "What makes" },
+    { "type": "text", "id": "heading_highlight", "label": "Heading, highlighted part", "default": "TIPSY AF" },
+    { "type": "text", "id": "heading_end", "label": "Heading, end", "default": "different" },
+    { "type": "text", "id": "text", "label": "Text", "default": "You have options. Here's how they stack up." },
+    { "type": "header", "content": "Columns" },
+    { "type": "text", "id": "us_label", "label": "Our column", "default": "TIPSY AF" },
+    { "type": "text", "id": "col_1", "label": "Column 2", "default": "Mocktails" },
+    { "type": "text", "id": "col_2", "label": "Column 3", "default": "Kava drinks" },
+    { "type": "text", "id": "col_3", "label": "Column 4", "default": "Kratom drinks" },
+    { "type": "text", "id": "col_4", "label": "Column 5", "default": "THC seltzers" },
+    { "type": "text", "id": "col_5", "label": "Column 6", "info": "Leave a column empty to hide it.", "default": "Cocktails" },
+    { "type": "header", "content": "Below the chart" },
+    { "type": "text", "id": "button_label", "label": "Button", "info": "Opens the checkout flow. Leave empty to hide.", "default": "Ready to get TIPSY" },
+    { "type": "text", "id": "note", "label": "Note", "default": "Compared by category. Individual brands and state laws vary." }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Row",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Benefit", "default": "A buzz you can actually feel" },
+        { "type": "select", "id": "us", "label": "Our column", "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }, { "value": "varies", "label": "Varies" }], "default": "yes" },
+        { "type": "select", "id": "col_1", "label": "Column 2", "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }, { "value": "varies", "label": "Varies" }], "default": "no" },
+        { "type": "select", "id": "col_2", "label": "Column 3", "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }, { "value": "varies", "label": "Varies" }], "default": "no" },
+        { "type": "select", "id": "col_3", "label": "Column 4", "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }, { "value": "varies", "label": "Varies" }], "default": "no" },
+        { "type": "select", "id": "col_4", "label": "Column 5", "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }, { "value": "varies", "label": "Varies" }], "default": "no" },
+        { "type": "select", "id": "col_5", "label": "Column 6", "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }, { "value": "varies", "label": "Varies" }], "default": "no" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "TIPSY comparison chart", "blocks": [{ "type": "row" }] }]
+}
+{% endschema %}

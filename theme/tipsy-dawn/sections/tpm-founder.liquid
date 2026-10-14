@@ -1,0 +1,29 @@
+{{ 'tpm-v3.css' | asset_url | stylesheet_tag }}
+{%- assign s = section.settings -%}
+<div class="tpm">
+  <section class="tpm-sec tpm-founder" aria-labelledby="tpm-founder-title-{{ section.id }}">
+    <div class="tpm-wrap tpm-founder__inner">
+      {%- if s.image != blank -%}
+        {{ s.image | image_url: width: 672 | image_tag: widths: '336, 672, 1000', sizes: '(min-width: 900px) 40vw, 100vw', loading: 'lazy' }}
+      {%- endif -%}
+      <div>
+        <h2 class="tpm-founder__quote" id="tpm-founder-title-{{ section.id }}"><em>“{{ s.quote | escape }}”</em></h2>
+        {%- if s.text != blank -%}<p>{{ s.text | escape }}</p>{%- endif -%}
+      </div>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TIPSY founder",
+  "tag": "div",
+  "class": "section-tpm",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Photo", "info": "Set the alt text on the image in Files." },
+    { "type": "text", "id": "quote", "label": "Quote", "default": "I think I just reverse engineered alcohol." },
+    { "type": "textarea", "id": "text", "label": "Story", "default": "After years of client dinners and hangovers, Josh put his mushroom expertise to work on a better buzz. Five years in, he called his dad with that line. His dad tried it, came out of retirement as CEO of that same mushroom company, and co-founded TIPSY AF with him." }
+  ],
+  "presets": [{ "name": "TIPSY founder" }]
+}
+{% endschema %}

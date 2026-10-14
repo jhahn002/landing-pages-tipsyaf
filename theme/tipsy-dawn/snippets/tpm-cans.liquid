@@ -1,0 +1,7 @@
+{%- comment -%} Can(s) for a flavor key: 'bo', 'pm', or 'mix' (both cans). Passes alt/lazy through. {%- endcomment -%}
+{%- if key == 'mix' -%}
+  {%- render 'tpm-can', key: 'bo', alt: alt_bo, lazy: lazy -%}
+  {%- render 'tpm-can', key: 'pm', alt: alt_pm, lazy: lazy -%}
+{%- else -%}
+  {%- render 'tpm-can', key: key, alt: alt, lazy: lazy -%}
+{%- endif -%}

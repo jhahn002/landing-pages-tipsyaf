@@ -1,75 +1,446 @@
 {
   "sections": {
-    "image_banner": {
-      "type": "image-banner",
+    "hero": {
+      "type": "tpm-hero",
+      "settings": {
+        "image_mobile": "shopify://shop_images/weavy-Gemini_2.5_Flash_Nano_Banana_-2025-10-01_at_15.07.52.jpg",
+        "image_desktop": "shopify://shop_images/TIPSY_wide.jpg"
+      }
+    },
+    "campaigns": {
+      "type": "tpm-campaigns",
+      "settings": {},
       "blocks": {
-        "heading": {
-          "type": "heading",
+        "card_1": {
+          "type": "card",
           "settings": {
-            "heading": "Browse our latest products",
-            "heading_size": "h0"
+            "image": "shopify://shop_images/Pouring_Pineapple_martini.png",
+            "title": "Feel it in 10 minutes",
+            "flavor": "pm",
+            "button_label": "Pineapple Martini"
           }
         },
-        "button": {
-          "type": "buttons",
+        "card_2": {
+          "type": "card",
           "settings": {
-            "button_label_1": "Shop all",
-            "button_link_1": "shopify://collections/all",
-            "button_style_secondary_1": true,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
+            "image": "shopify://shop_images/TIPSY_wide.jpg",
+            "title": "Zero hangover",
+            "flavor": "bo",
+            "button_label": "Blood Orange Margarita"
+          }
+        },
+        "card_3": {
+          "type": "card",
+          "settings": {
+            "title": "Can't pick? Get both",
+            "flavor": "mix",
+            "button_label": "The Mix"
           }
         }
       },
       "block_order": [
-        "heading",
-        "button"
-      ],
+        "card_1",
+        "card_2",
+        "card_3"
+      ]
+    },
+    "uses": {
+      "type": "tpm-uses",
+      "settings": {},
+      "blocks": {
+        "use_1": {
+          "type": "use",
+          "settings": {
+            "media": "image",
+            "image": "shopify://shop_images/Pouring_Pineapple_martini.png",
+            "word": "After work",
+            "text": "Take the edge off without losing your evening. One can, felt in 10–15 minutes, done in about an hour.",
+            "pick_text": "Pineapple Martini, 6-pack trial",
+            "pick_flavor": "pm",
+            "pick_offer": "trial"
+          }
+        },
+        "use_2": {
+          "type": "use",
+          "settings": {
+            "media": "image",
+            "image": "shopify://shop_images/TIPSY_wide.jpg",
+            "word": "Nights out",
+            "text": "Stay in the round with a can in hand. Have another to keep it going, and wake up without a hangover.",
+            "pick_text": "The Mix, 6-pack trial",
+            "pick_flavor": "mix",
+            "pick_offer": "trial"
+          }
+        },
+        "use_3": {
+          "type": "use",
+          "settings": {
+            "media": "can_orange",
+            "word": "Cutting back",
+            "text": "Keep the ritual and the feeling, without the alcohol. Auto ship keeps a 12-pack in the fridge at $4.15 a can.",
+            "pick_text": "Blood Orange Margarita, 12-pack auto ship",
+            "pick_flavor": "bo",
+            "pick_offer": "autoship"
+          }
+        },
+        "use_4": {
+          "type": "use",
+          "settings": {
+            "media": "can_yellow",
+            "word": "Sober curious",
+            "text": "Wondering what a buzz without alcohol feels like? Start small with 6 cans and a 100-day money-back guarantee.",
+            "pick_text": "The Mix, 6-pack trial",
+            "pick_flavor": "mix",
+            "pick_offer": "trial"
+          }
+        },
+        "use_5": {
+          "type": "use",
+          "settings": {
+            "media": "image",
+            "image": "shopify://shop_images/martini_blue_sky_edited_1.png",
+            "word": "Hosting",
+            "text": "A cocktail everyone at the table can have. 12 cans, poured over ice, no bartender needed.",
+            "pick_text": "The Mix, 12-pack",
+            "pick_flavor": "mix",
+            "pick_offer": "onetime"
+          }
+        }
+      },
+      "block_order": [
+        "use_1",
+        "use_2",
+        "use_3",
+        "use_4",
+        "use_5"
+      ]
+    },
+    "lineup": {
+      "type": "tpm-lineup",
+      "settings": {},
+      "blocks": {
+        "item_1": {
+          "type": "item",
+          "settings": {
+            "flavor": "bo",
+            "chip": "Fan favorite",
+            "title": "Blood Orange Margarita",
+            "desc": "Bright citrus, salted edge · 30 cal",
+            "price": "From $29.94"
+          }
+        },
+        "item_2": {
+          "type": "item",
+          "settings": {
+            "flavor": "pm",
+            "chip": "New",
+            "title": "Pineapple Martini",
+            "desc": "Pineapple, dry martini finish · 35 cal",
+            "price": "From $29.94"
+          }
+        },
+        "item_3": {
+          "type": "item",
+          "settings": {
+            "flavor": "mix",
+            "chip": "Can't decide",
+            "title": "The Mix",
+            "desc": "Half and half, same price",
+            "price": "From $29.94"
+          }
+        }
+      },
+      "block_order": [
+        "item_1",
+        "item_2",
+        "item_3"
+      ]
+    },
+    "proof": {
+      "type": "tpm-proof",
       "settings": {
-        "image_overlay_opacity": 40,
-        "image_height": "large",
-        "desktop_content_position": "bottom-center",
-        "show_text_box": false,
-        "image_behavior": "none",
-        "desktop_content_alignment": "center",
-        "color_scheme": "scheme-3",
-        "mobile_content_alignment": "center",
-        "stack_images_on_mobile": false,
-        "show_text_below": false
+        "image_a": "shopify://shop_images/Pouring_Pineapple_martini.png",
+        "image_b": "shopify://shop_images/TIPSY_wide.jpg"
+      },
+      "blocks": {
+        "quote_1": {
+          "type": "quote",
+          "settings": {
+            "quote": "10 minutes later I felt it and I was so relaxed.",
+            "name": "Dominic H.",
+            "style": "yellow"
+          }
+        },
+        "quote_2": {
+          "type": "quote",
+          "settings": {
+            "quote": "I was skeptical, but I loved it! Nice little buzz, but doesn't make me crave alcohol.",
+            "name": "Carolyn L.",
+            "style": "plain"
+          }
+        },
+        "quote_3": {
+          "type": "quote",
+          "settings": {
+            "quote": "When I found these it made alcohol a thing of the past… for good!",
+            "name": "Shelli M.",
+            "style": "dark"
+          }
+        },
+        "quote_4": {
+          "type": "quote",
+          "settings": {
+            "quote": "Had a half can… and immediately ordered 3 more cases!",
+            "name": "phillygurlnmass",
+            "style": "plain"
+          }
+        }
+      },
+      "block_order": [
+        "quote_1",
+        "quote_2",
+        "quote_3",
+        "quote_4"
+      ]
+    },
+    "compare": {
+      "type": "tpm-compare",
+      "settings": {},
+      "blocks": {
+        "row_1": {
+          "type": "row",
+          "settings": {
+            "label": "A buzz you can actually feel",
+            "us": "yes",
+            "col_1": "no",
+            "col_2": "yes",
+            "col_3": "yes",
+            "col_4": "yes",
+            "col_5": "yes"
+          }
+        },
+        "row_2": {
+          "type": "row",
+          "settings": {
+            "label": "Zero alcohol",
+            "us": "yes",
+            "col_1": "yes",
+            "col_2": "yes",
+            "col_3": "yes",
+            "col_4": "yes",
+            "col_5": "no"
+          }
+        },
+        "row_3": {
+          "type": "row",
+          "settings": {
+            "label": "No kava, kratom or THC",
+            "us": "yes",
+            "col_1": "yes",
+            "col_2": "no",
+            "col_3": "no",
+            "col_4": "no",
+            "col_5": "yes"
+          }
+        },
+        "row_4": {
+          "type": "row",
+          "settings": {
+            "label": "No hangover",
+            "us": "yes",
+            "col_1": "yes",
+            "col_2": "varies",
+            "col_3": "varies",
+            "col_4": "varies",
+            "col_5": "no"
+          }
+        },
+        "row_5": {
+          "type": "row",
+          "settings": {
+            "label": "Done in about an hour",
+            "us": "yes",
+            "col_1": "varies",
+            "col_2": "varies",
+            "col_3": "varies",
+            "col_4": "no",
+            "col_5": "varies"
+          }
+        },
+        "row_6": {
+          "type": "row",
+          "settings": {
+            "label": "Ships to all 50 states",
+            "us": "yes",
+            "col_1": "yes",
+            "col_2": "varies",
+            "col_3": "varies",
+            "col_4": "varies",
+            "col_5": "varies"
+          }
+        },
+        "row_7": {
+          "type": "row",
+          "settings": {
+            "label": "Built by mushroom scientists",
+            "us": "yes",
+            "col_1": "no",
+            "col_2": "no",
+            "col_3": "no",
+            "col_4": "no",
+            "col_5": "no"
+          }
+        },
+        "row_8": {
+          "type": "row",
+          "settings": {
+            "label": "100-day money-back guarantee",
+            "us": "yes",
+            "col_1": "varies",
+            "col_2": "varies",
+            "col_3": "varies",
+            "col_4": "varies",
+            "col_5": "varies"
+          }
+        }
+      },
+      "block_order": [
+        "row_1",
+        "row_2",
+        "row_3",
+        "row_4",
+        "row_5",
+        "row_6",
+        "row_7",
+        "row_8"
+      ]
+    },
+    "science": {
+      "type": "tpm-science",
+      "settings": {},
+      "blocks": {
+        "step_1": {
+          "type": "step",
+          "settings": {
+            "title": "Grown to feel good",
+            "text": "Mushrooms cultivated to make their own feel-good actives."
+          }
+        },
+        "step_2": {
+          "type": "step",
+          "settings": {
+            "title": "Paired with plant actives",
+            "text": "L-theanine, GABA and theobromine."
+          }
+        },
+        "step_3": {
+          "type": "step",
+          "settings": {
+            "title": "Felt in 10–15 minutes",
+            "text": "The ease of a drink, minus the alcohol."
+          }
+        }
+      },
+      "block_order": [
+        "step_1",
+        "step_2",
+        "step_3"
+      ]
+    },
+    "feel": {
+      "type": "tpm-feel",
+      "settings": {}
+    },
+    "founder": {
+      "type": "tpm-founder",
+      "settings": {
+        "image": "shopify://shop_images/founders.png"
       }
     },
-    "featured_collection": {
-      "type": "featured-collection",
+    "buy": {
+      "type": "tpm-buy",
       "settings": {
-        "title": "Featured products",
-        "heading_size": "h2",
-        "description": "",
-        "show_description": false,
-        "description_style": "body",
-        "collection": "all",
-        "products_to_show": 8,
-        "columns_desktop": 4,
-        "color_scheme": "scheme-1",
-        "full_width": false,
-        "show_view_all": true,
-        "view_all_style": "solid",
-        "enable_desktop_slider": false,
-        "swipe_on_mobile": false,
-        "image_ratio": "adapt",
-        "image_shape": "default",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": false,
-        "quick_add": "none",
-        "columns_mobile": "2",
-        "padding_top": 44,
-        "padding_bottom": 36
+        "bo_trial_product": "6-pack-trial",
+        "bo_autoship_product": "12-pack-auto-ship-save",
+        "bo_onetime_product": "12-pack-one-time-order",
+        "pm_trial_product": "6-pack-pineapple-martini-starter-kit",
+        "pm_autoship_product": "12-pack-pineapple-martini-auto-ship-save",
+        "pm_onetime_product": "12-pack-pineapple-martini"
       }
+    },
+    "faq": {
+      "type": "tpm-faq",
+      "settings": {},
+      "blocks": {
+        "q_1": {
+          "type": "question",
+          "settings": {
+            "question": "How many should I drink?",
+            "answer": "<p>One can is one serving. Start with one, give it 10–15 minutes, and have another if you want to turn it up. Each can lasts about an hour.</p>"
+          }
+        },
+        "q_2": {
+          "type": "question",
+          "settings": {
+            "question": "Can I drive after drinking it?",
+            "answer": "<p>We don't recommend it. Your blood alcohol will be zero, but you can still be considered under the influence. Once the feeling has passed, you can drive.</p>"
+          }
+        },
+        "q_3": {
+          "type": "question",
+          "settings": {
+            "question": "Is it legal? Who is it for?",
+            "answer": "<p>Everything in it is legal, and we ship to all 50 states. TIPSY AF is designed for adults 18 and over.</p>"
+          }
+        },
+        "q_4": {
+          "type": "question",
+          "settings": {
+            "question": "How does the trial work?",
+            "answer": "<p>You get 6 cans for $29.94. We remind you on day 25. On day 28 it renews as a 12-pack at $49.80/mo plus $2.99 shipping. You can cancel anytime.</p>"
+          }
+        },
+        "q_5": {
+          "type": "question",
+          "settings": {
+            "question": "What if I don't like it?",
+            "answer": "<p>Email <a href=\"mailto:hey@gettipsy.com\">hey@gettipsy.com</a> within 100 days of your order for a full refund, even on opened cans. Shipping fees aren't refunded unless the problem was on our end. <a href=\"/pages/returns-refunds-policy\">Full policy</a>.</p>"
+          }
+        },
+        "q_6": {
+          "type": "question",
+          "settings": {
+            "question": "What's in each can?",
+            "answer": "<p><strong>Blood Orange Margarita</strong> (30 calories, 8g sugar): Filtered Water, Organic Cane Sugar, Orange Juice Concentrate, Natural Flavors, Botanical Extracts, Key Lime Juice Concentrate, Citric Acid, Proprietary Mushroom Blend (Chaga, Maitake, Shiitake, Reishi, Turkey Tail), L-Theanine, GABA, Theobromine, Stevia Extract (Reb M).</p><p><strong>Pineapple Martini</strong> (35 calories, 9g sugar): Carbonated Water, Sugar, Pineapple Juice Concentrate, Natural Flavors, Botanical Extracts, Citric Acid, Proprietary Mushroom Blend (Chaga, Maitake, Shiitake, Reishi, Turkey Tail), Beta Carotene (Color), L-Theanine, GABA, Theobromine, Stevia Leaf Extract.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q_1",
+        "q_2",
+        "q_3",
+        "q_4",
+        "q_5",
+        "q_6"
+      ]
+    },
+    "statement": {
+      "type": "tpm-statement",
+      "settings": {}
     }
   },
   "order": [
-    "image_banner",
-    "featured_collection"
+    "hero",
+    "campaigns",
+    "uses",
+    "lineup",
+    "proof",
+    "compare",
+    "science",
+    "feel",
+    "founder",
+    "buy",
+    "faq",
+    "statement"
   ]
 }

@@ -1,0 +1,6 @@
+{%- comment -%} Comparison chart cell. value: 'yes' | 'no' | 'varies'; us: true for the TIPSY AF column. {%- endcomment -%}
+{%- case value -%}
+  {%- when 'yes' -%}<i class="tpm-yes{% unless us %} tpm-yes--muted{% endunless %}">Yes</i>
+  {%- when 'no' -%}<i class="tpm-no">No</i>
+  {%- else -%}<b>Varies</b>
+{%- endcase -%}

@@ -34,6 +34,32 @@ files in `assets/`:
 these. Left on "Use font picker above", Dawn's normal font pickers apply. A font is only
 downloaded when the page uses it.
 
+## v3 sections
+
+`sections/tpm-*.liquid` can be added to any page or product template in the theme editor.
+Shared styles and script: `assets/tpm-v3.css`, `assets/tpm-v3.js` (ported from `tipsy-af-v3/src`).
+
+| Section | What's editable |
+| --- | --- |
+| TIPSY hero | Phone/desktop images, headline + italic line, text, product card, terms |
+| TIPSY campaign cards | Cards (image or cans, title, flavor the button picks) |
+| TIPSY use cases | Rows (thumbnail, title, text, "our pick" flavor + plan), quiz button |
+| TIPSY lineup | Flavor cards (tag, name, description, price line) |
+| TIPSY reviews collage | Heading, two photos, up to 4 reviews with tile colors |
+| TIPSY comparison chart | Heading, 6 columns, rows with Yes/No/Varies per column |
+| TIPSY science | Heading, can, in/not-in lists, steps, proof points |
+| TIPSY how it feels | Heading, text, chart labels, caption |
+| TIPSY founder | Photo, quote, story |
+| **TIPSY buy box** | Products for each flavor × plan, labels, checkout flow, quiz, sticky bar |
+| TIPSY FAQ | Questions and answers |
+| TIPSY statement band | Text, button |
+
+**TIPSY buy box** must be on the page (once): it holds the checkout flow, quiz and sticky bar that
+every other section's buttons open. Pick products, not IDs: for each flavor it takes the 6-pack
+trial, 12-pack auto ship and 12-pack one-time products, and reads the variant, subscription plan and
+price from them. The one-time 12-packs are also the add-ons. The Mix appears everywhere only once all
+three Mix products are set.
+
 ## Push
 
 ```sh
@@ -57,8 +83,9 @@ Pull first if anyone has edited the theme in the editor (`config/settings_data.j
    so none of that leaks into the rest of the theme. Preview on any product with `?view=control`,
    or assign the template to a product. Full-page screenshots match the live home page to within
    0.2% of pixels.
-3. **Home page** — rebuild the v3 landing page (`tipsy-af-v3`,
-   https://jhahn002.github.io/landing-pages-tipsyaf/tipsy-af-v3/preview/index.html) as editable sections.
+3. **Home page** ✅ — the v3 landing page (`tipsy-af-v3`,
+   https://jhahn002.github.io/landing-pages-tipsyaf/tipsy-af-v3/preview/index.html) rebuilt as 12
+   editable sections (`sections/tpm-*.liquid`), in order in `templates/index.json`. See "v3 sections" below.
 4. **Product page variants** on Dawn's `main-product`.
 5. **Collections, contact, FAQ, subscription** and the other pages.
 6. **Header/footer, cart, tracking** — see the checklist below — then QA and publish.

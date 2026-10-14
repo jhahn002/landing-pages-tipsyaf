@@ -1,0 +1,62 @@
+{{ 'tpm-v3.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign s = section.settings
+  assign quotes = section.blocks
+-%}
+<div class="tpm">
+  <section class="tpm-sec tpm-proof" aria-labelledby="tpm-proof-title-{{ section.id }}">
+    <div class="tpm-wrap">
+      <div class="tpm-proof__grid">
+        {%- if s.image_a != blank -%}
+          {{ s.image_a | image_url: width: 600 | image_tag: class: 'tpm-proof__img tpm-proof__img--a', widths: '300, 600, 900', sizes: '(min-width: 900px) 25vw, 50vw', loading: 'lazy', alt: '' }}
+        {%- endif -%}
+        {%- if quotes[0] -%}{% render 'tpm-quote', block: quotes[0], position: 1 %}{%- endif -%}
+        <div class="tpm-proof__head">
+          <h2 class="tpm-cond" id="tpm-proof-title-{{ section.id }}">{{ s.heading | escape }}</h2>
+          {%- if s.text != blank -%}<p>{{ s.text | escape }}</p>{%- endif -%}
+          {%- if s.button_label != blank -%}
+            <button type="button" class="tpm-knobbtn" data-tpm-start><span>{{ s.button_label | escape }}</span>{% render 'tpm-knob', tone: 'light' %}</button>
+          {%- endif -%}
+        </div>
+        {%- if quotes[1] -%}{% render 'tpm-quote', block: quotes[1], position: 2 %}{%- endif -%}
+        {%- if s.image_b != blank -%}
+          {{ s.image_b | image_url: width: 800 | image_tag: class: 'tpm-proof__img tpm-proof__img--b', widths: '400, 800, 1200', sizes: '(min-width: 900px) 40vw, 100vw', loading: 'lazy', alt: '' }}
+        {%- endif -%}
+        {%- if quotes[2] -%}{% render 'tpm-quote', block: quotes[2], position: 3 %}{%- endif -%}
+        {%- if quotes[3] -%}{% render 'tpm-quote', block: quotes[3], position: 4 %}{%- endif -%}
+      </div>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TIPSY reviews collage",
+  "tag": "div",
+  "class": "section-tpm",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "The buzz is real" },
+    { "type": "text", "id": "text", "label": "Text", "default": "In their own words, from people who tried it." },
+    { "type": "text", "id": "button_label", "label": "Button", "info": "Opens the checkout flow. Leave empty to hide.", "default": "Join them" },
+    { "type": "image_picker", "id": "image_a", "label": "Square photo" },
+    { "type": "image_picker", "id": "image_b", "label": "Wide photo" }
+  ],
+  "blocks": [
+    {
+      "type": "quote",
+      "name": "Review",
+      "settings": [
+        { "type": "textarea", "id": "quote", "label": "Review", "info": "Use real customer words only.", "default": "10 minutes later I felt it and I was so relaxed." },
+        { "type": "text", "id": "name", "label": "Name", "default": "Dominic H." },
+        { "type": "select", "id": "style", "label": "Tile color", "options": [
+          { "value": "plain", "label": "Light" },
+          { "value": "yellow", "label": "Yellow" },
+          { "value": "dark", "label": "Dark" }
+        ], "default": "plain" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "TIPSY reviews collage", "blocks": [{ "type": "quote" }] }]
+}
+{% endschema %}

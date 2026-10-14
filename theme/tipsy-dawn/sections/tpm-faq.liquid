@@ -1,0 +1,33 @@
+{{ 'tpm-v3.css' | asset_url | stylesheet_tag }}
+<div class="tpm">
+  <section class="tpm-sec tpm-faq" aria-labelledby="tpm-faq-title-{{ section.id }}">
+    <div class="tpm-wrap tpm-wrap--narrow">
+      <h2 class="tpm-h2" id="tpm-faq-title-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
+      {%- for block in section.blocks -%}
+        <details class="tpm-details" {{ block.shopify_attributes }}><summary>{{ block.settings.question | escape }}</summary>{{ block.settings.answer }}</details>
+      {%- endfor -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TIPSY FAQ",
+  "tag": "div",
+  "class": "section-tpm",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Questions" }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "How many should I drink?" },
+        { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>One can is one serving. Start with one, give it 10–15 minutes, and have another if you want to turn it up. Each can lasts about an hour.</p>" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "TIPSY FAQ", "blocks": [{ "type": "question" }] }]
+}
+{% endschema %}

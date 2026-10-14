@@ -1,0 +1,89 @@
+{{ 'tpm-v3.css' | asset_url | stylesheet_tag }}
+<div class="tpm">
+  <section class="tpm-sec tpm-uses" aria-labelledby="tpm-uses-title-{{ section.id }}">
+    <div class="tpm-wrap tpm-wrap--narrow">
+      <h2 class="tpm-h2 tpm-center" id="tpm-uses-title-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
+      <div class="tpm-uses__list">
+        {%- for block in section.blocks -%}
+          {%- assign b = block.settings -%}
+          <details class="tpm-use" {{ block.shopify_attributes }}>
+            <summary>
+              {%- case b.media -%}
+                {%- when 'can_orange' -%}
+                  <span class="tpm-use__tile tpm-use__tile--orange" aria-hidden="true">{% render 'tpm-can', key: 'bo' %}</span>
+                {%- when 'can_yellow' -%}
+                  <span class="tpm-use__tile tpm-use__tile--yellow" aria-hidden="true">{% render 'tpm-can', key: 'pm' %}</span>
+                {%- else -%}
+                  {%- if b.image != blank -%}
+                    {{ b.image | image_url: width: 300 | image_tag: widths: '150, 300', sizes: '120px', loading: 'lazy', alt: '' }}
+                  {%- else -%}
+                    <span class="tpm-use__tile tpm-use__tile--yellow" aria-hidden="true">{% render 'tpm-can', key: 'pm' %}</span>
+                  {%- endif -%}
+              {%- endcase -%}
+              <span class="tpm-use__word">{{ b.word | escape }}</span>
+              {% render 'tpm-knob' %}
+            </summary>
+            <div class="tpm-use__body">
+              <p>{{ b.text | escape }}</p>
+              {%- if b.pick_text != blank -%}
+                <p class="tpm-use__pick"><span>{{ section.settings.pick_label | escape }}</span> {{ b.pick_text | escape }}</p>
+                <button type="button" class="tpm-knobbtn tpm-knobbtn--sm" data-tpm-apply="{{ b.pick_flavor }}:{{ b.pick_offer }}"><span>{{ section.settings.pick_button | escape }}</span>{% render 'tpm-knob', tone: 'light' %}</button>
+              {%- endif -%}
+            </div>
+          </details>
+        {%- endfor -%}
+      </div>
+      {%- if section.settings.quiz_label != blank -%}
+        <div class="tpm-center">
+          <button type="button" class="tpm-knobbtn" data-tpm-quiz-open>
+            <span>{{ section.settings.quiz_label | escape }}</span>
+            {% render 'tpm-knob', tone: 'light' %}
+          </button>
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TIPSY use cases",
+  "tag": "div",
+  "class": "section-tpm",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "What brings you here?" },
+    { "type": "text", "id": "pick_label", "label": "Pick label", "default": "Our pick" },
+    { "type": "text", "id": "pick_button", "label": "Pick button", "default": "Use this pick" },
+    { "type": "text", "id": "quiz_label", "label": "Quiz button", "info": "Opens the quiz from the TIPSY buy box section. Leave empty to hide.", "default": "Help me choose" }
+  ],
+  "blocks": [
+    {
+      "type": "use",
+      "name": "Use case",
+      "settings": [
+        { "type": "select", "id": "media", "label": "Thumbnail", "options": [
+          { "value": "image", "label": "Image" },
+          { "value": "can_orange", "label": "Blood Orange can on orange" },
+          { "value": "can_yellow", "label": "Pineapple can on yellow" }
+        ], "default": "image" },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "word", "label": "Title", "default": "After work" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Take the edge off without losing your evening. One can, felt in 10–15 minutes, done in about an hour." },
+        { "type": "header", "content": "Our pick" },
+        { "type": "text", "id": "pick_text", "label": "Pick shown", "info": "Leave empty to hide the pick and its button.", "default": "Pineapple Martini, 6-pack trial" },
+        { "type": "select", "id": "pick_flavor", "label": "Flavor it fills in", "info": "The Mix falls back to Blood Orange while the Mix products aren't set.", "options": [
+          { "value": "bo", "label": "Blood Orange Margarita" },
+          { "value": "pm", "label": "Pineapple Martini" },
+          { "value": "mix", "label": "The Mix" }
+        ], "default": "pm" },
+        { "type": "select", "id": "pick_offer", "label": "Plan it fills in", "options": [
+          { "value": "trial", "label": "6-pack trial" },
+          { "value": "autoship", "label": "12-pack auto ship" },
+          { "value": "onetime", "label": "12-pack one time" }
+        ], "default": "trial" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "TIPSY use cases", "blocks": [{ "type": "use" }] }]
+}
+{% endschema %}
