@@ -114,8 +114,8 @@
   }
 
   var pickerCount = 0;
-  // Flavor selector design direction: 'tiles', 'rows' or 'switch'.
-  var FLAVOR_STYLES = ['tiles', 'rows', 'switch'];
+  // Flavor selector design direction: 'tiles' (chosen), 'shelf', 'pop' or 'chips'.
+  var FLAVOR_STYLES = ['tiles', 'shelf', 'pop', 'chips'];
   var flavorStyle = String(DATA.flavorStyle || '').trim();
   if (MODE === 'preview') {
     var fq = (window.location.search.match(/[?&]flavor=(\w+)/) || [])[1];
@@ -130,27 +130,37 @@
   function flavorsHtml(n) {
     var keys = Object.keys(DATA.flavors);
     var legend = '<legend class="tpm-pick__label">Choose your flavor</legend>';
-    if (flavorStyle === 'rows') {
-      return '<fieldset class="tpm-flav tpm-flav--rows">' + legend + '<div class="tpm-frows">' + keys.map(function (f) {
+    var wrap = function (mod, inner) { return '<fieldset class="tpm-flav tpm-flav--' + mod + '">' + legend + inner + '</fieldset>'; };
+
+    if (flavorStyle === 'shelf') {
+      // Cans standing on a shelf; the chosen can rises into a spotlight.
+      return wrap('shelf', '<div class="tpm-shelf">' + keys.map(function (f) {
         var d = DATA.flavors[f];
-        return flavorRadio(n, f, 'tpm-frow', '<span class="tpm-frow__box"><span class="tpm-frow__img">' + canStack(f) + '</span>' +
-          '<span class="tpm-frow__text"><strong>' + d.name + '</strong><span>' + d.note + '</span></span>' + CHECK + '</span>');
-      }).join('') + '</div></fieldset>';
+        return flavorRadio(n, f, 'tpm-shelf__opt', '<span class="tpm-shelf__box"><span class="tpm-shelf__img">' + canStack(f) + '</span>' +
+          '<span class="tpm-shelf__name">' + d.name + '</span></span>');
+      }).join('') + '</div><p class="tpm-shelf__note" data-tpm-fnote></p>');
     }
-    if (flavorStyle === 'switch') {
-      return '<fieldset class="tpm-flav tpm-flav--switch">' + legend + '<div class="tpm-fseg">' + keys.map(function (f) {
-        return flavorRadio(n, f, 'tpm-fseg__opt', '<span>' + DATA.flavors[f].short + '</span>');
-      }).join('') + '</div><div class="tpm-fstage">' + keys.map(function (f) {
+    if (flavorStyle === 'pop') {
+      // Full-color cards with the can breaking out of the top edge.
+      return wrap('pop', '<div class="tpm-pop">' + keys.map(function (f) {
         var d = DATA.flavors[f];
-        return '<div class="tpm-fstage__panel tpm-f--' + f + '" data-tpm-fpanel="' + f + '" hidden><span class="tpm-fstage__img">' + canStack(f) + '</span>' +
-          '<span class="tpm-fstage__text"><strong>' + d.name + '</strong><span>' + d.note + '</span></span></div>';
-      }).join('') + '</div></fieldset>';
+        return flavorRadio(n, f, 'tpm-pop__opt', '<span class="tpm-pop__box"><span class="tpm-pop__img">' + canStack(f) + '</span>' + CHECK +
+          '<span class="tpm-pop__name">' + d.name + '</span><span class="tpm-pop__note">' + d.note + '</span></span>');
+      }).join('') + '</div>');
     }
-    return '<fieldset class="tpm-flav tpm-flav--tiles">' + legend + '<div class="tpm-ftiles">' + keys.map(function (f) {
+    if (flavorStyle === 'chips') {
+      // Compact chips; the chosen one expands with its taste note.
+      return wrap('chips', '<div class="tpm-chips">' + keys.map(function (f) {
+        var d = DATA.flavors[f];
+        return flavorRadio(n, f, 'tpm-chip2', '<span class="tpm-chip2__box"><span class="tpm-chip2__img">' + canStack(f) + '</span>' +
+          '<span class="tpm-chip2__text"><strong>' + d.name + '</strong><span>' + d.note + '</span></span>' + CHECK + '</span>');
+      }).join('') + '</div>');
+    }
+    return wrap('tiles', '<div class="tpm-ftiles">' + keys.map(function (f) {
       var d = DATA.flavors[f];
       return flavorRadio(n, f, 'tpm-ftile', '<span class="tpm-ftile__box">' + CHECK + '<span class="tpm-ftile__img">' + canStack(f) + '</span>' +
-        '<span class="tpm-ftile__name">' + d.short + '</span><span class="tpm-ftile__note">' + d.note + '</span></span>');
-    }).join('') + '</div></fieldset>';
+        '<span class="tpm-ftile__name">' + d.name + '</span><span class="tpm-ftile__note">' + d.note + '</span></span>');
+    }).join('') + '</div>');
   }
 
   function pickerHtml(n) {
@@ -345,7 +355,7 @@
       i.checked = (i.name.indexOf('tpm-flavor-') === 0 && i.value === state.flavor) ||
         (i.name.indexOf('tpm-offer-') === 0 && i.value === state.offer);
     });
-    $all('[data-tpm-fpanel]').forEach(function (p) { p.hidden = p.getAttribute('data-tpm-fpanel') !== state.flavor; });
+    $all('[data-tpm-fnote]').forEach(function (p) { p.textContent = DATA.flavors[state.flavor].note; });
     $all('[data-tpm-terms]').forEach(function (t) {
       t.textContent = (state.flavor === 'mix' ? o.split + '. ' : '') + o.terms;
     });
