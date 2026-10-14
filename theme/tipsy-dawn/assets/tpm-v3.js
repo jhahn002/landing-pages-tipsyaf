@@ -16,9 +16,10 @@
   function id(v) { var n = parseInt(v, 10); return n > 0 ? n : 0; }
   function $all(sel, el) { return Array.prototype.slice.call((el || root).querySelectorAll(sel)); }
 
-  // ---- The Mix only exists once all three mixed variants are set ----
+  // ---- The Mix: real Mix products, or two different six-packs (see cartItems) ----
   var mixReady = Object.keys(DATA.offers).every(function (k) { return id(DATA.offers[k].variants.mix); });
-  if (!mixReady && MODE !== 'preview') {
+  var allowMixed = mixReady || DATA.mixFallback !== false;
+  if (!allowMixed && MODE !== 'preview') {
     delete DATA.flavors.mix;
     $all('[data-tpm-mix-only]').forEach(function (el) { el.remove(); });
   }
@@ -31,7 +32,37 @@
   }).filter(function (r) { return r.at > 0 && r.label; }).sort(function (a, b) { return a.at - b.at; });
 
   // ---- Shared state ----
-  var state = { flavor: 'bo', offer: 'trial', addons: {} };
+  // An order is built from six-packs: the trial is one, a 12-pack is two. Each
+  // six-pack is one flavor, so a 12-pack can be 6 + 6 of different flavors.
+  // packs[i] is a flavor key, or null for an empty slot (the "box" design).
+  var PACK_FLAVORS = Object.keys(DATA.flavors).filter(function (f) { return f !== 'mix'; });
+  var PACKS_PER_OFFER = { trial: 1, autoship: 2, onetime: 2 };
+  var state = { offer: 'trial', packs: [PACK_FLAVORS[0]], addons: {}, seq: 0 };
+
+  function packsNeeded(offer) { return PACKS_PER_OFFER[offer || state.offer] || 1; }
+  function packsFull() { return state.packs.length === packsNeeded() && state.packs.every(Boolean); }
+  function fillPacks(flavor) {
+    var n = packsNeeded();
+    var list = flavor === 'mix' && allowMixed ? PACK_FLAVORS.slice(0, 2) : [hasFlavor(flavor) && flavor !== 'mix' ? flavor : PACK_FLAVORS[0]];
+    state.packs = [];
+    for (var i = 0; i < n; i++) state.packs.push(list[i % list.length]);
+    state.seq = 0;
+  }
+  function setOffer(k) {
+    if (!DATA.offers[k]) return;
+    var last = state.packs.filter(Boolean).slice(-1)[0] || PACK_FLAVORS[0];
+    state.offer = k;
+    var n = packsNeeded();
+    state.packs = state.packs.slice(0, n);
+    while (state.packs.length < n) state.packs.push(last);
+    if (!allowMixed) state.packs = state.packs.map(function () { return state.packs[0] || last; });
+    state.seq = Math.min(state.seq, n - 1);
+  }
+  function packFlavor() {
+    var f = state.packs.filter(Boolean);
+    if (!f.length) return PACK_FLAVORS[0];
+    return f.every(function (x) { return x === f[0]; }) ? f[0] : 'mix';
+  }
 
   function dueToday() {
     var t = DATA.offers[state.offer].price;
@@ -41,12 +72,12 @@
 
   function canStack(flavor) {
     if (flavor === 'mix') {
-      return '<span class="tpm-can-pair"><img src="' + DATA.flavors.bo.img + '" alt=""><img src="' + DATA.flavors.pm.img + '" alt=""></span>';
+      return '<span class="tpm-can-pair">' + PACK_FLAVORS.slice(0, 2).map(function (f) { return '<img src="' + DATA.flavors[f].img + '" alt="">'; }).join('') + '</span>';
     }
     return '<img src="' + DATA.flavors[flavor].img + '" alt="">';
   }
 
-  // ---- Picker: flavor circles + size & plan cards (used inline and in the sheet) ----
+  // ---- Offer cards ----
   // Offer layout: 'cards' (three equal cards), or a highlighted 6-pack trial
   // with the 12-packs toned down: 'ticket', 'spotlight' or 'stamp'.
   var STYLES = ['spotlight', 'ticket', 'stamp', 'cards'];
@@ -118,149 +149,231 @@
       '<p class="tpm-alt__label">Or skip the trial</p><div class="tpm-alt__list">' + others + '</div></fieldset>';
   }
 
-  var pickerCount = 0;
-  // Flavor selector design: 'shelf' (chosen), or 'tiles', 'pop', 'chips'.
-  var FLAVOR_STYLES = ['tiles', 'shelf', 'pop', 'chips'];
-  var flavorStyle = String(DATA.flavorStyle || '').trim();
-  if (MODE === 'preview') {
-    var fq = (window.location.search.match(/[?&]flavor=(\w+)/) || [])[1];
-    if (fq) flavorStyle = fq;
-  }
-  if (FLAVOR_STYLES.indexOf(flavorStyle) < 0) flavorStyle = 'shelf';
-
-  var CHECK = '<span class="tpm-fcheck" aria-hidden="true"></span>';
-  function flavorRadio(n, f, cls, inner) {
-    return '<label class="' + cls + ' tpm-f--' + f + '"><input type="radio" name="tpm-flavor-' + n + '" value="' + f + '">' + inner + '</label>';
-  }
-  function flavorsHtml(n) {
-    var keys = Object.keys(DATA.flavors);
-    var legend = '<legend class="tpm-pick__label">Choose your flavor</legend>';
-    var wrap = function (mod, inner) { return '<fieldset class="tpm-flav tpm-flav--' + mod + '">' + legend + inner + '</fieldset>'; };
-
-    if (flavorStyle === 'shelf') {
-      // Cans on a swipeable shelf; the can in the center is the chosen one.
-      return wrap('shelf', '<div class="tpm-shelf"><div class="tpm-shelf__track" data-tpm-shelf-track>' + keys.map(function (f) {
-        var d = DATA.flavors[f];
-        return flavorRadio(n, f, 'tpm-shelf__opt', '<span class="tpm-shelf__box"><span class="tpm-shelf__img">' + canStack(f) + '</span>' +
-          '<span class="tpm-shelf__name">' + d.name + '</span></span>');
-      }).join('') + '</div></div><div class="tpm-shelf__dots" aria-hidden="true">' + keys.map(function (f) {
-        return '<i data-tpm-dot="' + f + '"></i>';
-      }).join('') + '</div><p class="tpm-shelf__note" data-tpm-fnote></p>');
-    }
-    if (flavorStyle === 'pop') {
-      // Full-color cards with the can breaking out of the top edge.
-      return wrap('pop', '<div class="tpm-pop">' + keys.map(function (f) {
-        var d = DATA.flavors[f];
-        return flavorRadio(n, f, 'tpm-pop__opt', '<span class="tpm-pop__box"><span class="tpm-pop__img">' + canStack(f) + '</span>' + CHECK +
-          '<span class="tpm-pop__name">' + d.name + '</span><span class="tpm-pop__note">' + d.note + '</span></span>');
-      }).join('') + '</div>');
-    }
-    if (flavorStyle === 'chips') {
-      // Compact chips; the chosen one expands with its taste note.
-      return wrap('chips', '<div class="tpm-chips">' + keys.map(function (f) {
-        var d = DATA.flavors[f];
-        return flavorRadio(n, f, 'tpm-chip2', '<span class="tpm-chip2__box"><span class="tpm-chip2__img">' + canStack(f) + '</span>' +
-          '<span class="tpm-chip2__text"><strong>' + d.name + '</strong><span>' + d.note + '</span></span>' + CHECK + '</span>');
-      }).join('') + '</div>');
-    }
-    return wrap('tiles', '<div class="tpm-ftiles">' + keys.map(function (f) {
-      var d = DATA.flavors[f];
-      return flavorRadio(n, f, 'tpm-ftile', '<span class="tpm-ftile__box">' + CHECK + '<span class="tpm-ftile__img">' + canStack(f) + '</span>' +
-        '<span class="tpm-ftile__name">' + d.name + '</span><span class="tpm-ftile__note">' + d.note + '</span></span>');
-    }).join('') + '</div>');
-  }
-
-  function pickerHtml(n) {
-    return flavorsHtml(n) + plansHtml(n) + '<p class="tpm-pick__terms" data-tpm-terms></p>';
-  }
-
-
-  function renderPicker(el) {
-    var n = ++pickerCount;
-    el.setAttribute('data-tpm-picker-n', n);
-    el.innerHTML = pickerHtml(n);
-    el.addEventListener('change', function (e) {
-      if (e.target.name.indexOf('tpm-flavor-') === 0) {
-        state.flavor = e.target.value;
-        var opt = e.target.closest('.tpm-shelf__opt');
-        popFlavor(opt);
-        var track = opt && opt.closest('[data-tpm-shelf-track]');
-        if (track && centered(track) !== opt) centerOpt(track, opt, true);
-      }
-      if (e.target.name.indexOf('tpm-offer-') === 0) state.offer = e.target.value;
-      sync();
-    });
-  }
-  $all('[data-tpm-picker]').forEach(renderPicker);
-
-  // ---- Swipeable shelf: the can that settles in the center gets selected ----
-  function centered(track) {
-    var mid = track.scrollLeft + track.clientWidth / 2;
-    var best = null, bestD = Infinity;
-    $all('.tpm-shelf__opt', track).forEach(function (o) {
-      var d = Math.abs(o.offsetLeft + o.offsetWidth / 2 - mid);
-      if (d < bestD) { bestD = d; best = o; }
-    });
-    return best;
-  }
-  function centerOpt(track, opt, smooth) {
-    if (!track.clientWidth) return;
-    track._prog = true;
-    clearTimeout(track._pt);
-    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    track.scrollTo({ left: opt.offsetLeft + opt.offsetWidth / 2 - track.clientWidth / 2, behavior: smooth && !reduce ? 'smooth' : 'auto' });
-    track._pt = setTimeout(function () { track._prog = false; }, smooth ? 600 : 80);
-  }
-  $all('[data-tpm-shelf-track]').forEach(function (track) {
-    track.addEventListener('scroll', function () {
-      if (track._prog) return;
-      clearTimeout(track._st);
-      track._st = setTimeout(function () {
-        var o = centered(track);
-        var input = o && o.querySelector('input');
-        if (input && !input.checked) {
-          input.checked = true;
-          input.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-      }, 90);
-    }, { passive: true });
-  });
-  window.addEventListener('resize', function () {
-    $all('[data-tpm-shelf-track]').forEach(function (t) {
-      var sel = t.querySelector('input:checked');
-      if (sel) centerOpt(t, sel.closest('.tpm-shelf__opt'), false);
-    });
-  });
-
-  // ---- Shelf animations: cans rise in on entry, chosen can pops on change ----
-  function restartClass(el, cls) {
-    if (!el) return;
-    el.classList.remove(cls);
-    void el.offsetWidth; // restart the CSS animation
-    el.classList.add(cls);
-  }
-  function popFlavor(opt) {
-    restartClass(opt, 'is-pop');
-    var shelf = opt && opt.closest('.tpm-shelf');
-    if (shelf) restartClass(shelf.parentNode.querySelector('[data-tpm-fnote]'), 'is-swap');
-  }
-  function enterShelf(scope) {
-    $all('.tpm-shelf', scope).forEach(function (sh) { restartClass(sh, 'is-enter'); });
-  }
-  if ('IntersectionObserver' in window) {
-    var shelfIo = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.remove('is-waiting'); restartClass(en.target, 'is-enter'); shelfIo.unobserve(en.target); } });
-    }, { threshold: 0.4 });
-    $all('.tpm-buy .tpm-shelf').forEach(function (sh) { sh.classList.add('is-waiting'); shelfIo.observe(sh); });
-  }
-
-
   // ---- Checkout sheet ----
   var sheet = root.querySelector('[data-tpm-checkout]');
   var step = 1;
   var errorEl = sheet.querySelector('[data-tpm-error]');
   var nextBtn = sheet.querySelector('[data-tpm-next]');
   var busy = false;
+
+  // ---- Offer picker (buy box and the "Change" panel in the checkout) ----
+  var pickerCount = 0;
+  function pickerHtml(n) {
+    return plansHtml(n) + '<p class="tpm-pick__terms" data-tpm-terms></p>';
+  }
+  function renderPicker(el) {
+    var n = ++pickerCount;
+    el.setAttribute('data-tpm-picker-n', n);
+    el.innerHTML = pickerHtml(n);
+    el.addEventListener('change', function (e) {
+      if (e.target.name.indexOf('tpm-offer-') === 0) {
+        setOffer(e.target.value);
+        if (sheet && sheet.open && step === 1) renderPacker();
+      }
+      sync();
+    });
+  }
+  $all('[data-tpm-picker]').forEach(renderPicker);
+
+  // ---- Flavor step: fill the order with six-packs ----
+  // Four designs, chosen in the theme editor (TIPSY buy box > Flavor step) or
+  // previewed with ?packer=box|steppers|sequence|split.
+  var PACKER_STYLES = ['box', 'steppers', 'sequence', 'split'];
+  var packerStyle = String(DATA.packerStyle || '').trim();
+  var pq = (window.location.search.match(/[?&]packer=(\w+)/) || [])[1];
+  if (pq) packerStyle = pq;
+  if (PACKER_STYLES.indexOf(packerStyle) < 0) packerStyle = 'box';
+
+  function fname(f) { return DATA.flavors[f].name; }
+  function canImg(f, cls) { return '<img' + (cls ? ' class="' + cls + '"' : '') + ' src="' + DATA.flavors[f].img + '" alt="">'; }
+  function sixCans(f) {
+    var h = '';
+    for (var i = 0; i < 6; i++) h += canImg(f);
+    return '<span class="tpm-six tpm-f--' + f + '" aria-hidden="true">' + h + '</span>';
+  }
+  function countOf(f) { return state.packs.filter(function (x) { return x === f; }).length; }
+  function cansLine() {
+    var filled = state.packs.filter(Boolean).length * 6;
+    return '<strong>' + filled + '</strong> of ' + packsNeeded() * 6 + ' cans';
+  }
+
+  function offerBarHtml() {
+    var o = DATA.offers[state.offer];
+    return '<div class="tpm-pk__offer"><span><strong>' + o.name + '</strong> · ' + money(o.price) + (state.offer === 'autoship' ? '/mo' : '') + '</span>' +
+      '<button type="button" class="tpm-pk__change" data-tpm-change aria-expanded="false">Change</button></div>' +
+      '<div class="tpm-pk__plans" data-tpm-change-panel hidden><div data-tpm-picker data-tpm-sheet-picker></div></div>';
+  }
+
+  function boxHtml() {
+    var n = packsNeeded();
+    var slots = '';
+    for (var i = 0; i < n; i++) {
+      var f = state.packs[i];
+      slots += f
+        ? '<button type="button" class="tpm-box__slot is-filled tpm-f--' + f + '" data-tpm-slot="' + i + '" aria-label="Six-pack ' + (i + 1) + ': ' + fname(f) + '. Tap to empty.">' +
+            sixCans(f) + '<span class="tpm-box__name">' + DATA.flavors[f].short + '</span><span class="tpm-box__x" aria-hidden="true">×</span></button>'
+        : '<div class="tpm-box__slot is-empty"><span class="tpm-box__plus" aria-hidden="true">+</span><span class="tpm-box__name">Six-pack ' + (i + 1) + '</span></div>';
+    }
+    var full = packsFull();
+    var adds = PACK_FLAVORS.map(function (f) {
+      var dis = full && !allowMixed && countOf(f) === 0 && n > 1;
+      return '<button type="button" class="tpm-addpack tpm-f--' + f + '" data-tpm-add="' + f + '"' + (dis ? ' disabled' : '') + '>' +
+        canImg(f, 'tpm-addpack__can') + '<span class="tpm-addpack__text"><strong>' + fname(f) + '</strong><span>' + DATA.flavors[f].note + '</span></span>' +
+        '<span class="tpm-addpack__btn">' + (full ? 'Swap in' : '+ 6') + '</span></button>';
+    }).join('');
+    return '<div class="tpm-pk tpm-pk--box">' +
+      '<p class="tpm-pk__count" aria-live="polite">' + cansLine() + '</p>' +
+      '<div class="tpm-box tpm-box--n' + n + '">' + slots + '</div>' +
+      '<p class="tpm-pk__hint">' + (full ? 'Your box is full. Tap a six-pack to empty it, or swap a flavor in.' : 'Tap a flavor to drop in a six-pack.') + '</p>' +
+      '<div class="tpm-addpacks">' + adds + '</div></div>';
+  }
+
+  function steppersHtml() {
+    var n = packsNeeded();
+    var rows = PACK_FLAVORS.map(function (f) {
+      var c = countOf(f);
+      return '<div class="tpm-stp tpm-f--' + f + (c ? ' is-on' : '') + '">' + canImg(f, 'tpm-stp__can') +
+        '<div class="tpm-stp__text"><strong>' + fname(f) + '</strong><span>' + DATA.flavors[f].note + '</span></div>' +
+        '<div class="tpm-stp__ctl" role="group" aria-label="' + fname(f) + ' six-packs">' +
+          '<button type="button" data-tpm-dec="' + f + '" aria-label="One less ' + fname(f) + ' six-pack"' + (c === 0 || (c === n && n === 1) ? ' disabled' : '') + '>−</button>' +
+          '<output aria-live="polite">' + c + '</output>' +
+          '<button type="button" data-tpm-inc="' + f + '" aria-label="One more ' + fname(f) + ' six-pack"' + (c === n || (!allowMixed && n > 1) ? ' disabled' : '') + '>+</button>' +
+        '</div><span class="tpm-stp__cans">' + c * 6 + ' cans</span></div>';
+    }).join('');
+    return '<div class="tpm-pk tpm-pk--steppers">' +
+      '<div class="tpm-pk__meter" aria-hidden="true">' + state.packs.map(function (f) { return '<span class="tpm-f--' + f + '"></span>'; }).join('') + '</div>' +
+      '<p class="tpm-pk__count" aria-live="polite">' + (n === 1 ? 'One six-pack. Pick its flavor.' : n + ' six-packs. Split them any way you like.') + '</p>' +
+      rows + '</div>';
+  }
+
+  function sequenceHtml() {
+    var n = packsNeeded();
+    var i = Math.min(state.seq, n - 1);
+    var chips = '';
+    for (var k = 0; k < n; k++) {
+      var f = state.packs[k];
+      chips += '<li class="' + (k === i ? 'is-on' : '') + '"><button type="button" data-tpm-seq="' + k + '">' +
+        '<span class="tpm-seq__dot tpm-f--' + f + '"></span>Six-pack ' + (k + 1) + '<em>' + (f ? DATA.flavors[f].short : '') + '</em></button></li>';
+    }
+    var opts = PACK_FLAVORS.map(function (f) {
+      var same = i > 0 && state.packs[i - 1] === f;
+      var on = state.packs[i] === f;
+      return '<button type="button" class="tpm-seq__opt tpm-f--' + f + (on ? ' is-on' : '') + '" data-tpm-seqpick="' + f + '" aria-pressed="' + on + '">' +
+        (same ? '<span class="tpm-seq__same">Same again</span>' : '') +
+        '<span class="tpm-seq__img">' + canImg(f) + '</span><strong>' + fname(f) + '</strong><span>' + DATA.flavors[f].note + '</span></button>';
+    }).join('');
+    return '<div class="tpm-pk tpm-pk--seq">' + (n > 1 ? '<ol class="tpm-seq__packs">' + chips + '</ol>' : '') +
+      '<p class="tpm-seq__q">' + (n > 1 ? 'Six-pack ' + (i + 1) + ' of ' + n + ': pick a flavor' : 'Pick your six-pack') + '</p>' +
+      '<div class="tpm-seq__opts">' + opts + '</div></div>';
+  }
+
+  function splitHtml() {
+    var n = packsNeeded();
+    var combos = [];
+    if (n === 1) PACK_FLAVORS.forEach(function (f) { combos.push([f]); });
+    else {
+      combos.push([PACK_FLAVORS[0], PACK_FLAVORS[0]]);
+      if (allowMixed && PACK_FLAVORS[1]) combos.push([PACK_FLAVORS[0], PACK_FLAVORS[1]]);
+      if (PACK_FLAVORS[1]) combos.push([PACK_FLAVORS[1], PACK_FLAVORS[1]]);
+    }
+    var cur = state.packs.join(',');
+    var opts = combos.map(function (c) {
+      var key = c.join(',');
+      var mixed = c[0] !== c[c.length - 1];
+      var title = mixed ? 'Half and half' : (n === 1 ? fname(c[0]) : 'All ' + DATA.flavors[c[0]].short);
+      var sub = mixed ? '6 ' + fname(c[0]) + ' + 6 ' + fname(c[1]) : n * 6 + ' ' + fname(c[0]) + (n === 1 ? ' · ' + DATA.flavors[c[0]].note : '');
+      var cans = c.map(function (f) { return sixCans(f); }).join('');
+      return '<button type="button" class="tpm-split' + (key === cur ? ' is-on' : '') + (mixed ? ' tpm-split--mixed' : ' tpm-f--' + c[0]) + '" data-tpm-split="' + key + '" aria-pressed="' + (key === cur) + '">' +
+        '<span class="tpm-split__cans tpm-split__cans--n' + n + '">' + cans + '</span>' +
+        '<span class="tpm-split__text"><strong>' + title + '</strong><span>' + sub + '</span></span><span class="tpm-split__check" aria-hidden="true"></span></button>';
+    }).join('');
+    return '<div class="tpm-pk tpm-pk--split"><div class="tpm-splits">' + opts + '</div></div>';
+  }
+
+  // Savings nudge: one six-pack -> two (auto ship), or one-time -> auto ship.
+  function upsellHtml() {
+    var t = DATA.offers.trial, a = DATA.offers.autoship, o = DATA.offers.onetime;
+    if (!a || !a.price) return '';
+    if (state.offer === 'trial' && t && t.price) {
+      var perTrial = t.price / 6, perAuto = a.price / 12;
+      var pct = Math.round((1 - perAuto / perTrial) * 100);
+      if (pct <= 0) return '';
+      return '<div class="tpm-upsell"><div class="tpm-upsell__text"><strong>Add another six-pack, save ' + pct + '% a can</strong>' +
+        '<span>12 cans for ' + money(a.price) + '/mo is ' + money(perAuto) + ' a can, vs ' + money(perTrial) + ' on the trial. Cancel anytime.</span></div>' +
+        '<button type="button" class="tpm-upsell__btn" data-tpm-upsell="autoship">+ 6 cans</button></div>';
+    }
+    if (state.offer === 'onetime' && o && o.price > a.price) {
+      return '<div class="tpm-upsell"><div class="tpm-upsell__text"><strong>Save ' + money(o.price - a.price) + ' with auto ship</strong>' +
+        '<span>The same 12 cans for ' + money(a.price) + ', delivered monthly. Cancel anytime.</span></div>' +
+        '<button type="button" class="tpm-upsell__btn" data-tpm-upsell="autoship">Switch</button></div>';
+    }
+    return '';
+  }
+
+  var packerEl = null;
+  function renderPacker() {
+    if (!packerEl) return;
+    var html = packerStyle === 'steppers' ? steppersHtml() : packerStyle === 'sequence' ? sequenceHtml() : packerStyle === 'split' ? splitHtml() : boxHtml();
+    var panelOpen = packerEl.querySelector('[data-tpm-change-panel]:not([hidden])');
+    packerEl.innerHTML = offerBarHtml() + html + upsellHtml() + '<p class="tpm-pk__terms" data-tpm-terms></p>';
+    renderPicker(packerEl.querySelector('[data-tpm-sheet-picker]'));
+    if (panelOpen) {
+      packerEl.querySelector('[data-tpm-change-panel]').hidden = false;
+      packerEl.querySelector('[data-tpm-change]').setAttribute('aria-expanded', 'true');
+    }
+    packerEl.className = 'tpm-packer tpm-packer--' + packerStyle;
+    sync();
+  }
+
+  function packerClick(e) {
+    var t;
+    if ((t = e.target.closest('[data-tpm-change]'))) {
+      var panel = packerEl.querySelector('[data-tpm-change-panel]');
+      panel.hidden = !panel.hidden;
+      t.setAttribute('aria-expanded', String(!panel.hidden));
+      return;
+    }
+    if ((t = e.target.closest('[data-tpm-add]'))) {
+      var f = t.getAttribute('data-tpm-add');
+      var empty = state.packs.indexOf(null);
+      if (empty < 0 && state.packs.length < packsNeeded()) empty = state.packs.length;
+      if (empty < 0) empty = packsNeeded() - 1;
+      state.packs[empty] = f;
+      if (!allowMixed) state.packs = state.packs.map(function (x) { return x ? f : x; });
+    } else if ((t = e.target.closest('[data-tpm-slot]'))) {
+      state.packs[parseInt(t.getAttribute('data-tpm-slot'), 10)] = null;
+    } else if ((t = e.target.closest('[data-tpm-inc]'))) {
+      var inc = t.getAttribute('data-tpm-inc');
+      var other = state.packs.lastIndexOf(state.packs.filter(function (x) { return x !== inc; }).slice(-1)[0]);
+      if (other >= 0) state.packs[other] = inc;
+    } else if ((t = e.target.closest('[data-tpm-dec]'))) {
+      var dec = t.getAttribute('data-tpm-dec');
+      var alt = PACK_FLAVORS.filter(function (x) { return x !== dec; })[0];
+      var at = state.packs.lastIndexOf(dec);
+      if (at >= 0 && alt) state.packs[at] = alt;
+    } else if ((t = e.target.closest('[data-tpm-seq]'))) {
+      state.seq = parseInt(t.getAttribute('data-tpm-seq'), 10);
+    } else if ((t = e.target.closest('[data-tpm-seqpick]'))) {
+      var sf = t.getAttribute('data-tpm-seqpick');
+      state.packs[state.seq] = sf;
+      if (!allowMixed) state.packs = state.packs.map(function () { return sf; });
+      if (state.seq < packsNeeded() - 1) state.seq++;
+    } else if ((t = e.target.closest('[data-tpm-split]'))) {
+      state.packs = t.getAttribute('data-tpm-split').split(',');
+    } else if ((t = e.target.closest('[data-tpm-upsell]'))) {
+      var before = state.packs.length;
+      setOffer(t.getAttribute('data-tpm-upsell'));
+      if (state.packs.length > before) {
+        state.seq = before;
+        // In the box, the new slot starts empty so the shopper picks its flavor.
+        if (packerStyle === 'box') for (var b = before; b < state.packs.length; b++) state.packs[b] = null;
+      }
+    } else return;
+    renderPacker();
+  }
+
+  packerEl = sheet.querySelector('[data-tpm-packer]');
+  if (packerEl) packerEl.addEventListener('click', packerClick);
 
   function renderAddons() {
     var box = sheet.querySelector('[data-tpm-addons]');
@@ -289,18 +402,6 @@
     }).join('');
   }
 
-  function renderReview() {
-    var o = DATA.offers[state.offer];
-    var f = DATA.flavors[state.flavor];
-    var lines = '<li><span class="tpm-review__img">' + canStack(state.flavor) + '</span><div><strong>' + f.name + '</strong><span>' + o.name +
-      (state.flavor === 'mix' ? ' · ' + o.split : '') + '</span></div><b>' + money(o.price) + '</b></li>';
-    DATA.addons.forEach(function (a) {
-      if (state.addons[a.id]) lines += '<li><span class="tpm-review__img"><img src="' + a.img + '" alt=""></span><div><strong>' + a.name + '</strong><span>' + a.note + '</span></div><b>' + money(a.price) + '</b></li>';
-    });
-    sheet.querySelector('[data-tpm-review]').innerHTML = lines;
-    sheet.querySelector('[data-tpm-timeline]').hidden = state.offer !== 'trial';
-  }
-
   function showStep(n, opened) {
     step = n;
     $all('[data-tpm-step]', sheet).forEach(function (s) { s.hidden = s.getAttribute('data-tpm-step') !== String(n); });
@@ -311,9 +412,13 @@
       if (k === n) d.setAttribute('aria-current', 'step'); else d.removeAttribute('aria-current');
     });
     sheet.querySelector('[data-tpm-back]').style.visibility = n > 1 ? 'visible' : 'hidden';
-    if (n === 1 && opened) enterShelf(sheet);
-    if (n === 2) { renderAddons(); renderRewards(); }
-    if (n === 3) renderReview();
+    sheet.classList.toggle('is-dark', n === 1);
+    if (n === 1) renderPacker();
+    if (n === 2) {
+      renderAddons(); renderRewards();
+      var tl = sheet.querySelector('[data-tpm-timeline]');
+      if (tl) tl.hidden = state.offer !== 'trial';
+    }
     errorEl.textContent = '';
     sync();
     var body = sheet.querySelector('.tpm-sheet__body');
@@ -324,8 +429,11 @@
 
   function openCheckout(opts) {
     opts = opts || {};
-    if (opts.flavor) state.flavor = hasFlavor(opts.flavor) ? opts.flavor : 'bo';
-    if (opts.offer) state.offer = opts.offer;
+    if (opts.offer) setOffer(opts.offer);
+    // "Get both" needs two six-packs, so the trial steps up to the 12-pack auto ship.
+    if (opts.flavor === 'mix' && allowMixed && packsNeeded() === 1 && !opts.offer) setOffer('autoship');
+    if (opts.flavor) fillPacks(opts.flavor);
+    else if (!packsFull() && packerStyle !== 'box') fillPacks(packFlavor());
     if (typeof sheet.showModal === 'function') { if (!sheet.open) sheet.showModal(); } else sheet.setAttribute('open', '');
     document.documentElement.classList.add('tpm-lock');
     showStep(opts.step || 1, true);
@@ -346,12 +454,21 @@
   sheet.querySelector('[data-tpm-close]').addEventListener('click', closeCheckout);
   sheet.querySelector('[data-tpm-back]').addEventListener('click', function () { if (step > 1) showStep(step - 1); });
   nextBtn.addEventListener('click', function () {
-    if (step < 3) showStep(step + 1); else checkout();
+    if (step === 1 && !packsFull()) { errorEl.textContent = 'Fill your box first: ' + (packsNeeded() - state.packs.filter(Boolean).length) + ' more six-pack to go.'; return; }
+    if (step < 2) showStep(step + 1); else checkout();
   });
 
   function cartItems() {
     var o = DATA.offers[state.offer];
-    var main = { id: id(o.variants[state.flavor]), quantity: 1 };
+    var f = packFlavor();
+    var main = { quantity: 1 };
+    if (f !== 'mix') main.id = id(o.variants[f]);
+    else if (mixReady) main.id = id(o.variants.mix);
+    else {
+      // No Mix product yet: add the first flavor's 12-pack and note the split.
+      main.id = id(o.variants[state.packs[0]]);
+      main.properties = { Flavors: state.packs.map(function (x) { return '6 ' + fname(x); }).join(' + ') };
+    }
     if (o.plan) main.selling_plan = o.plan;
     var items = [main];
     DATA.addons.forEach(function (a) { if (state.addons[a.id]) items.push({ id: id(a.variant), quantity: 1 }); });
@@ -366,7 +483,7 @@
         window.alert('Preview only. The mixed pack has no Shopify variant yet. Add its variant ID in the theme editor to enable it.');
         return;
       }
-      errorEl.textContent = 'This option isn\'t available right now. Please pick another flavor.';
+      errorEl.textContent = 'This option isn\'t available right now. Please pick another flavor or plan.';
       return;
     }
     if (MODE === 'preview') {
@@ -400,26 +517,20 @@
 
   // ---- Keep every picker, label and total in step ----
   function sync() {
-    if (!hasFlavor(state.flavor)) state.flavor = 'bo';
     var o = DATA.offers[state.offer];
     $all('[data-tpm-picker] input').forEach(function (i) {
-      i.checked = (i.name.indexOf('tpm-flavor-') === 0 && i.value === state.flavor) ||
-        (i.name.indexOf('tpm-offer-') === 0 && i.value === state.offer);
-    });
-    $all('[data-tpm-fnote]').forEach(function (p) { p.textContent = DATA.flavors[state.flavor].note; });
-    $all('[data-tpm-dot]').forEach(function (d) { d.classList.toggle('is-on', d.getAttribute('data-tpm-dot') === state.flavor); });
-    $all('[data-tpm-shelf-track]').forEach(function (t) {
-      var sel = t.querySelector('input[value="' + state.flavor + '"]');
-      var opt = sel && sel.closest('.tpm-shelf__opt');
-      if (opt && centered(t) !== opt && !t._prog) centerOpt(t, opt, false);
+      i.checked = i.name.indexOf('tpm-offer-') === 0 && i.value === state.offer;
     });
     $all('[data-tpm-terms]').forEach(function (t) {
-      t.textContent = (state.flavor === 'mix' ? o.split + '. ' : '') + o.terms;
+      t.textContent = (packFlavor() === 'mix' ? state.packs.map(function (x) { return '6 ' + fname(x); }).join(' + ') + '. ' : '') + o.terms;
     });
     var media = root.querySelector('[data-tpm-buy-media]');
-    if (media) media.innerHTML = '<div class="tpm-buy__stage tpm-buy__stage--' + state.flavor + '">' + canStack(state.flavor) + '</div>';
+    if (media) media.innerHTML = '<div class="tpm-buy__stage tpm-buy__stage--' + packFlavor() + '">' + canStack(packFlavor()) + '</div>';
     sheet.querySelector('[data-tpm-total]').textContent = money(dueToday());
-    if (!busy) sheet.querySelector('[data-tpm-next-label]').textContent = step < 3 ? 'Continue' : 'Checkout · ' + money(dueToday());
+    if (!busy) {
+      sheet.querySelector('[data-tpm-next-label]').textContent = step < 2 ? 'Continue' : 'Checkout · ' + money(dueToday());
+      nextBtn.classList.toggle('is-waiting', step === 1 && !packsFull());
+    }
   }
 
   // ---- Entry points into the checkout flow ----
@@ -435,7 +546,7 @@
   $all('[data-tpm-apply]').forEach(function (b) {
     var parts = b.getAttribute('data-tpm-apply').split(':');
     var pickText = b.parentNode.querySelector('.tpm-use__pick');
-    if (parts[0] === 'mix' && !hasFlavor('mix') && pickText) pickText.innerHTML = pickText.innerHTML.replace('The Mix', DATA.flavors.bo.name);
+    if (parts[0] === 'mix' && !allowMixed && pickText) pickText.innerHTML = pickText.innerHTML.replace('The Mix', DATA.flavors.bo.name);
     b.addEventListener('click', function () { openCheckout({ flavor: parts[0], offer: parts[1], step: 1 }); });
   });
 

@@ -54,6 +54,18 @@ Shared styles and script: `assets/tpm-v3.css`, `assets/tpm-v3.js` (ported from `
 | TIPSY FAQ | Questions and answers |
 | TIPSY statement band | Text, button |
 
+**Checkout flow** (opened by every TIPSY button): the buy box shows only the offer, and its button
+("Choose flavors") opens a two-step flow. **1. Choose your flavors** is a dark full-screen step where
+the order is filled with six-packs (trial = 1, 12-pack = 2, any flavor each), with a savings nudge
+(trial → add a six-pack and switch to auto ship; one-time → switch to auto ship). **2. Customize**
+has the add-ons, optional rewards bar and the trial timeline; its button goes straight to checkout.
+Four designs for step 1, set in **TIPSY buy box → Flavor step design** or previewed with
+`?packer=box|steppers|sequence|split`.
+
+**Mixed 12-packs (6 + 6):** with Mix products set, the Mix product is added. Without them (today),
+the first flavor's 12-pack is added with a `Flavors` line-item note, e.g. "6 Blood Orange Margarita +
+6 Pineapple Martini". Fulfillment must pack from that note, or turn off **Allow mixed 12-packs**.
+
 **TIPSY buy box** must be on the page (once): it holds the checkout flow, quiz and sticky bar that
 every other section's buttons open. Pick products, not IDs: for each flavor it takes the 6-pack
 trial, 12-pack auto ship and 12-pack one-time products, and reads the variant, subscription plan and
