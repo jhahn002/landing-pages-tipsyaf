@@ -1,0 +1,93 @@
+{%- comment -%}
+  Brand font library. Rendered once in layout/theme.liquid, after Dawn's :root block.
+
+  - Declares every brand font. Browsers only download a font when something on the page uses it,
+    so declaring them all costs nothing.
+  - Exposes each font as a CSS variable (--font-league-gothic, ...) and a utility class
+    (.font-league-gothic, ...) for sections to use.
+  - Theme settings > Typography > Brand fonts can swap Dawn's heading and body fonts for a brand
+    font. Left on "Use font picker above", Dawn's own font pickers apply.
+
+  To add a font: upload the .woff2 to assets/, add an @font-face, a variable, a class, and (if it
+  should be selectable globally) an option in config/settings_schema.json and the case below.
+{%- endcomment -%}
+
+{%- liquid
+  assign heading_font = settings.brand_heading_font | default: 'none'
+  assign body_font = settings.brand_body_font | default: 'none'
+
+  case heading_font
+    when 'league_gothic'
+      assign heading_file = 'league-gothic-regular.woff2'
+    when 'coolvetica'
+      assign heading_file = 'coolvetica-compressed-heavy.woff2'
+    when 'lemon_milk'
+      assign heading_file = 'lemonmilk-bold.woff2'
+    when 'sofia_pro'
+      assign heading_file = 'sofia-pro-semibold.woff2'
+    when 'figtree'
+      assign heading_file = 'figtree-variable.woff2'
+    when 'instrument_serif'
+      assign heading_file = 'instrument-serif-regular.woff2'
+    when 'instrument_serif_italic'
+      assign heading_file = 'instrument-serif-italic.woff2'
+  endcase
+-%}
+
+{%- if heading_file -%}
+  {{ heading_file | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: true }}
+{%- endif -%}
+
+<style>
+  @font-face { font-family: 'League Gothic'; src: url({{ 'league-gothic-regular.woff2' | asset_url }}) format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Coolvetica Compressed'; src: url({{ 'coolvetica-compressed-heavy.woff2' | asset_url }}) format('woff2'); font-weight: 400 900; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Lemon Milk'; src: url({{ 'lemonmilk-regular.woff2' | asset_url }}) format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Lemon Milk'; src: url({{ 'lemonmilk-medium.woff2' | asset_url }}) format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Lemon Milk'; src: url({{ 'lemonmilk-bold.woff2' | asset_url }}) format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Sofia Pro'; src: url({{ 'sofia-pro-regular.woff2' | asset_url }}) format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Sofia Pro'; src: url({{ 'sofia-pro-semibold.woff2' | asset_url }}) format('woff2'); font-weight: 600; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Figtree'; src: url({{ 'figtree-variable.woff2' | asset_url }}) format('woff2'); font-weight: 300 900; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Instrument Serif'; src: url({{ 'instrument-serif-regular.woff2' | asset_url }}) format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Instrument Serif'; src: url({{ 'instrument-serif-italic.woff2' | asset_url }}) format('woff2'); font-weight: 400; font-style: italic; font-display: swap; }
+
+  :root {
+    --font-league-gothic: 'League Gothic', 'Impact', 'Arial Narrow', sans-serif;
+    --font-coolvetica: 'Coolvetica Compressed', 'League Gothic', 'Impact', sans-serif;
+    --font-lemon-milk: 'Lemon Milk', 'Arial Black', sans-serif;
+    --font-sofia-pro: 'Sofia Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-figtree: 'Figtree', 'Sofia Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+
+    {%- case heading_font -%}
+      {%- when 'league_gothic' -%}
+        --font-heading-family: var(--font-league-gothic); --font-heading-weight: 400; --font-heading-style: normal;
+      {%- when 'coolvetica' -%}
+        --font-heading-family: var(--font-coolvetica); --font-heading-weight: 400; --font-heading-style: normal;
+      {%- when 'lemon_milk' -%}
+        --font-heading-family: var(--font-lemon-milk); --font-heading-weight: 700; --font-heading-style: normal;
+      {%- when 'sofia_pro' -%}
+        --font-heading-family: var(--font-sofia-pro); --font-heading-weight: 600; --font-heading-style: normal;
+      {%- when 'figtree' -%}
+        --font-heading-family: var(--font-figtree); --font-heading-weight: 700; --font-heading-style: normal;
+      {%- when 'instrument_serif' -%}
+        --font-heading-family: var(--font-serif); --font-heading-weight: 400; --font-heading-style: normal;
+      {%- when 'instrument_serif_italic' -%}
+        --font-heading-family: var(--font-serif); --font-heading-weight: 400; --font-heading-style: italic;
+    {%- endcase -%}
+
+    {%- case body_font -%}
+      {%- when 'sofia_pro' -%}
+        --font-body-family: var(--font-sofia-pro); --font-body-weight: 400; --font-body-weight-bold: 600; --font-body-style: normal;
+      {%- when 'figtree' -%}
+        --font-body-family: var(--font-figtree); --font-body-weight: 400; --font-body-weight-bold: 700; --font-body-style: normal;
+    {%- endcase -%}
+  }
+
+  .font-league-gothic { font-family: var(--font-league-gothic); font-weight: 400; }
+  .font-coolvetica { font-family: var(--font-coolvetica); font-weight: 400; }
+  .font-lemon-milk { font-family: var(--font-lemon-milk); }
+  .font-sofia-pro { font-family: var(--font-sofia-pro); }
+  .font-figtree { font-family: var(--font-figtree); }
+  .font-serif { font-family: var(--font-serif); font-weight: 400; font-style: normal; }
+  .font-serif-italic { font-family: var(--font-serif); font-weight: 400; font-style: italic; }
+</style>
