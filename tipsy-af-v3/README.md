@@ -28,7 +28,8 @@ recommendations that use the Mix switch to Blood Orange automatically.
 ## Files
 
 - `assets/`: can cutouts made from the white-background shots on gettipsy.com (WebP, transparent).
-  The build copies them to `shopify/assets/`; upload those to the theme's assets with the section.
+  The build embeds them in the preview (so `preview/index.html` works as a single downloaded file)
+  and copies them to `shopify/assets/`; upload those to the theme's assets with the section.
 - Fonts: Figtree (sans) and Instrument Serif (italic headline), both free Google Fonts, plus your
   Coolvetica for condensed type.
 

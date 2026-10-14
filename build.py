@@ -13,7 +13,9 @@ and src/page.html, src/page.css, src/page.js. Writes into that folder:
 
 Usage: python3 build.py <page-folder> [<page-folder> ...]
 """
+import base64
 import json
+import mimetypes
 import re
 import shutil
 import sys
@@ -105,11 +107,17 @@ def build(root):
         token = "[[" + st["id"] + "]]"
         html = html.replace(token, "")
         liquid_html = liquid_html.replace(token, "{{ section.settings." + st["id"] + " | escape }}")
-    html = re.sub(r"\[\[asset:([\w.-]+)\]\]", r"assets/\1", html)
+    # The preview embeds assets as data URIs so preview/index.html works as a
+    # single downloaded file (for example, opened from GitHub on any device).
+    def inline_asset(m):
+        f = root / "assets" / m.group(1)
+        mime = mimetypes.guess_type(f.name)[0] or "application/octet-stream"
+        return "data:%s;base64,%s" % (mime, base64.b64encode(f.read_bytes()).decode())
+    html = re.sub(r"\[\[asset:([\w.-]+)\]\]", inline_asset, html)
     liquid_html = re.sub(r"\[\[asset:([\w.-]+)\]\]", r"{{ '\1' | asset_url }}", liquid_html)
     assets = root / "assets"
     if assets.is_dir():
-        for dest in (root / "preview" / "assets", root / "shopify" / "assets"):
+        for dest in (root / "shopify" / "assets",):
             dest.mkdir(parents=True, exist_ok=True)
             for f in assets.iterdir():
                 if f.is_file():
