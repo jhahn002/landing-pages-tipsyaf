@@ -54,13 +54,13 @@ Shared styles and script: `assets/tpm-v3.css`, `assets/tpm-v3.js` (ported from `
 | TIPSY FAQ | Questions and answers |
 | TIPSY statement band | Text, button |
 
-**Checkout flow** (opened by every TIPSY button): the buy box shows only the offer, and its button
-("Choose flavors") opens a two-step flow. **1. Choose your flavors** is a dark full-screen step where
-the order is filled with six-packs (trial = 1, 12-pack = 2, any flavor each), with a savings nudge
-(trial → add a six-pack and switch to auto ship; one-time → switch to auto ship). **2. Customize**
-has the add-ons, optional rewards bar and the trial timeline; its button goes straight to checkout.
-Four designs for step 1, set in **TIPSY buy box → Flavor step design** or previewed with
-`?packer=box|steppers|sequence|split`.
+**Checkout flow:** three steps in a full-screen modal. **1. Choose your quantity** (the 6-pack
+trial or a 12-pack, the same choice the buy box shows) → **2. Choose your flavors**, a dark step where
+the order is filled with six-packs (trial = 1, 12-pack = 2, any flavor each) with a savings nudge →
+**3. Customize** (add-ons, optional rewards bar, trial timeline), whose button goes straight to
+checkout. Every TIPSY button opens step 1; the buy box at the bottom is step 1 inline, and its
+"Choose flavors" button opens step 2. Four designs for step 2, set in **TIPSY buy box → Flavor step
+design** or previewed with `?packer=box|steppers|sequence|split`.
 
 **Mixed 12-packs (6 + 6):** with Mix products set, the Mix product is added. Without them (today),
 the first flavor's 12-pack is added with a `Flavors` line-item note, e.g. "6 Blood Orange Margarita +

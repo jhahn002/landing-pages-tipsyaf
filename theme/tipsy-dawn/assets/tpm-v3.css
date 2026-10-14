@@ -713,8 +713,8 @@
 }
 
 /* ============================================================
-   Checkout flow, round 3: two steps (Flavors, Customize).
-   Step 1 is a dark full-screen takeover where the order is
+   Checkout flow, round 3: three steps (Quantity, Flavors, Customize).
+   Step 2 is a dark full-screen takeover where the order is
    filled with six-packs. Four designs: box, steppers,
    sequence, split (TIPSY buy box > Flavor step design).
    ============================================================ */
@@ -738,7 +738,7 @@
 .tpm-step--packs .tpm-sheet__title { margin-bottom: 14px; }
 
 /* Offer bar + Change panel */
-.tpm-pk__offer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; border-radius: 14px; background: rgba(255,255,255,.08); font-size: 15px; margin-bottom: 18px; }
+.tpm-pk__offer { display: inline-block; padding: 8px 14px; border-radius: 999px; background: rgba(255,255,255,.08); font-size: 14px; margin-bottom: 16px; }
 .tpm-pk__offer strong { color: var(--tpm-accent); font-weight: 700; }
 .tpm-pk__change { border: 0; background: none; color: #fff; font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 6px 0; }
 .tpm-pk__plans { background: #fff; color: var(--tpm-ink); border-radius: 20px; padding: 16px 14px 4px; margin: -8px 0 18px; }

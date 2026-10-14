@@ -17,7 +17,7 @@
         <div>
           <h2 class="tpm-h2" id="tpm-buy-title">{{ s.heading | escape }}</h2>
           <div data-tpm-picker></div>
-          <button type="button" class="tpm-knobbtn tpm-knobbtn--accent tpm-knobbtn--block" data-tpm-start><span>{{ s.button_label | escape }}</span>{% render 'tpm-knob' %}</button>
+          <button type="button" class="tpm-knobbtn tpm-knobbtn--accent tpm-knobbtn--block" data-tpm-start data-tpm-start-step="2"><span>{{ s.button_label | escape }}</span>{% render 'tpm-knob' %}</button>
           {%- if s.assurance != blank -%}<p class="tpm-assure">{{ s.assurance | escape }}</p>{%- endif -%}
         </div>
       </div>
@@ -59,17 +59,21 @@
     <div class="tpm-sheet__inner">
       <header class="tpm-sheet__top">
         <button type="button" class="tpm-iconbtn" data-tpm-back aria-label="Back"><svg viewBox="0 0 24 24"><path d="M19 12H6M11 6l-6 6 6 6"/></svg></button>
-        <ol class="tpm-stepsbar tpm-stepsbar--2" aria-label="Checkout steps">
-          <li data-tpm-stepdot="1">Flavors</li><li data-tpm-stepdot="2">Customize</li>
+        <ol class="tpm-stepsbar" aria-label="Checkout steps">
+          <li data-tpm-stepdot="1">Quantity</li><li data-tpm-stepdot="2">Flavors</li><li data-tpm-stepdot="3">Customize</li>
         </ol>
         <button type="button" class="tpm-iconbtn" data-tpm-close aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </header>
       <div class="tpm-sheet__body">
-        <section class="tpm-step tpm-step--packs" data-tpm-step="1">
-          <h2 class="tpm-sheet__title" id="tpm-sheet-title">{{ s.step1_title | escape }}</h2>
+        <section class="tpm-step" data-tpm-step="1">
+          <h2 class="tpm-sheet__title" id="tpm-sheet-title">{{ s.step0_title | escape }}</h2>
+          <div data-tpm-picker></div>
+        </section>
+        <section class="tpm-step tpm-step--packs" data-tpm-step="2" hidden>
+          <h2 class="tpm-sheet__title">{{ s.step1_title | escape }}</h2>
           <div data-tpm-packer></div>
         </section>
-        <section class="tpm-step" data-tpm-step="2" hidden>
+        <section class="tpm-step" data-tpm-step="3" hidden>
           <h2 class="tpm-sheet__title">{{ s.step2_title | escape }}</h2>
           <div class="tpm-rewards" data-tpm-rewards hidden>
             <p class="tpm-rewards__msg" data-tpm-rewards-msg></p>
@@ -149,6 +153,7 @@
     "rewards": {{ s.rewards | default: '' | json }},
     "offerStyle": {{ s.offer_style | json }},
     "packerStyle": {{ s.packer_style | json }},
+    "labels": { "toFlavors": {{ s.button_label | json }}, "toCustomize": {{ s.flavors_button | default: 'Continue' | json }} },
     "mixFallback": {{ s.mix_fallback | json }},
     "flavorStyle": ""
   }
@@ -171,7 +176,7 @@
   "settings": [
     { "type": "paragraph", "content": "Holds the checkout flow, quiz and sticky bar used by every TIPSY section's buttons. Use one per page." },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Get TIPSY" },
-    { "type": "text", "id": "button_label", "label": "Button", "info": "Opens the flavor step with the chosen offer.", "default": "Choose flavors" },
+    { "type": "text", "id": "button_label", "label": "Button", "info": "Opens the flavor step with the chosen quantity. Also the button label on the quantity step.", "default": "Choose flavors" },
     { "type": "text", "id": "assurance", "label": "Guarantee line", "default": "100-day money-back guarantee, even on opened cans. Most orders ship the same day." },
     { "type": "select", "id": "offer_style", "label": "Offer layout", "options": [
       { "value": "", "label": "Spotlight" },
@@ -233,8 +238,10 @@
       { "value": "split", "label": "Pick a split" }
     ], "default": "box" },
     { "type": "checkbox", "id": "mix_fallback", "label": "Allow mixed 12-packs without Mix products", "info": "A 6 + 6 order adds the first flavor's 12-pack with a Flavors note (e.g. 6 Blood Orange Margarita + 6 Pineapple Martini) on the order line. Fulfillment has to pack from that note. Ignored once the Mix products are set.", "default": true },
-    { "type": "text", "id": "step1_title", "label": "Step 1 title", "default": "Choose your flavors" },
-    { "type": "text", "id": "step2_title", "label": "Step 2 title", "default": "Customize" },
+    { "type": "text", "id": "step0_title", "label": "Step 1 title (quantity)", "info": "Step 1 shows the same offer choice as the buy box. The buy box's button skips it.", "default": "Choose your quantity" },
+    { "type": "text", "id": "step1_title", "label": "Step 2 title (flavors)", "default": "Choose your flavors" },
+    { "type": "text", "id": "flavors_button", "label": "Step 2 button", "default": "Continue" },
+    { "type": "text", "id": "step2_title", "label": "Step 3 title (customize)", "default": "Customize" },
     { "type": "text", "id": "addon_note", "label": "Add-on note", "default": "One time, $5.00/can" },
     { "type": "text", "id": "rewards", "label": "Checkout rewards", "info": "Optional. Spend thresholds shown as a progress bar in the add-ons step, e.g. 75:Free shipping|110:Free gift. Set up the matching automatic discounts first. Leave empty to hide." },
     { "type": "text", "id": "timeline_1", "label": "Trial timeline: today", "default": "6 cans ship" },

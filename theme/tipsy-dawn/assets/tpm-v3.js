@@ -168,7 +168,6 @@
     el.addEventListener('change', function (e) {
       if (e.target.name.indexOf('tpm-offer-') === 0) {
         setOffer(e.target.value);
-        if (sheet && sheet.open && step === 1) renderPacker();
       }
       sync();
     });
@@ -195,13 +194,6 @@
   function cansLine() {
     var filled = state.packs.filter(Boolean).length * 6;
     return '<strong>' + filled + '</strong> of ' + packsNeeded() * 6 + ' cans';
-  }
-
-  function offerBarHtml() {
-    var o = DATA.offers[state.offer];
-    return '<div class="tpm-pk__offer"><span><strong>' + o.name + '</strong> · ' + money(o.price) + (state.offer === 'autoship' ? '/mo' : '') + '</span>' +
-      '<button type="button" class="tpm-pk__change" data-tpm-change aria-expanded="false">Change</button></div>' +
-      '<div class="tpm-pk__plans" data-tpm-change-panel hidden><div data-tpm-picker data-tpm-sheet-picker></div></div>';
   }
 
   function boxHtml() {
@@ -311,28 +303,19 @@
   }
 
   var packerEl = null;
+  var LABELS = { toFlavors: DATA.labels && DATA.labels.toFlavors || 'Choose flavors', toCustomize: DATA.labels && DATA.labels.toCustomize || 'Continue' };
   function renderPacker() {
     if (!packerEl) return;
     var html = packerStyle === 'steppers' ? steppersHtml() : packerStyle === 'sequence' ? sequenceHtml() : packerStyle === 'split' ? splitHtml() : boxHtml();
-    var panelOpen = packerEl.querySelector('[data-tpm-change-panel]:not([hidden])');
-    packerEl.innerHTML = offerBarHtml() + html + upsellHtml() + '<p class="tpm-pk__terms" data-tpm-terms></p>';
-    renderPicker(packerEl.querySelector('[data-tpm-sheet-picker]'));
-    if (panelOpen) {
-      packerEl.querySelector('[data-tpm-change-panel]').hidden = false;
-      packerEl.querySelector('[data-tpm-change]').setAttribute('aria-expanded', 'true');
-    }
+    var o = DATA.offers[state.offer];
+    packerEl.innerHTML = '<p class="tpm-pk__offer"><strong>' + o.name + '</strong> · ' + money(o.price) + (state.offer === 'autoship' ? '/mo' : '') + '</p>' +
+      html + upsellHtml() + '<p class="tpm-pk__terms" data-tpm-terms></p>';
     packerEl.className = 'tpm-packer tpm-packer--' + packerStyle;
     sync();
   }
 
   function packerClick(e) {
     var t;
-    if ((t = e.target.closest('[data-tpm-change]'))) {
-      var panel = packerEl.querySelector('[data-tpm-change-panel]');
-      panel.hidden = !panel.hidden;
-      t.setAttribute('aria-expanded', String(!panel.hidden));
-      return;
-    }
     if ((t = e.target.closest('[data-tpm-add]'))) {
       var f = t.getAttribute('data-tpm-add');
       var empty = state.packs.indexOf(null);
@@ -412,9 +395,12 @@
       if (k === n) d.setAttribute('aria-current', 'step'); else d.removeAttribute('aria-current');
     });
     sheet.querySelector('[data-tpm-back]').style.visibility = n > 1 ? 'visible' : 'hidden';
-    sheet.classList.toggle('is-dark', n === 1);
-    if (n === 1) renderPacker();
+    sheet.classList.toggle('is-dark', n === 2);
     if (n === 2) {
+      if (!packsFull() && packerStyle !== 'box') fillPacks(packFlavor());
+      renderPacker();
+    }
+    if (n === 3) {
       renderAddons(); renderRewards();
       var tl = sheet.querySelector('[data-tpm-timeline]');
       if (tl) tl.hidden = state.offer !== 'trial';
@@ -454,8 +440,8 @@
   sheet.querySelector('[data-tpm-close]').addEventListener('click', closeCheckout);
   sheet.querySelector('[data-tpm-back]').addEventListener('click', function () { if (step > 1) showStep(step - 1); });
   nextBtn.addEventListener('click', function () {
-    if (step === 1 && !packsFull()) { errorEl.textContent = 'Fill your box first: ' + (packsNeeded() - state.packs.filter(Boolean).length) + ' more six-pack to go.'; return; }
-    if (step < 2) showStep(step + 1); else checkout();
+    if (step === 2 && !packsFull()) { errorEl.textContent = 'Fill your box first: ' + (packsNeeded() - state.packs.filter(Boolean).length) + ' more six-pack to go.'; return; }
+    if (step < 3) showStep(step + 1); else checkout();
   });
 
   function cartItems() {
@@ -528,8 +514,8 @@
     if (media) media.innerHTML = '<div class="tpm-buy__stage tpm-buy__stage--' + packFlavor() + '">' + canStack(packFlavor()) + '</div>';
     sheet.querySelector('[data-tpm-total]').textContent = money(dueToday());
     if (!busy) {
-      sheet.querySelector('[data-tpm-next-label]').textContent = step < 2 ? 'Continue' : 'Checkout · ' + money(dueToday());
-      nextBtn.classList.toggle('is-waiting', step === 1 && !packsFull());
+      sheet.querySelector('[data-tpm-next-label]').textContent = step === 1 ? LABELS.toFlavors : step === 2 ? LABELS.toCustomize : 'Checkout · ' + money(dueToday());
+      nextBtn.classList.toggle('is-waiting', step === 2 && !packsFull());
     }
   }
 
