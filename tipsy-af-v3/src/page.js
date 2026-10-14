@@ -115,7 +115,7 @@
 
   var pickerCount = 0;
   // Flavor selector design: 'shelf' (chosen), or 'tiles', 'pop', 'chips'.
-  var FLAVOR_STYLES = ['tiles', 'shelf', 'pop', 'chips', 'shelflight'];
+  var FLAVOR_STYLES = ['tiles', 'shelf', 'pop', 'chips'];
   var flavorStyle = String(DATA.flavorStyle || '').trim();
   if (MODE === 'preview') {
     var fq = (window.location.search.match(/[?&]flavor=(\w+)/) || [])[1];
@@ -132,12 +132,14 @@
     var legend = '<legend class="tpm-pick__label">Choose your flavor</legend>';
     var wrap = function (mod, inner) { return '<fieldset class="tpm-flav tpm-flav--' + mod + '">' + legend + inner + '</fieldset>'; };
 
-    if (flavorStyle === 'shelf' || flavorStyle === 'shelflight') {
-      // Cans standing on a shelf; the chosen can rises into a spotlight.
-      return wrap(flavorStyle, '<div class="tpm-shelf">' + (flavorStyle === 'shelflight' ? '<span class="tpm-bokeh" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>' : '') + keys.map(function (f) {
+    if (flavorStyle === 'shelf') {
+      // Cans on a swipeable shelf; the can in the center is the chosen one.
+      return wrap('shelf', '<div class="tpm-shelf"><div class="tpm-shelf__track" data-tpm-shelf-track>' + keys.map(function (f) {
         var d = DATA.flavors[f];
         return flavorRadio(n, f, 'tpm-shelf__opt', '<span class="tpm-shelf__box"><span class="tpm-shelf__img">' + canStack(f) + '</span>' +
           '<span class="tpm-shelf__name">' + d.name + '</span></span>');
+      }).join('') + '</div></div><div class="tpm-shelf__dots" aria-hidden="true">' + keys.map(function (f) {
+        return '<i data-tpm-dot="' + f + '"></i>';
       }).join('') + '</div><p class="tpm-shelf__note" data-tpm-fnote></p>');
     }
     if (flavorStyle === 'pop') {
@@ -175,13 +177,55 @@
     el.addEventListener('change', function (e) {
       if (e.target.name.indexOf('tpm-flavor-') === 0) {
         state.flavor = e.target.value;
-        popFlavor(e.target.closest('.tpm-shelf__opt'));
+        var opt = e.target.closest('.tpm-shelf__opt');
+        popFlavor(opt);
+        var track = opt && opt.closest('[data-tpm-shelf-track]');
+        if (track && centered(track) !== opt) centerOpt(track, opt, true);
       }
       if (e.target.name.indexOf('tpm-offer-') === 0) state.offer = e.target.value;
       sync();
     });
   }
   $all('[data-tpm-picker]').forEach(renderPicker);
+
+  // ---- Swipeable shelf: the can that settles in the center gets selected ----
+  function centered(track) {
+    var mid = track.scrollLeft + track.clientWidth / 2;
+    var best = null, bestD = Infinity;
+    $all('.tpm-shelf__opt', track).forEach(function (o) {
+      var d = Math.abs(o.offsetLeft + o.offsetWidth / 2 - mid);
+      if (d < bestD) { bestD = d; best = o; }
+    });
+    return best;
+  }
+  function centerOpt(track, opt, smooth) {
+    if (!track.clientWidth) return;
+    track._prog = true;
+    clearTimeout(track._pt);
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    track.scrollTo({ left: opt.offsetLeft + opt.offsetWidth / 2 - track.clientWidth / 2, behavior: smooth && !reduce ? 'smooth' : 'auto' });
+    track._pt = setTimeout(function () { track._prog = false; }, smooth ? 600 : 80);
+  }
+  $all('[data-tpm-shelf-track]').forEach(function (track) {
+    track.addEventListener('scroll', function () {
+      if (track._prog) return;
+      clearTimeout(track._st);
+      track._st = setTimeout(function () {
+        var o = centered(track);
+        var input = o && o.querySelector('input');
+        if (input && !input.checked) {
+          input.checked = true;
+          input.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      }, 90);
+    }, { passive: true });
+  });
+  window.addEventListener('resize', function () {
+    $all('[data-tpm-shelf-track]').forEach(function (t) {
+      var sel = t.querySelector('input:checked');
+      if (sel) centerOpt(t, sel.closest('.tpm-shelf__opt'), false);
+    });
+  });
 
   // ---- Shelf animations: cans rise in on entry, chosen can pops on change ----
   function restartClass(el, cls) {
@@ -358,6 +402,12 @@
         (i.name.indexOf('tpm-offer-') === 0 && i.value === state.offer);
     });
     $all('[data-tpm-fnote]').forEach(function (p) { p.textContent = DATA.flavors[state.flavor].note; });
+    $all('[data-tpm-dot]').forEach(function (d) { d.classList.toggle('is-on', d.getAttribute('data-tpm-dot') === state.flavor); });
+    $all('[data-tpm-shelf-track]').forEach(function (t) {
+      var sel = t.querySelector('input[value="' + state.flavor + '"]');
+      var opt = sel && sel.closest('.tpm-shelf__opt');
+      if (opt && centered(t) !== opt && !t._prog) centerOpt(t, opt, false);
+    });
     $all('[data-tpm-terms]').forEach(function (t) {
       t.textContent = (state.flavor === 'mix' ? o.split + '. ' : '') + o.terms;
     });
