@@ -255,31 +255,51 @@
 .tpm-compare .tpm-cond { font-size: clamp(54px, 15vw, 110px); }
 .tpm-hl { color: #6b7fe0; }
 .tpm-compare__sub { text-align: center; font-size: 18px; color: var(--tpm-muted); margin: 10px 0 28px; }
-.tpm-ctable { position: relative; display: grid; border: 2.5px solid var(--tpm-ink); border-radius: 22px; padding: 0 10px 6px; margin: 64px 0 28px; }
-.tpm-ctable__us { position: absolute; top: -56px; bottom: -14px; left: calc(10px + 44% + 2px); width: 22%; background: var(--tpm-accent); border-radius: 18px; display: flex; justify-content: center; padding-top: 10px; }
-.tpm-ctable__us img { height: 44px; width: auto; filter: drop-shadow(0 4px 4px rgba(0,0,0,.2)); }
-.tpm-ctable__us img + img { margin-left: -4px; }
-.tpm-crow { position: relative; display: grid; grid-template-columns: 44% 22% 17% 17%; align-items: center; border-bottom: 1.5px solid var(--tpm-line); min-height: 64px; }
-.tpm-crow:last-child { border-bottom: 0; }
-.tpm-crow > * { text-align: center; padding: 10px 2px; }
-.tpm-crow > [role=rowheader] { text-align: left; font-weight: 600; font-size: 15px; line-height: 1.25; padding-right: 8px; }
-.tpm-crow--head { min-height: 52px; border-bottom-width: 2px; }
-.tpm-crow--head > * { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; line-height: 1.15; }
-.tpm-crow--head .tpm-ccol-us { font-size: 14px; }
-.tpm-crow b { font-size: 13px; font-weight: 600; color: var(--tpm-muted); }
-.tpm-yes, .tpm-no { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; font-size: 0; vertical-align: middle; }
+/* Comparison table: label + TIPSY columns stay pinned, competitors scroll */
+.tpm-ct { position: relative; margin: 28px -16px 24px; }
+.tpm-ct::after { content: ""; position: absolute; top: 0; right: 0; bottom: 34px; width: 28px; pointer-events: none; background: linear-gradient(90deg, rgba(255,255,255,0), #fff); transition: opacity .2s; }
+.tpm-ct.is-end::after { opacity: 0; }
+.tpm-ct__scroll { --lw: 132px; --uw: 88px; --cw: 92px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; padding: 0 0 4px; outline: none; }
+.tpm-ct__scroll::-webkit-scrollbar { display: none; }
+.tpm-ct__scroll:focus-visible { box-shadow: inset 0 0 0 3px var(--tpm-ink); border-radius: 12px; }
+.tpm-ct__row { display: grid; grid-template-columns: var(--lw) var(--uw) repeat(5, var(--cw)); width: max-content; min-width: 100%; align-items: stretch; }
+.tpm-ct__row > * { display: flex; align-items: center; justify-content: center; text-align: center; padding: 10px 6px; min-height: 62px; border-bottom: 1px solid var(--tpm-line); scroll-snap-align: start; }
+.tpm-ct__row:last-child > * { border-bottom: 0; }
+.tpm-ct__label { position: sticky; left: 0; z-index: 2; background: #fff; justify-content: flex-start !important; text-align: left !important; padding-left: 16px !important; font-weight: 600; font-size: 14px; line-height: 1.25; }
+.tpm-ct__us { position: sticky; left: var(--lw); z-index: 2; background: var(--tpm-accent); border-bottom-color: rgba(31,30,33,.12) !important; box-shadow: 8px 0 12px -8px rgba(0,0,0,.25); }
+.tpm-ct__row:last-child .tpm-ct__us { border-radius: 0 0 16px 16px; }
+.tpm-ct__row--head > * { min-height: 0; align-items: flex-end; padding-bottom: 12px; border-bottom: 2px solid var(--tpm-ink); }
+.tpm-ct__h { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; line-height: 1.15; color: var(--tpm-muted); }
+.tpm-ct__us--head { flex-direction: column; align-items: center !important; gap: 6px; border-radius: 16px 16px 0 0; padding-top: 12px; font-size: 13px; font-weight: 800; letter-spacing: .02em; border-bottom-color: var(--tpm-ink) !important; }
+.tpm-ct__cans { display: flex; }
+.tpm-ct__cans img { height: 46px; width: auto; filter: drop-shadow(0 4px 4px rgba(0,0,0,.2)); }
+.tpm-ct__cans img + img { margin-left: -4px; }
+.tpm-ct__row b { font-size: 12px; font-weight: 600; color: var(--tpm-muted); }
+.tpm-ct__hint { display: flex; align-items: center; justify-content: flex-end; gap: 6px; padding: 10px 16px 0; font-size: 13px; font-weight: 600; color: var(--tpm-muted); transition: opacity .2s; }
+.tpm-ct__hint svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.tpm-ct.is-end .tpm-ct__hint { opacity: 0; }
+.tpm-yes, .tpm-no { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; font-size: 0; vertical-align: middle; font-style: normal; }
 .tpm-yes { background: var(--tpm-ink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23fff' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 20px no-repeat; }
-.tpm-yes--muted { width: 28px; height: 28px; background-color: #9a999d; background-size: 16px; }
-.tpm-no { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 7l10 10M17 7L7 17' fill='none' stroke='%231f1e21' stroke-width='2.8' stroke-linecap='round'/%3E%3C/svg%3E") center / 22px no-repeat; }
-.tpm-compare__note { font-size: 13px; color: var(--tpm-muted); margin-top: 14px; }
+.tpm-yes--muted { width: 26px; height: 26px; background-color: #b9b8bc; background-size: 15px; }
+.tpm-no { width: 26px; height: 26px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 7l10 10M17 7L7 17' fill='none' stroke='%231f1e21' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E") center / 20px no-repeat; }
 @media (prefers-reduced-motion: no-preference) {
-  .will-animate .tpm-crow:not(.tpm-crow--head) .tpm-yes, .will-animate .tpm-crow:not(.tpm-crow--head) .tpm-no { transform: scale(0); }
-  .is-in .tpm-crow .tpm-yes, .is-in .tpm-crow .tpm-no { transform: scale(1); transition: transform .45s cubic-bezier(.3,1.6,.5,1); }
-  .is-in .tpm-crow:nth-child(4) i { transition-delay: .15s; }
-  .is-in .tpm-crow:nth-child(5) i { transition-delay: .3s; }
-  .is-in .tpm-crow:nth-child(6) i { transition-delay: .45s; }
-  .is-in .tpm-crow:nth-child(7) i { transition-delay: .6s; }
+  .will-animate .tpm-ct__us .tpm-yes { transform: scale(0); }
+  .is-in .tpm-ct__us .tpm-yes { transform: scale(1); transition: transform .45s cubic-bezier(.3,1.6,.5,1); }
+  .is-in .tpm-ct__row:nth-child(3) .tpm-ct__us .tpm-yes { transition-delay: .08s; }
+  .is-in .tpm-ct__row:nth-child(4) .tpm-ct__us .tpm-yes { transition-delay: .16s; }
+  .is-in .tpm-ct__row:nth-child(5) .tpm-ct__us .tpm-yes { transition-delay: .24s; }
+  .is-in .tpm-ct__row:nth-child(6) .tpm-ct__us .tpm-yes { transition-delay: .32s; }
+  .is-in .tpm-ct__row:nth-child(7) .tpm-ct__us .tpm-yes { transition-delay: .40s; }
+  .is-in .tpm-ct__row:nth-child(8) .tpm-ct__us .tpm-yes { transition-delay: .48s; }
+  .is-in .tpm-ct__row:nth-child(9) .tpm-ct__us .tpm-yes { transition-delay: .56s; }
 }
+@media (min-width: 700px) {
+  .tpm-ct { margin: 36px 0 28px; }
+  .tpm-ct__scroll { --lw: 240px; --uw: 120px; --cw: 1fr; }
+  .tpm-ct__row { grid-template-columns: var(--lw) var(--uw) repeat(5, minmax(96px, 1fr)); width: auto; }
+  .tpm-ct__label { font-size: 16px; }
+}
+.tpm-compare__note { font-size: 13px; color: var(--tpm-muted); margin-top: 14px; }
 
 /* ---- Founder ---- */
 .tpm-founder { padding-top: 8px; }
@@ -289,7 +309,7 @@
 .tpm-founder p { color: var(--tpm-muted); font-size: 17px; }
 
 /* ---- Buy box ---- */
-.tpm-buy__inner { display: grid; gap: 20px; background: #eef4f8; border-radius: var(--tpm-radius); padding: 28px 18px 22px; }
+.tpm-buy__inner { display: grid; gap: 20px; background: var(--tpm-panel); border-radius: var(--tpm-radius); padding: 28px 18px 22px; }
 .tpm-buy__media { display: none; }
 .tpm-buy__stage { height: 480px; display: flex; align-items: center; justify-content: center; border-radius: 22px; }
 .tpm-buy__stage img { height: 400px; width: auto; filter: drop-shadow(0 24px 26px rgba(0,0,0,.22)); }
@@ -302,7 +322,7 @@
 .tpm-assure { margin-top: 12px; font-size: 14px; color: var(--tpm-muted); text-align: center; }
 
 /* Picker (inline buy box and checkout step 1) */
-.tpm-pick__label { font-family: var(--tpm-cond); text-transform: uppercase; font-size: 26px; line-height: 1; color: #4f8fb8; margin-bottom: 12px; padding: 0; }
+.tpm-pick__label { font-family: var(--tpm-cond); text-transform: uppercase; font-size: 26px; line-height: 1; color: var(--tpm-ink); margin-bottom: 12px; padding: 0; }
 .tpm-flav { margin-bottom: 22px; }
 .tpm-flav__row { display: flex; gap: 14px; }
 .tpm-flav__opt { position: relative; display: grid; justify-items: center; gap: 6px; cursor: pointer; flex: 0 0 auto; }
@@ -313,7 +333,7 @@
 .tpm-flav__opt--mix .tpm-flav__circle { background: linear-gradient(90deg, #ffd9b8 50%, #fff1b3 50%); }
 .tpm-flav__circle img { height: 72px; width: auto; transform: translateY(8px); }
 .tpm-flav__name { font-size: 15px; font-weight: 600; }
-.tpm-flav__opt input:checked + .tpm-flav__circle { border-color: #4f8fb8; transform: scale(1.04); }
+.tpm-flav__opt input:checked + .tpm-flav__circle { border-color: var(--tpm-ink); transform: scale(1.04); }
 .tpm-flav__opt input:focus-visible + .tpm-flav__circle { outline: 3px solid var(--tpm-ink); outline-offset: 3px; }
 .tpm-can-pair { display: flex; align-items: flex-end; justify-content: center; }
 .tpm-can-pair img + img { margin-left: -10%; }
@@ -322,8 +342,8 @@
 .tpm-plan__opt { position: relative; cursor: pointer; display: block; }
 .tpm-plan__card { position: relative; display: grid; gap: 2px; height: 100%; padding: 30px 10px 12px; border-radius: 16px; background: #fff; border: 2px solid transparent; transition: border-color .15s ease; }
 .tpm-plan__card::before { content: ""; position: absolute; top: 10px; left: 10px; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #9a999d; }
-.tpm-plan__opt input:checked + .tpm-plan__card { border-color: var(--tpm-ink); background: #dcecf6; }
-.tpm-plan__opt input:checked + .tpm-plan__card::before { border-color: var(--tpm-ink); background: var(--tpm-ink); box-shadow: inset 0 0 0 3px #dcecf6; }
+.tpm-plan__opt input:checked + .tpm-plan__card { border-color: var(--tpm-ink); background: #fffbe0; }
+.tpm-plan__opt input:checked + .tpm-plan__card::before { border-color: var(--tpm-ink); background: var(--tpm-ink); box-shadow: inset 0 0 0 3px #fffbe0; }
 .tpm-plan__opt input:focus-visible + .tpm-plan__card { outline: 3px solid var(--tpm-ink); outline-offset: 2px; }
 .tpm-plan__badge { position: absolute; top: -10px; right: 6px; background: var(--tpm-accent); border-radius: 999px; padding: 2px 8px; font-size: 11px; font-weight: 700; transform: rotate(4deg); }
 .tpm-plan__name { font-family: var(--tpm-cond); text-transform: uppercase; font-size: 21px; line-height: .95; }
@@ -349,7 +369,7 @@
 .tpm-sheet__body { flex: 1; overflow-y: auto; padding: 22px 18px 24px; -webkit-overflow-scrolling: touch; }
 .tpm-sheet__title { font-size: 32px; font-weight: 500; letter-spacing: -0.035em; line-height: 1.05; margin-bottom: 20px; outline: none; }
 .tpm-step .tpm-plan__card { background: var(--tpm-panel); }
-.tpm-step .tpm-plan__opt input:checked + .tpm-plan__card { background: #dcecf6; }
+.tpm-step .tpm-plan__opt input:checked + .tpm-plan__card { background: #fffbe0; }
 .tpm-sheet__foot { border-top: 1px solid var(--tpm-line); padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 14px; }
 .tpm-sheet__foot .tpm-error { grid-column: 1 / -1; }
 .tpm-sheet__total { display: grid; line-height: 1.1; }
@@ -377,8 +397,8 @@
 .tpm-addon__text strong { font-family: var(--tpm-cond); text-transform: uppercase; font-size: 22px; font-weight: 400; line-height: 1; }
 .tpm-addon__text span { font-size: 13px; color: var(--tpm-muted); margin: 2px 0; }
 .tpm-addon__text b { font-size: 16px; }
-.tpm-addon__btn { min-width: 74px; min-height: 42px; border-radius: 10px; border: 0; background: #4f8fb8; color: #fff; font-weight: 600; font-size: 15px; cursor: pointer; }
-.tpm-addon.is-on .tpm-addon__btn { background: var(--tpm-ink); }
+.tpm-addon__btn { min-width: 74px; min-height: 42px; border-radius: 10px; border: 0; background: var(--tpm-ink); color: #fff; font-weight: 600; font-size: 15px; cursor: pointer; }
+.tpm-addon.is-on .tpm-addon__btn { background: var(--tpm-accent); color: var(--tpm-ink); }
 
 /* Step 3: review */
 .tpm-review { display: grid; gap: 10px; margin-bottom: 20px; }
@@ -448,7 +468,6 @@
 @media (min-width: 700px) {
   .tpm-track { grid-auto-columns: calc((100% - 32px - 24px) / 3); }
   .tpm-track--lineup { padding: 0 16px; scroll-padding: 0 16px; gap: 12px; }
-  .tpm-ctable__us img { height: 54px; }
   .tpm-proof__grid { grid-template-columns: repeat(4, 1fr); gap: 16px; align-items: stretch; }
   .tpm-proof__head { grid-column: 1 / -1; order: 0; padding: 0 0 32px; }
   .tpm-proof__img--a { order: 1; aspect-ratio: auto; height: 100%; }
@@ -503,7 +522,11 @@
 @media (prefers-reduced-motion: reduce) {
   .tpm *, .tpm-sticky { transition: none !important; }
 }
-.tpm-example { font-style: normal; font-size: 11px; font-weight: 700; text-transform: uppercase; background: rgba(255,255,255,.15); border-radius: 6px; padding: 2px 6px; margin-left: 6px; }
+.tpm-example { display: inline-block; white-space: nowrap; font-style: normal; font-size: 11px; font-weight: 700; text-transform: uppercase; background: rgba(255,255,255,.15); border-radius: 6px; padding: 2px 6px; margin-left: 6px; }
+@media (min-width: 900px) {
+  .tpm-compare .tpm-wrap--narrow { max-width: 1120px; }
+  .tpm-compare__sub { margin-bottom: 8px; }
+}
 </style>
 
 <div class="tpm" id="tpm">
@@ -705,26 +728,27 @@
     <div class="tpm-wrap tpm-wrap--narrow">
       <h2 class="tpm-cond tpm-center" id="tpm-compare-title">What makes <span class="tpm-hl">TIPSY AF</span> different</h2>
       <p class="tpm-compare__sub">You have options. Here's how they stack up.</p>
-      <div class="tpm-ctable" role="table" aria-label="TIPSY AF compared with mocktails and kava or kratom drinks">
-        <div class="tpm-ctable__us" aria-hidden="true">
-          <img src="{{ 'tipsy-can-blood-orange.webp' | asset_url }}" width="289" height="755" alt="">
-          <img src="{{ 'tipsy-can-pineapple.webp' | asset_url }}" width="415" height="1086" alt="">
+      <div class="tpm-ct">
+        <div class="tpm-ct__scroll" data-tpm-ct tabindex="0" role="table" aria-label="TIPSY AF compared with other ways to unwind. Scroll sideways for more.">
+          <div class="tpm-ct__row tpm-ct__row--head" role="row">
+            <span role="columnheader" class="tpm-ct__label"><span class="tpm-visually-hidden">Benefit</span></span>
+            <span role="columnheader" class="tpm-ct__us tpm-ct__us--head"><span class="tpm-ct__cans" aria-hidden="true"><img src="{{ 'tipsy-can-blood-orange.webp' | asset_url }}" width="289" height="755" alt=""><img src="{{ 'tipsy-can-pineapple.webp' | asset_url }}" width="415" height="1086" alt=""></span>TIPSY AF</span>
+            <span role="columnheader" class="tpm-ct__h">Mocktails</span><span role="columnheader" class="tpm-ct__h">Kava drinks</span><span role="columnheader" class="tpm-ct__h">Kratom drinks</span><span role="columnheader" class="tpm-ct__h">THC seltzers</span><span role="columnheader" class="tpm-ct__h">Cocktails</span>
+          </div>
+        <div class="tpm-ct__row" role="row"><span role="rowheader" class="tpm-ct__label">A buzz you can actually feel</span><span role="cell" class="tpm-ct__us"><i class="tpm-yes">Yes</i></span><span role="cell"><i class="tpm-no">No</i></span><span role="cell"><i class="tpm-yes tpm-yes--muted">Yes</i></span><span role="cell"><i class="tpm-yes tpm-yes--muted">Yes</i></span><span role="cell"><i class="tpm-yes tpm-yes--muted">Yes</i></span><span role="cell"><i class="tpm-yes tpm-yes--muted">Yes</i></span></div>
+        <div class="tpm-ct__row" role="row"><span role="rowheader" class="tpm-ct__label">Zero alcohol</span><span role="cell" class="tpm-ct__us"><i class="tpm-yes">Yes</i></span><span role="cell"><i class="tpm-yes tpm-yes--muted">Yes</i></span><span role="cell"><i class="tpm-yes tpm-yes--muted">Yes</i></span><span role="cell"><i class="tpm-yes tpm-yes--muted">Yes</i></span><span role="cell"><i class="tpm-yes tpm-yes--muted">Yes</i></span><span role="cell"><i class="tpm-no">No</i></span></div>
+        <div class="tpm-ct__row" role="row"><span role="rowheader" class="tpm-ct__label">No kava, kratom or THC</span><span role="cell" class="tpm-ct__us"><i class="tpm-yes">Yes</i></span><span role="cell"><i class="tpm-yes tpm-yes--muted">Yes</i></span><span role="cell"><i class="tpm-no">No</i></span><span role="cell"><i class="tpm-no">No</i></span><span role="cell"><i class="tpm-no">No</i></span><span role="cell"><i class="tpm-yes tpm-yes--muted">Yes</i></span></div>
+        <div class="tpm-ct__row" role="row"><span role="rowheader" class="tpm-ct__label">No hangover</span><span role="cell" class="tpm-ct__us"><i class="tpm-yes">Yes</i></span><span role="cell"><i class="tpm-yes tpm-yes--muted">Yes</i></span><span role="cell"><b>Varies</b></span><span role="cell"><b>Varies</b></span><span role="cell"><b>Varies</b></span><span role="cell"><i class="tpm-no">No</i></span></div>
+        <div class="tpm-ct__row" role="row"><span role="rowheader" class="tpm-ct__label">Done in about an hour</span><span role="cell" class="tpm-ct__us"><i class="tpm-yes">Yes</i></span><span role="cell"><b>Varies</b></span><span role="cell"><b>Varies</b></span><span role="cell"><b>Varies</b></span><span role="cell"><i class="tpm-no">No</i></span><span role="cell"><b>Varies</b></span></div>
+        <div class="tpm-ct__row" role="row"><span role="rowheader" class="tpm-ct__label">Ships to all 50 states</span><span role="cell" class="tpm-ct__us"><i class="tpm-yes">Yes</i></span><span role="cell"><i class="tpm-yes tpm-yes--muted">Yes</i></span><span role="cell"><b>Varies</b></span><span role="cell"><b>Varies</b></span><span role="cell"><b>Varies</b></span><span role="cell"><b>Varies</b></span></div>
+        <div class="tpm-ct__row" role="row"><span role="rowheader" class="tpm-ct__label">Built by mushroom scientists</span><span role="cell" class="tpm-ct__us"><i class="tpm-yes">Yes</i></span><span role="cell"><i class="tpm-no">No</i></span><span role="cell"><i class="tpm-no">No</i></span><span role="cell"><i class="tpm-no">No</i></span><span role="cell"><i class="tpm-no">No</i></span><span role="cell"><i class="tpm-no">No</i></span></div>
+        <div class="tpm-ct__row" role="row"><span role="rowheader" class="tpm-ct__label">100-day money-back guarantee</span><span role="cell" class="tpm-ct__us"><i class="tpm-yes">Yes</i></span><span role="cell"><b>Varies</b></span><span role="cell"><b>Varies</b></span><span role="cell"><b>Varies</b></span><span role="cell"><b>Varies</b></span><span role="cell"><b>Varies</b></span></div>
         </div>
-        <div class="tpm-crow tpm-crow--head" role="row">
-          <span role="columnheader"><span class="tpm-visually-hidden">Benefit</span></span>
-          <span role="columnheader" class="tpm-ccol-us">TIPSY AF</span>
-          <span role="columnheader">Mock&shy;tails</span>
-          <span role="columnheader">Kava &amp; kratom</span>
-        </div>
-        <div class="tpm-crow" role="row"><span role="rowheader">A buzz you can actually feel</span><span role="cell" class="tpm-ccol-us"><i class="tpm-yes">Yes</i></span><span role="cell"><i class="tpm-no">No</i></span><span role="cell"><i class="tpm-yes tpm-yes--muted">Yes</i></span></div>
-        <div class="tpm-crow" role="row"><span role="rowheader">No kava, kratom or THC</span><span role="cell" class="tpm-ccol-us"><i class="tpm-yes">Yes</i></span><span role="cell"><i class="tpm-yes tpm-yes--muted">Yes</i></span><span role="cell"><i class="tpm-no">No</i></span></div>
-        <div class="tpm-crow" role="row"><span role="rowheader">Built by mushroom scientists</span><span role="cell" class="tpm-ccol-us"><i class="tpm-yes">Yes</i></span><span role="cell"><i class="tpm-no">No</i></span><span role="cell"><i class="tpm-no">No</i></span></div>
-        <div class="tpm-crow" role="row"><span role="rowheader">Legal in all 50 states</span><span role="cell" class="tpm-ccol-us"><i class="tpm-yes">Yes</i></span><span role="cell"><i class="tpm-yes tpm-yes--muted">Yes</i></span><span role="cell"><b>Varies</b></span></div>
-        <div class="tpm-crow" role="row"><span role="rowheader">100-day money-back guarantee</span><span role="cell" class="tpm-ccol-us"><i class="tpm-yes">Yes</i></span><span role="cell"><b>Varies</b></span><span role="cell"><b>Varies</b></span></div>
+        <p class="tpm-ct__hint" data-tpm-ct-hint aria-hidden="true">Swipe to compare <svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></p>
       </div>
       <div class="tpm-center">
         <button type="button" class="tpm-knobbtn tpm-knobbtn--accent" data-tpm-start><span>Ready to get TIPSY</span><span class="tpm-knob tpm-knob--dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button>
-        <p class="tpm-compare__note">Kratom is restricted in some states. Mocktails and kava drinks vary by brand.</p>
+        <p class="tpm-compare__note">Compared by category. Individual brands and state laws vary.</p>
       </div>
     </div>
   </section>
@@ -1245,6 +1269,15 @@
     });
     quiz.addEventListener('click', function (e) { if (e.target === quiz) quiz.close(); });
   }
+
+  // ---- Comparison table: hide the swipe hint and edge fade at the end ----
+  $all('[data-tpm-ct]').forEach(function (sc) {
+    var wrap = sc.parentNode;
+    var paintCt = function () { wrap.classList.toggle('is-end', sc.scrollLeft + sc.clientWidth >= sc.scrollWidth - 4); };
+    sc.addEventListener('scroll', paintCt, { passive: true });
+    window.addEventListener('resize', paintCt);
+    paintCt();
+  });
 
   // ---- Reveal animations (chart draw, comparison checks) ----
   var animated = $all('[data-tpm-animate]');

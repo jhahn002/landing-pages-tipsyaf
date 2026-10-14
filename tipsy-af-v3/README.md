@@ -35,8 +35,11 @@ recommendations that use the Mix switch to Blood Orange automatically.
 - **Rewards bar:** off on the store until you fill the **Checkout rewards** setting in the theme
   editor (e.g. `75:Free shipping|110:Free gift`). Create the matching automatic discounts in Shopify
   first; the bar only displays progress. The preview shows example rewards, labeled as examples.
-- **Comparison chart:** TIPSY AF vs. mocktails vs. kava & kratom, highlighted yellow column,
-  checks animate in. "Varies" where it depends on the brand or state.
+- **Comparison chart:** benefit labels and the yellow TIPSY AF column stay pinned; Mocktails, Kava drinks,
+  Kratom drinks, THC seltzers and Cocktails scroll sideways on phones (all visible on desktop). Eight rows,
+  compared by category, with "Varies" where it depends on the brand or state. TIPSY checks animate in.
+- **Colors:** buy box, plan cards, flavor selection and add-on buttons use the brand charcoal/yellow
+  (the light blue from the Bev reference is gone).
 - **Buy box:** round flavor selectors and size & plan cards (Bev-style); its button continues to
   the add-ons step with the choice kept.
 - **Lineup:** each can centered with the next one peeking in.

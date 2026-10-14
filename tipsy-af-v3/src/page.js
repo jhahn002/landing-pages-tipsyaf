@@ -296,6 +296,15 @@
     quiz.addEventListener('click', function (e) { if (e.target === quiz) quiz.close(); });
   }
 
+  // ---- Comparison table: hide the swipe hint and edge fade at the end ----
+  $all('[data-tpm-ct]').forEach(function (sc) {
+    var wrap = sc.parentNode;
+    var paintCt = function () { wrap.classList.toggle('is-end', sc.scrollLeft + sc.clientWidth >= sc.scrollWidth - 4); };
+    sc.addEventListener('scroll', paintCt, { passive: true });
+    window.addEventListener('resize', paintCt);
+    paintCt();
+  });
+
   // ---- Reveal animations (chart draw, comparison checks) ----
   var animated = $all('[data-tpm-animate]');
   if ('IntersectionObserver' in window) {
