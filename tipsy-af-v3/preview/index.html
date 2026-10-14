@@ -1,0 +1,1050 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TIPSY AF | The zero proof cocktail you can feel (preview)</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap">
+
+<style>
+@font-face { font-family: 'TPM Lemon'; src: url('https://gettipsy.com/cdn/shop/t/13/assets/lemonmilk-bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'TPM Sofia'; src: url('https://cdn.shopify.com/s/files/1/0647/7696/2256/files/Sofia_Pro_Regular_Az.woff2?v=1757613796') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'TPM Sofia'; src: url('https://cdn.shopify.com/s/files/1/0647/7696/2256/files/Sofia_Pro_Semi_Bold_Az.woff2?v=1757613796') format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'TPM Condensed'; src: url('https://cdn.shopify.com/s/files/1/0647/7696/2256/files/Coolvetica_Hv_Comp.woff2?v=1758909708') format('woff2'); font-weight: 400; font-display: swap; }
+
+body { margin: 0; background: #fff; }
+.pv-bar { background: #000; color: #fff; font: 600 12px/1.4 system-ui, sans-serif; text-align: center; padding: 6px 12px; }
+.pv-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid #eee; }
+.pv-header img { height: 28px; width: auto; }
+.pv-header a { font: 600 14px/1 system-ui, sans-serif; color: #000; }
+.pv-footer { background: #000; color: #fff; padding: 32px 20px; font: 14px/1.6 system-ui, sans-serif; }
+.pv-footer a { color: #fff; margin-right: 16px; }
+/* TIPSY AF landing page, v3: bold, mobile-first. Scoped to .tpm. */
+
+.tpm {
+  --tpm-ink: #1f1e21;
+  --tpm-muted: #6b6a6e;
+  --tpm-paper: #ffffff;
+  --tpm-panel: #f4f3f1;
+  --tpm-line: #e6e4e0;
+  --tpm-accent: #ffe748;
+  --tpm-orange: #ff8a1f;
+  --tpm-pine: #ffd23f;
+  --tpm-night: #131826;
+  --tpm-error: #b42318;
+  --tpm-radius: 28px;
+  --tpm-font: 'Figtree', 'TPM Sofia', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --tpm-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --tpm-cond: 'TPM Condensed', 'League Gothic', Impact, sans-serif;
+
+  color: var(--tpm-ink);
+  background: var(--tpm-paper);
+  font-family: var(--tpm-font);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+.tpm *, .tpm *::before, .tpm *::after { box-sizing: border-box; }
+.tpm img { display: block; max-width: 100%; height: auto; }
+.tpm :where(h1, h2, h3, p, ul, ol, figure, blockquote, fieldset) { margin: 0; padding: 0; }
+.tpm :where(ul, ol) { list-style: none; }
+.tpm :where(a) { color: inherit; }
+.tpm :where(fieldset) { border: 0; }
+.tpm :where(button) { font: inherit; color: inherit; }
+.tpm :focus-visible { outline: 3px solid var(--tpm-accent); outline-offset: 3px; border-radius: 10px; }
+.tpm-knobbtn, .tpm-pillcard, .tpm-btn, .tpm-item { position: relative; }
+.tpm-visually-hidden { position: absolute !important; top: 0; left: 0; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.tpm-wrap { width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 16px; }
+.tpm-wrap--narrow { max-width: 760px; }
+.tpm-sec { padding: 56px 0; }
+.tpm-center { text-align: center; }
+
+.tpm-h2 { font-weight: 500; font-size: clamp(32px, 8.4vw, 56px); line-height: 1.05; letter-spacing: -0.035em; margin-bottom: 20px; text-wrap: balance; }
+.tpm-cond { font-family: var(--tpm-cond); font-weight: 400; text-transform: uppercase; font-size: clamp(64px, 19vw, 150px); line-height: .86; letter-spacing: 0; }
+.tpm h3 { font-weight: 600; font-size: 20px; line-height: 1.2; letter-spacing: -0.02em; }
+
+/* ---- Round arrow knob and knob buttons ---- */
+.tpm-knob { flex: none; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; transition: transform .2s ease; }
+.tpm-knob svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.tpm-knob--dark { background: var(--tpm-ink); color: #fff; }
+.tpm-knob--light { background: #fff; color: var(--tpm-ink); }
+
+.tpm-knobbtn {
+  display: inline-flex; align-items: center; gap: 18px; min-height: 64px; padding: 8px 8px 8px 30px;
+  border-radius: 999px; border: 0; background: var(--tpm-ink); color: #fff; text-decoration: none;
+  font-size: 19px; font-weight: 600; cursor: pointer;
+}
+.tpm-knobbtn .tpm-knob { width: 48px; height: 48px; }
+.tpm-knobbtn:hover .tpm-knob { transform: translateX(3px); }
+.tpm-knobbtn--light { background: #fff; color: var(--tpm-ink); min-height: 56px; font-size: 17px; padding-left: 24px; }
+.tpm-knobbtn--light .tpm-knob { width: 42px; height: 42px; }
+.tpm-knobbtn--accent { background: var(--tpm-accent); color: var(--tpm-ink); }
+
+.tpm-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 12px 26px; border-radius: 999px; border: 0; font-size: 17px; font-weight: 600; text-decoration: none; cursor: pointer; }
+.tpm-btn--dark { background: var(--tpm-ink); color: #fff; }
+.tpm-btn--accent { background: var(--tpm-accent); color: var(--tpm-ink); }
+.tpm-btn--sm { min-height: 46px; padding: 10px 20px; font-size: 15px; }
+.tpm-btn--block { width: 100%; min-height: 60px; font-size: 18px; }
+.tpm-btn[disabled] { opacity: .6; cursor: progress; }
+
+/* ---- Pill card (product shortcut) ---- */
+.tpm-pillcard {
+  display: flex; align-items: center; gap: 12px; width: 100%; max-width: 420px;
+  background: #fff; color: var(--tpm-ink); border: 0; border-radius: 22px; padding: 8px 8px 8px 10px;
+  text-decoration: none; text-align: left; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,.18);
+}
+.tpm-pillcard:hover .tpm-knob { transform: translateX(3px); }
+.tpm-pillcard__thumb { flex: none; width: 58px; height: 58px; border-radius: 14px; background: linear-gradient(135deg, #ffb066, var(--tpm-pine)); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.tpm-pillcard__thumb img { height: 50px; width: auto; filter: drop-shadow(0 3px 4px rgba(0,0,0,.25)); }
+.tpm-pillcard__thumb img + img { margin-left: -6px; }
+.tpm-pillcard__text { flex: 1; display: grid; line-height: 1.2; }
+.tpm-pillcard__text strong { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; }
+.tpm-pillcard__text span { font-size: 14px; color: var(--tpm-muted); }
+.tpm-pillcard--sm { max-width: none; border-radius: 999px; padding: 6px 6px 6px 6px; }
+.tpm-pillcard--sm .tpm-pillcard__thumb { width: 46px; height: 46px; border-radius: 50%; }
+.tpm-pillcard--sm .tpm-pillcard__thumb img { height: 40px; }
+.tpm-pillcard--sm .tpm-pillcard__text strong { font-size: 17px; }
+
+/* ---- Hero ---- */
+.tpm-hero {
+  position: relative; overflow: hidden; color: #fff; background: #0f3f40;
+  min-height: 560px; height: min(calc(100svh - 60px), 820px);
+  border-radius: 0 0 var(--tpm-radius) var(--tpm-radius);
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.tpm-hero__media, .tpm-hero__media img { position: absolute; inset: 0; width: 100%; height: 100% !important; }
+.tpm-hero__media img { object-fit: cover; object-position: 50% 30%; }
+.tpm-hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.05) 25%, rgba(0,0,0,.72) 82%); pointer-events: none; }
+.tpm-hero__content { position: relative; z-index: 1; width: 100%; max-width: 640px; padding: 0 16px 20px; display: grid; justify-items: center; text-align: center; gap: 12px; }
+.tpm-hero__title { display: grid; line-height: .95; font-weight: 400; letter-spacing: -0.03em; }
+.tpm-hero__title span { font-family: var(--tpm-font); font-weight: 500; font-size: clamp(46px, 13.5vw, 96px); letter-spacing: -0.045em; }
+.tpm-hero__title em { font-family: var(--tpm-serif); font-style: italic; font-size: clamp(54px, 15.5vw, 112px); letter-spacing: -0.02em; }
+.tpm-hero__lede { font-size: 16px; line-height: 1.4; color: rgba(255,255,255,.9); max-width: 26em; margin-bottom: 4px; }
+.tpm-hero__terms { font-size: 12px; color: rgba(255,255,255,.75); }
+
+/* ---- Campaign cards + carousels ---- */
+.tpm-campaigns { padding-top: 20px; padding-bottom: 32px; }
+.tpm-track {
+  display: grid; grid-auto-flow: column; grid-auto-columns: 86%; gap: 12px;
+  overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 16px; scroll-padding: 0 16px; scrollbar-width: none;
+}
+.tpm-track::-webkit-scrollbar { display: none; }
+.tpm-camp {
+  position: relative; scroll-snap-align: start; aspect-ratio: 4 / 5.2; border-radius: var(--tpm-radius); overflow: hidden;
+  background: #1a1a1a; color: #fff; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 28px 16px 16px;
+}
+.tpm-camp__bg { position: absolute; inset: 0; width: 100%; height: 100% !important; object-fit: cover; }
+.tpm-camp::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.7) 0%, rgba(0,0,0,.25) 42%, rgba(0,0,0,0) 60%, rgba(0,0,0,.35) 100%); }
+.tpm-camp > *:not(.tpm-camp__bg) { position: relative; z-index: 1; }
+.tpm-camp__title {
+  font-family: var(--tpm-cond); font-weight: 400; text-transform: uppercase; text-align: center;
+  font-size: clamp(64px, 19vw, 112px); line-height: .84; color: var(--tpm-accent);
+  text-shadow: 0 0 18px rgba(255,231,72,.75), 0 0 42px rgba(255,200,40,.45);
+}
+.tpm-camp .tpm-pillcard { max-width: 340px; }
+.tpm-camp--split { background: linear-gradient(135deg, var(--tpm-orange) 0 50%, var(--tpm-pine) 50% 100%); }
+.tpm-camp--split::after { background: linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,0) 40%); }
+.tpm-camp--split .tpm-camp__title { color: #fff; text-shadow: 0 2px 20px rgba(0,0,0,.25); order: -1; }
+.tpm-camp__cans { position: absolute !important; inset: 22% 0 18% 0; display: flex; justify-content: center; align-items: flex-end; gap: 0; z-index: 0 !important; }
+.tpm-camp__cans img { height: 100%; width: auto; filter: drop-shadow(0 18px 24px rgba(0,0,0,.3)); }
+.tpm-camp__cans img + img { margin-left: -8%; transform: rotate(8deg); }
+.tpm-camp__cans img:first-child { transform: rotate(-8deg); }
+.tpm-progress { height: 4px; border-radius: 4px; background: var(--tpm-line); margin: 18px auto 0; width: 120px; overflow: hidden; }
+.tpm-progress span { display: block; height: 100%; border-radius: 4px; background: var(--tpm-ink); transition: transform .1s linear; }
+.tpm-progress--light { background: rgba(255,255,255,.2); }
+.tpm-progress--light span { background: #fff; }
+
+/* ---- What brings you here ---- */
+.tpm-uses__list { border-top: 2px solid var(--tpm-line); margin-bottom: 28px; }
+.tpm-use { border-bottom: 2px solid var(--tpm-line); }
+.tpm-use summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 84px 1fr auto; align-items: center; gap: 14px; padding: 12px 0; }
+.tpm-use summary::-webkit-details-marker { display: none; }
+.tpm-use summary > img, .tpm-use__tile { width: 84px; height: 60px; border-radius: 12px; object-fit: cover; }
+.tpm-use__tile { display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.tpm-use__tile img { height: 54px; width: auto; transform: rotate(-10deg); }
+.tpm-use__tile--orange { background: var(--tpm-orange); }
+.tpm-use__tile--yellow { background: var(--tpm-pine); }
+.tpm-use__word { font-family: var(--tpm-cond); text-transform: uppercase; font-size: clamp(40px, 11vw, 64px); line-height: .9; letter-spacing: 0; padding-top: 4px; }
+.tpm-use[open] .tpm-knob { transform: rotate(90deg); background: var(--tpm-accent); color: var(--tpm-ink); }
+.tpm-use__body { padding: 0 0 18px 98px; display: grid; gap: 14px; justify-items: start; }
+.tpm-use__body p { color: var(--tpm-muted); font-size: 17px; }
+.tpm-use__body .tpm-use__pick { color: var(--tpm-ink); font-weight: 600; font-size: 16px; }
+.tpm-use__pick span { display: inline-block; background: var(--tpm-accent); border-radius: 6px; padding: 1px 8px; margin-right: 6px; font-size: 13px; }
+.tpm-knobbtn--sm { min-height: 52px; font-size: 16px; padding-left: 22px; gap: 14px; }
+.tpm-knobbtn--sm .tpm-knob { width: 40px; height: 40px; }
+
+/* ---- The lineup (dark carousel) ---- */
+.tpm-lineup { background: var(--tpm-ink); color: #fff; border-radius: var(--tpm-radius); margin: 0 8px; padding: 48px 0 36px; }
+.tpm-track--lineup { grid-auto-columns: 78%; }
+.tpm-item { scroll-snap-align: center; display: grid; justify-items: center; text-align: center; gap: 6px; padding: 8px 0 4px; }
+.tpm-outline-chip { border: 1.5px solid rgba(255,255,255,.9); border-radius: 10px; padding: 6px 14px; font-size: 15px; }
+.tpm-item__can { position: relative; height: 330px; width: 100%; display: flex; align-items: center; justify-content: center; margin: 10px 0 8px; }
+.tpm-item__can::before { content: ""; position: absolute; width: 230px; height: 230px; border-radius: 50%; filter: blur(30px); opacity: .55; }
+.tpm-item--bo .tpm-item__can::before { background: var(--tpm-orange); }
+.tpm-item--pm .tpm-item__can::before { background: var(--tpm-pine); }
+.tpm-item--mix .tpm-item__can::before { background: linear-gradient(90deg, var(--tpm-orange), var(--tpm-pine)); }
+.tpm-item__can img { position: relative; height: 300px; width: auto; filter: drop-shadow(0 22px 26px rgba(0,0,0,.5)); }
+.tpm-item__can--pair img { height: 270px; }
+.tpm-item__can--pair img:first-child { transform: rotate(-7deg); margin-right: -26px; }
+.tpm-item__can--pair img:last-child { transform: rotate(7deg); }
+.tpm-item h3 { font-size: 26px; font-weight: 500; letter-spacing: -0.03em; }
+.tpm-item__desc { color: rgba(255,255,255,.65); font-size: 15px; }
+.tpm-item__price { color: rgba(255,255,255,.85); font-size: 18px; margin-bottom: 8px; }
+
+/* ---- Social proof collage ---- */
+.tpm-proof__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+.tpm-proof__head { grid-column: 1 / -1; text-align: center; display: grid; justify-items: center; gap: 14px; padding: 24px 0; order: 3; }
+.tpm-proof__head p { color: var(--tpm-muted); font-size: 18px; max-width: 22em; }
+.tpm-proof__img { width: 100%; border-radius: 22px; object-fit: cover; }
+.tpm-proof__img--a { aspect-ratio: 1; order: 1; }
+.tpm-proof__q1 { order: 2; margin-top: 40px; }
+.tpm-proof__q2 { order: 4; }
+.tpm-proof__img--b { aspect-ratio: 4 / 5; order: 5; margin-top: 30px; }
+.tpm-proof__q3 { order: 6; margin-top: -30px; }
+.tpm-proof__q4 { order: 7; margin-top: 0; }
+.tpm-tile { background: var(--tpm-panel); border-radius: 22px; padding: 18px; display: grid; gap: 12px; }
+.tpm-tile blockquote { font-size: 17px; line-height: 1.3; letter-spacing: -0.02em; font-weight: 600; }
+.tpm-tile figcaption { font-size: 13px; color: var(--tpm-muted); }
+.tpm-tile--yellow { background: var(--tpm-accent); }
+.tpm-tile--yellow figcaption { color: #5c5520; }
+.tpm-tile--dark { background: var(--tpm-ink); color: #fff; }
+.tpm-tile--dark figcaption { color: rgba(255,255,255,.65); }
+
+/* ---- Mushroom science, exploded can ---- */
+.tpm-science { padding-top: 24px; }
+.tpm-science__title { margin-bottom: 28px; }
+.tpm-explode { position: relative; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; margin-bottom: 32px; }
+.tpm-explode__can { grid-column: 2; grid-row: 1; position: relative; }
+.tpm-explode__can::before { content: ""; position: absolute; inset: 15% -30%; background: radial-gradient(closest-side, rgba(255,231,72,.65), rgba(255,231,72,0)); }
+.tpm-explode__can img { position: relative; height: 300px; width: auto; transform: rotate(-6deg); filter: drop-shadow(0 20px 22px rgba(0,0,0,.25)); }
+.tpm-explode__in, .tpm-explode__out { grid-row: 1; display: grid; gap: 8px; }
+.tpm-explode__in { grid-column: 1; justify-items: end; }
+.tpm-explode__out { grid-column: 3; justify-items: start; }
+.tpm-explode li { border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 600; white-space: nowrap; }
+.tpm-explode__in li { background: var(--tpm-panel); }
+.tpm-explode__in li:nth-child(odd) { transform: translateX(-8px); }
+.tpm-explode__out li { background: var(--tpm-ink); color: #fff; text-decoration: line-through; text-decoration-color: var(--tpm-accent); text-decoration-thickness: 2px; }
+.tpm-explode__out li:nth-child(even) { transform: translateX(8px); }
+.tpm-science__copy { display: grid; gap: 14px; justify-items: start; }
+.tpm-science__copy > p { color: var(--tpm-muted); font-size: 18px; line-height: 1.45; }
+.tpm-facts { display: grid; gap: 10px; margin: 6px 0 10px; }
+.tpm-facts li { position: relative; padding-left: 30px; font-weight: 600; }
+.tpm-facts li::before { content: ""; position: absolute; left: 0; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--tpm-accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12l4 4 8-8' fill='none' stroke='%231f1e21' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 14px no-repeat; }
+
+/* ---- Experience curve ---- */
+.tpm-feel { padding-top: 0; }
+.tpm-feel__card { background: var(--tpm-night); color: #fff; border-radius: var(--tpm-radius); padding: 32px 20px 24px; }
+.tpm-feel__curve { width: 100%; height: auto; max-height: 300px; display: block; margin: 8px 0 12px; }
+.tpm-feel__note { font-size: 14px; color: rgba(255,255,255,.7); }
+
+/* ---- Founder ---- */
+.tpm-founder { padding-top: 8px; }
+.tpm-founder__inner { display: grid; gap: 20px; }
+.tpm-founder__inner img { width: 100%; border-radius: var(--tpm-radius); }
+.tpm-founder__quote { font-family: var(--tpm-serif); font-weight: 400; font-size: clamp(36px, 10vw, 60px); line-height: 1; letter-spacing: -0.02em; margin-bottom: 14px; }
+.tpm-founder p { color: var(--tpm-muted); font-size: 17px; }
+
+/* ---- Buy box ---- */
+.tpm-buy__inner { display: grid; gap: 20px; background: var(--tpm-panel); border-radius: var(--tpm-radius); padding: 28px 18px 22px; }
+.tpm-buy__media { display: none; }
+.tpm-buy__media [hidden] { display: none !important; }
+.tpm-buy__stage { position: relative; height: 480px; border-radius: 22px; background: radial-gradient(closest-side, rgba(255,138,31,.55), rgba(255,138,31,0)); display: flex; align-items: center; justify-content: center; }
+.tpm-buy__stage--pm { background: radial-gradient(closest-side, rgba(255,210,63,.65), rgba(255,210,63,0)); }
+.tpm-buy__stage--mix { background: radial-gradient(closest-side, rgba(255,170,50,.6), rgba(255,170,50,0)); }
+.tpm-buy__stage img { height: 400px; width: auto; filter: drop-shadow(0 24px 26px rgba(0,0,0,.25)); }
+.tpm-buy__stage--mix img:first-child { transform: rotate(-7deg); margin-right: -34px; height: 370px; }
+.tpm-buy__stage--mix img:last-child { transform: rotate(7deg); height: 370px; }
+.tpm-buy .tpm-h2 { margin-bottom: 16px; }
+.tpm-offer fieldset { display: grid; gap: 8px; margin-bottom: 16px; }
+.tpm-flavor-pick { display: flex !important; background: #fff; border-radius: 999px; padding: 4px !important; gap: 4px !important; }
+.tpm-seg { position: relative; cursor: pointer; flex: 1 1 auto; }
+.tpm-seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.tpm-seg span { display: block; text-align: center; padding: 11px 12px; border-radius: 999px; font-size: 15px; font-weight: 600; white-space: nowrap; }
+.tpm-seg input:checked + span { background: var(--tpm-ink); color: #fff; }
+.tpm-seg input:focus-visible + span { outline: 3px solid var(--tpm-ink); outline-offset: 2px; }
+.tpm-opt { display: block; position: relative; cursor: pointer; }
+.tpm-opt input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.tpm-opt__box { display: grid; gap: 2px; padding: 14px 16px 14px 46px; border: 2px solid transparent; border-radius: 18px; background: #fff; position: relative; }
+.tpm-opt__box::before { content: ""; position: absolute; left: 16px; top: 17px; width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid #9a999d; }
+.tpm-opt input:checked + .tpm-opt__box { border-color: var(--tpm-ink); }
+.tpm-opt input:checked + .tpm-opt__box::before { border-color: var(--tpm-ink); background: var(--tpm-ink); box-shadow: inset 0 0 0 3px #fff; }
+.tpm-opt input:focus-visible + .tpm-opt__box { outline: 3px solid var(--tpm-ink); outline-offset: 2px; }
+.tpm-opt__head { display: flex; justify-content: space-between; gap: 12px; font-weight: 600; font-size: 17px; }
+.tpm-opt__desc { font-size: 14px; color: var(--tpm-muted); }
+.tpm-mixnote { font-size: 14px; background: #fff; border-radius: 14px; padding: 10px 14px; margin: -6px 0 14px; }
+.tpm-mixnote[hidden] { display: none; }
+.tpm-timeline { display: grid; grid-template-columns: repeat(3, 1fr); margin: 4px 0 18px; border-top: 2px solid var(--tpm-ink); }
+.tpm-timeline[hidden] { display: none; }
+.tpm-timeline li { padding: 10px 8px 0 0; display: grid; gap: 2px; align-content: start; position: relative; }
+.tpm-timeline li::before { content: ""; position: absolute; top: -7px; left: 0; width: 12px; height: 12px; border-radius: 50%; background: var(--tpm-ink); }
+.tpm-timeline li:first-child::before { background: var(--tpm-accent); box-shadow: 0 0 0 2px var(--tpm-ink); }
+.tpm-timeline strong { font-size: 14px; font-weight: 700; }
+.tpm-timeline span { font-size: 13px; color: var(--tpm-muted); line-height: 1.3; }
+.tpm-error { color: var(--tpm-error); font-size: 14px; margin-top: 8px; }
+.tpm-error:empty { display: none; }
+.tpm-assure { margin-top: 12px; font-size: 14px; color: var(--tpm-muted); }
+
+/* ---- FAQ ---- */
+.tpm-details { border-bottom: 2px solid var(--tpm-line); }
+.tpm-details summary { cursor: pointer; list-style: none; padding: 18px 40px 18px 0; position: relative; font-weight: 600; font-size: 19px; letter-spacing: -0.02em; }
+.tpm-details summary::-webkit-details-marker { display: none; }
+.tpm-details summary::after { content: "+"; position: absolute; right: 4px; top: 14px; font-size: 28px; font-weight: 400; line-height: 1; }
+.tpm-details[open] summary::after { content: "–"; }
+.tpm-details > p { color: var(--tpm-muted); margin-bottom: 14px; }
+
+/* ---- Statement band ---- */
+.tpm-statement { background: var(--tpm-ink); color: #fff; text-align: center; padding: 56px 12px 64px; border-radius: var(--tpm-radius) var(--tpm-radius) 0 0; display: grid; justify-items: center; gap: 28px; overflow: hidden; }
+.tpm-statement p { font-family: var(--tpm-cond); text-transform: uppercase; font-size: clamp(64px, 19vw, 220px); line-height: .86; }
+
+/* ---- Quiz dialog ---- */
+.tpm-quiz { border: 0; padding: 0; width: min(560px, calc(100vw - 24px)); max-height: calc(100svh - 24px); border-radius: var(--tpm-radius); background: #fff; color: var(--tpm-ink); font-family: var(--tpm-font); box-shadow: 0 30px 80px rgba(0,0,0,.35); }
+.tpm-quiz::backdrop { background: rgba(15,15,20,.6); backdrop-filter: blur(4px); }
+.tpm-quiz__inner { padding: 20px 18px 24px; display: grid; gap: 16px; }
+.tpm-quiz__top { display: flex; justify-content: space-between; align-items: center; }
+.tpm-quiz__step { font-size: 14px; color: var(--tpm-muted); }
+.tpm-quiz__close { width: 40px; height: 40px; border-radius: 50%; border: 0; background: var(--tpm-panel); font-size: 24px; line-height: 1; cursor: pointer; }
+.tpm-quiz__panel[hidden] { display: none; }
+.tpm-quiz__title { font-size: 30px; font-weight: 500; letter-spacing: -0.035em; line-height: 1.1; margin-bottom: 16px; }
+.tpm-quiz__choices { display: grid; gap: 10px; }
+.tpm-choice { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; border: 2px solid var(--tpm-line); background: #fff; border-radius: 20px; padding: 10px 16px 10px 10px; cursor: pointer; }
+.tpm-choice:hover { border-color: var(--tpm-ink); }
+.tpm-choice > img, .tpm-choice__pair { flex: none; width: 56px; height: 64px; object-fit: contain; background: var(--tpm-panel); border-radius: 14px; padding: 6px 0; }
+.tpm-choice__pair { display: flex; justify-content: center; align-items: center; }
+.tpm-choice__pair img { height: 52px; width: auto; }
+.tpm-choice__pair img + img { margin-left: -8px; }
+.tpm-choice > span:last-child { display: grid; }
+.tpm-choice strong { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; }
+.tpm-choice span span { font-size: 14px; color: var(--tpm-muted); }
+.tpm-choice--text { padding: 16px 18px; }
+.tpm-quiz__result { display: grid; gap: 14px; justify-items: start; }
+.tpm-quiz__match { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+.tpm-quiz__restart { border: 0; background: none; text-decoration: underline; color: var(--tpm-muted); cursor: pointer; padding: 6px 0; }
+
+/* ---- Sticky CTA (phones) ---- */
+.tpm-sticky {
+  position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 50;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 7px 7px 7px 20px; background: var(--tpm-ink); color: #fff; border-radius: 999px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25); transform: translateY(160%); transition: transform .2s ease;
+}
+.tpm-sticky.is-visible { transform: translateY(0); }
+.tpm-sticky[hidden] { display: none; }
+.tpm-sticky__text { font-size: 15px; }
+
+@media (min-width: 700px) {
+  .tpm-track { grid-auto-columns: calc((100% - 32px - 24px) / 3); }
+  .tpm-proof__grid { grid-template-columns: repeat(4, 1fr); gap: 16px; align-items: stretch; }
+  .tpm-proof__head { grid-column: 1 / -1; order: 0; padding: 0 0 32px; }
+  .tpm-proof__img--a { order: 1; aspect-ratio: auto; height: 100%; }
+  .tpm-proof__q1 { order: 2; margin-top: 0; }
+  .tpm-proof__q2 { order: 3; }
+  .tpm-proof__q3 { order: 4; margin-top: 0; }
+  .tpm-proof__img--b { order: 5; grid-column: span 2; aspect-ratio: 16 / 9; margin-top: 0; }
+  .tpm-proof__q4 { order: 6; grid-column: span 2; align-content: center; }
+  .tpm-proof .tpm-tile { align-content: space-between; padding: 26px; }
+  .tpm-proof .tpm-tile blockquote { font-size: 24px; line-height: 1.2; }
+  .tpm-proof__q4 { background: var(--tpm-orange); }
+  .tpm-proof__q4 blockquote { font-size: 40px !important; letter-spacing: -0.03em; }
+  .tpm-proof__q4 figcaption { color: #5a2c00; }
+}
+
+@media (min-width: 900px) {
+  .tpm-wrap { padding: 0 24px; }
+  .tpm-sec { padding: 96px 0; }
+  .tpm-hero { height: min(calc(100svh - 80px), 860px); margin: 0 16px; border-radius: 0 0 var(--tpm-radius) var(--tpm-radius); justify-content: flex-start; align-items: flex-end; }
+  .tpm-hero { background: #0d1220; }
+  .tpm-hero__media { left: 40%; }
+  .tpm-hero__media img { position: absolute; inset: 0; object-position: 45% 60%; }
+  .tpm-hero::after { left: 40%; right: 0; width: auto; background: linear-gradient(90deg, #0d1220 0%, rgba(13,18,32,0) 28%); }
+  .tpm-hero__content { align-self: center; padding-bottom: 0; max-width: 660px; }
+  .tpm-hero__title span { font-size: 92px; }
+  .tpm-hero__title em { font-size: 104px; white-space: nowrap; }
+  .tpm-hero__content { justify-items: start; text-align: left; padding: 0 56px 56px; }
+  .tpm-hero__lede { font-size: 19px; }
+  .tpm-track { padding: 0 24px; scroll-padding: 0 24px; grid-auto-columns: calc((100% - 48px - 24px) / 3); }
+  .tpm-lineup { margin: 0 16px; padding: 80px 0 56px; }
+  .tpm-item__can { height: 420px; }
+  .tpm-item__can img { height: 380px; }
+  .tpm-item__can--pair img { height: 340px; }
+  .tpm-uses__list { margin-bottom: 36px; }
+  .tpm-science .tpm-wrap { display: grid; grid-template-columns: 1.1fr 1fr; column-gap: 64px; align-items: center; }
+  .tpm-science__title { grid-column: 1 / -1; }
+  .tpm-explode__can img { height: 420px; }
+  .tpm-explode li { font-size: 15px; padding: 8px 16px; }
+  .tpm-feel__card { padding: 56px; display: grid; grid-template-columns: 1fr 1.6fr; column-gap: 48px; align-items: center; }
+  .tpm-feel__card .tpm-h2 { grid-row: span 2; }
+  .tpm-founder__inner { grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  .tpm-buy__inner { grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; padding: 48px; }
+  .tpm-buy__media { display: block; }
+  .tpm-statement { margin: 0 16px; }
+  .tpm-sticky { display: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tpm *, .tpm-sticky { transition: none !important; }
+}
+
+</style>
+</head>
+<body>
+<div class="pv-bar">Local preview. The store's real header, footer and cart drawer replace the parts outside the page section.</div>
+<header class="pv-header">
+  <a href="https://gettipsy.com/"><img src="https://gettipsy.com/cdn/shop/files/TIPSY_AF_Logo_Header.png?width=200" width="200" height="72" alt="TIPSY AF"></a>
+  <a href="https://gettipsy.com/pages/contact">Contact Us</a>
+</header>
+<main>
+<div class="tpm" id="tpm" data-tpm-mode="preview">
+
+  <section class="tpm-hero" aria-labelledby="tpm-hero-title">
+    <picture class="tpm-hero__media">
+      <source media="(min-width: 900px)"
+        srcset="https://gettipsy.com/cdn/shop/files/TIPSY_wide.jpg?width=1600 1600w, https://gettipsy.com/cdn/shop/files/TIPSY_wide.jpg?width=2178 2178w"
+        sizes="100vw">
+      <img src="https://gettipsy.com/cdn/shop/files/weavy-Gemini_2.5_Flash_Nano_Banana_-2025-10-01_at_15.07.52.jpg?width=864"
+        srcset="https://gettipsy.com/cdn/shop/files/weavy-Gemini_2.5_Flash_Nano_Banana_-2025-10-01_at_15.07.52.jpg?width=600 600w, https://gettipsy.com/cdn/shop/files/weavy-Gemini_2.5_Flash_Nano_Banana_-2025-10-01_at_15.07.52.jpg?width=864 864w"
+        sizes="100vw" width="864" height="1184" fetchpriority="high"
+        alt="A can of TIPSY AF on ice next to cocktails">
+    </picture>
+    <div class="tpm-hero__content">
+      <h1 class="tpm-hero__title" id="tpm-hero-title">
+        <span>Zero proof.</span>
+        <em>Real feeling.</em>
+      </h1>
+      <p class="tpm-hero__lede">The first-drink feeling in 10–15 minutes, from functional mushrooms. No alcohol. No hangover.</p>
+      <a class="tpm-pillcard" href="#tpm-buy" data-tpm-jump>
+        <span class="tpm-pillcard__thumb" aria-hidden="true">
+          <img src="assets/tipsy-can-blood-orange.webp" width="289" height="755" alt="">
+          <img src="assets/tipsy-can-pineapple.webp" width="415" height="1086" alt="">
+        </span>
+        <span class="tpm-pillcard__text"><strong>Try 6 cans</strong><span>$29.94 trial</span></span>
+        <span class="tpm-knob tpm-knob--dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+      </a>
+      <p class="tpm-hero__terms">Then 12 cans for $49.80/mo + $2.99 shipping. Cancel anytime.</p>
+    </div>
+  </section>
+
+  <section class="tpm-sec tpm-campaigns" aria-label="Why TIPSY AF">
+    <div class="tpm-track" data-tpm-carousel>
+      <article class="tpm-camp">
+        <img class="tpm-camp__bg" src="https://gettipsy.com/cdn/shop/files/Pouring_Pineapple_martini.png?width=900" width="900" height="900" loading="lazy" alt="Pouring a can of TIPSY AF Pineapple Martini into a glass">
+        <h2 class="tpm-camp__title">Feel it in 10 minutes</h2>
+        <button type="button" class="tpm-pillcard tpm-pillcard--sm" data-tpm-pick="pm">
+          <span class="tpm-pillcard__thumb" aria-hidden="true"><img src="assets/tipsy-can-pineapple.webp" width="415" height="1086" alt=""></span>
+          <span class="tpm-pillcard__text"><strong>Pineapple Martini</strong></span>
+          <span class="tpm-knob tpm-knob--dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+        </button>
+      </article>
+      <article class="tpm-camp">
+        <img class="tpm-camp__bg" src="https://gettipsy.com/cdn/shop/files/TIPSY_wide.jpg?width=1200" width="1200" height="630" loading="lazy" alt="TIPSY AF beside cocktails at night">
+        <h2 class="tpm-camp__title">Zero hangover</h2>
+        <button type="button" class="tpm-pillcard tpm-pillcard--sm" data-tpm-pick="bo">
+          <span class="tpm-pillcard__thumb" aria-hidden="true"><img src="assets/tipsy-can-blood-orange.webp" width="289" height="755" alt=""></span>
+          <span class="tpm-pillcard__text"><strong>Blood Orange Margarita</strong></span>
+          <span class="tpm-knob tpm-knob--dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+        </button>
+      </article>
+      <article class="tpm-camp tpm-camp--split" data-tpm-mix-only>
+        <div class="tpm-camp__cans" aria-hidden="true">
+          <img src="assets/tipsy-can-blood-orange.webp" width="289" height="755" alt="">
+          <img src="assets/tipsy-can-pineapple.webp" width="415" height="1086" alt="">
+        </div>
+        <h2 class="tpm-camp__title">Can't pick? Get both</h2>
+        <button type="button" class="tpm-pillcard tpm-pillcard--sm" data-tpm-pick="mix">
+          <span class="tpm-pillcard__thumb" aria-hidden="true">
+            <img src="assets/tipsy-can-blood-orange.webp" width="289" height="755" alt="">
+            <img src="assets/tipsy-can-pineapple.webp" width="415" height="1086" alt="">
+          </span>
+          <span class="tpm-pillcard__text"><strong>The Mix</strong></span>
+          <span class="tpm-knob tpm-knob--dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+        </button>
+      </article>
+    </div>
+    <div class="tpm-progress" aria-hidden="true"><span data-tpm-progress></span></div>
+  </section>
+
+  <section class="tpm-sec tpm-uses" aria-labelledby="tpm-uses-title">
+    <div class="tpm-wrap tpm-wrap--narrow">
+      <h2 class="tpm-h2 tpm-center" id="tpm-uses-title">What brings you here?</h2>
+      <div class="tpm-uses__list">
+        <details class="tpm-use">
+          <summary>
+            <img src="https://gettipsy.com/cdn/shop/files/Pouring_Pineapple_martini.png?width=300" width="300" height="300" loading="lazy" alt="">
+            <span class="tpm-use__word">After work</span>
+            <span class="tpm-knob tpm-knob--dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+          </summary>
+          <div class="tpm-use__body">
+            <p>Take the edge off without losing your evening. One can, felt in 10–15 minutes, done in about an hour.</p>
+            <p class="tpm-use__pick"><span>Our pick</span> Pineapple Martini, 6-pack trial</p>
+            <button type="button" class="tpm-knobbtn tpm-knobbtn--sm" data-tpm-apply="pm:trial"><span>Use this pick</span><span class="tpm-knob tpm-knob--light" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button>
+          </div>
+        </details>
+        <details class="tpm-use">
+          <summary>
+            <img src="https://gettipsy.com/cdn/shop/files/TIPSY_wide.jpg?width=400" width="400" height="210" loading="lazy" alt="">
+            <span class="tpm-use__word">Nights out</span>
+            <span class="tpm-knob tpm-knob--dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+          </summary>
+          <div class="tpm-use__body">
+            <p>Stay in the round with a can in hand. Have another to keep it going, and wake up without a hangover.</p>
+            <p class="tpm-use__pick"><span>Our pick</span> The Mix, 6-pack trial</p>
+            <button type="button" class="tpm-knobbtn tpm-knobbtn--sm" data-tpm-apply="mix:trial"><span>Use this pick</span><span class="tpm-knob tpm-knob--light" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button>
+          </div>
+        </details>
+        <details class="tpm-use">
+          <summary>
+            <span class="tpm-use__tile tpm-use__tile--orange" aria-hidden="true"><img src="assets/tipsy-can-blood-orange.webp" width="289" height="755" alt=""></span>
+            <span class="tpm-use__word">Cutting back</span>
+            <span class="tpm-knob tpm-knob--dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+          </summary>
+          <div class="tpm-use__body">
+            <p>Keep the ritual and the feeling, without the alcohol. Auto ship keeps a 12-pack in the fridge at $4.15 a can.</p>
+            <p class="tpm-use__pick"><span>Our pick</span> Blood Orange Margarita, 12-pack auto ship</p>
+            <button type="button" class="tpm-knobbtn tpm-knobbtn--sm" data-tpm-apply="bo:autoship"><span>Use this pick</span><span class="tpm-knob tpm-knob--light" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button>
+          </div>
+        </details>
+        <details class="tpm-use">
+          <summary>
+            <span class="tpm-use__tile tpm-use__tile--yellow" aria-hidden="true"><img src="assets/tipsy-can-pineapple.webp" width="415" height="1086" alt=""></span>
+            <span class="tpm-use__word">Sober curious</span>
+            <span class="tpm-knob tpm-knob--dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+          </summary>
+          <div class="tpm-use__body">
+            <p>Wondering what a buzz without alcohol feels like? Start small with 6 cans and a 100-day money-back guarantee.</p>
+            <p class="tpm-use__pick"><span>Our pick</span> The Mix, 6-pack trial</p>
+            <button type="button" class="tpm-knobbtn tpm-knobbtn--sm" data-tpm-apply="mix:trial"><span>Use this pick</span><span class="tpm-knob tpm-knob--light" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button>
+          </div>
+        </details>
+        <details class="tpm-use">
+          <summary>
+            <img src="https://gettipsy.com/cdn/shop/files/martini_blue_sky_edited_1.png" width="402" height="540" loading="lazy" alt="">
+            <span class="tpm-use__word">Hosting</span>
+            <span class="tpm-knob tpm-knob--dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+          </summary>
+          <div class="tpm-use__body">
+            <p>A cocktail everyone at the table can have. 12 cans, poured over ice, no bartender needed.</p>
+            <p class="tpm-use__pick"><span>Our pick</span> The Mix, 12-pack</p>
+            <button type="button" class="tpm-knobbtn tpm-knobbtn--sm" data-tpm-apply="mix:onetime"><span>Use this pick</span><span class="tpm-knob tpm-knob--light" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button>
+          </div>
+        </details>
+      </div>
+      <div class="tpm-center">
+        <button type="button" class="tpm-knobbtn" data-tpm-quiz-open>
+          <span>Help me choose</span>
+          <span class="tpm-knob tpm-knob--light" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="tpm-lineup" aria-labelledby="tpm-lineup-title">
+    <h2 class="tpm-h2 tpm-center" id="tpm-lineup-title">The lineup</h2>
+    <div class="tpm-track tpm-track--lineup" data-tpm-carousel>
+      <article class="tpm-item tpm-item--bo">
+        <span class="tpm-outline-chip">Fan favorite</span>
+        <div class="tpm-item__can"><img src="assets/tipsy-can-blood-orange.webp" width="289" height="755" loading="lazy" alt="Can of TIPSY AF Blood Orange Margarita"></div>
+        <h3>Blood Orange Margarita</h3>
+        <p class="tpm-item__desc">Bright citrus, salted edge · 30 cal</p>
+        <p class="tpm-item__price">From $29.94</p>
+        <button type="button" class="tpm-knobbtn tpm-knobbtn--light" data-tpm-pick="bo"><span>Choose</span><span class="tpm-knob tpm-knob--dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span><span class="tpm-visually-hidden"> Blood Orange Margarita</span></button>
+      </article>
+      <article class="tpm-item tpm-item--pm">
+        <span class="tpm-outline-chip">New</span>
+        <div class="tpm-item__can"><img src="assets/tipsy-can-pineapple.webp" width="415" height="1086" loading="lazy" alt="Can of TIPSY AF Pineapple Martini"></div>
+        <h3>Pineapple Martini</h3>
+        <p class="tpm-item__desc">Pineapple, dry martini finish · 35 cal</p>
+        <p class="tpm-item__price">From $29.94</p>
+        <button type="button" class="tpm-knobbtn tpm-knobbtn--light" data-tpm-pick="pm"><span>Choose</span><span class="tpm-knob tpm-knob--dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span><span class="tpm-visually-hidden"> Pineapple Martini</span></button>
+      </article>
+      <article class="tpm-item tpm-item--mix" data-tpm-mix-only>
+        <span class="tpm-outline-chip">Can't decide</span>
+        <div class="tpm-item__can tpm-item__can--pair">
+          <img src="assets/tipsy-can-blood-orange.webp" width="289" height="755" loading="lazy" alt="Can of TIPSY AF Blood Orange Margarita">
+          <img src="assets/tipsy-can-pineapple.webp" width="415" height="1086" loading="lazy" alt="Can of TIPSY AF Pineapple Martini">
+        </div>
+        <h3>The Mix</h3>
+        <p class="tpm-item__desc">Half and half, same price</p>
+        <p class="tpm-item__price">From $29.94</p>
+        <button type="button" class="tpm-knobbtn tpm-knobbtn--light" data-tpm-pick="mix"><span>Choose</span><span class="tpm-knob tpm-knob--dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span><span class="tpm-visually-hidden"> the mix</span></button>
+      </article>
+    </div>
+    <div class="tpm-progress tpm-progress--light" aria-hidden="true"><span data-tpm-progress></span></div>
+  </section>
+
+  <section class="tpm-sec tpm-proof" aria-labelledby="tpm-proof-title">
+    <div class="tpm-wrap">
+      <div class="tpm-proof__grid">
+        <img class="tpm-proof__img tpm-proof__img--a" src="https://gettipsy.com/cdn/shop/files/Pouring_Pineapple_martini.png?width=600" width="600" height="600" loading="lazy" alt="">
+        <figure class="tpm-tile tpm-tile--yellow tpm-proof__q1"><blockquote>“10 minutes later I felt it and I was so relaxed.”</blockquote><figcaption>Dominic H.</figcaption></figure>
+        <div class="tpm-proof__head">
+          <h2 class="tpm-cond" id="tpm-proof-title">The buzz is real</h2>
+          <p>In their own words, from people who tried it.</p>
+          <a class="tpm-knobbtn" href="#tpm-buy" data-tpm-jump><span>Join them</span><span class="tpm-knob tpm-knob--light" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></a>
+        </div>
+        <figure class="tpm-tile tpm-proof__q2"><blockquote>“I was skeptical, but I loved it! Nice little buzz, but doesn't make me crave alcohol.”</blockquote><figcaption>Carolyn L.</figcaption></figure>
+        <img class="tpm-proof__img tpm-proof__img--b" src="https://gettipsy.com/cdn/shop/files/TIPSY_wide.jpg?width=800" width="800" height="420" loading="lazy" alt="">
+        <figure class="tpm-tile tpm-tile--dark tpm-proof__q3"><blockquote>“When I found these it made alcohol a thing of the past… for good!”</blockquote><figcaption>Shelli M.</figcaption></figure>
+        <figure class="tpm-tile tpm-proof__q4"><blockquote>“Had a half can… and immediately ordered 3 more cases!”</blockquote><figcaption>phillygurlnmass</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="tpm-sec tpm-science" aria-labelledby="tpm-science-title">
+    <div class="tpm-wrap">
+      <h2 class="tpm-cond tpm-science__title" id="tpm-science-title">Mushroom science.<br>Zero grey area.</h2>
+      <div class="tpm-explode">
+        <div class="tpm-explode__can"><img src="assets/tipsy-can-pineapple.webp" width="415" height="1086" loading="lazy" alt="Can of TIPSY AF"></div>
+        <ul class="tpm-explode__in" aria-label="What's in it">
+          <li>Chaga</li><li>Maitake</li><li>Shiitake</li><li>Reishi</li><li>Turkey tail</li><li>L-theanine</li><li>GABA</li><li>Theobromine</li>
+        </ul>
+        <ul class="tpm-explode__out" aria-label="What's not in it">
+          <li>Alcohol</li><li>Kava</li><li>Kratom</li><li>THC</li><li>Caffeine</li>
+        </ul>
+      </div>
+      <div class="tpm-science__copy">
+        <h3>How it works</h3>
+        <p>When you exercise or laugh, your body makes feel-good compounds. Under the right conditions, mushrooms make their own. We grow them to produce those actives and pair them with L-theanine, GABA and theobromine. The result: the mood, the ease and the vibe of a drink, minus the alcohol.</p>
+        <ul class="tpm-facts">
+          <li>Patent-pending formula</li>
+          <li>FDA-reviewed ingredients</li>
+          <li>Backed by brain wave studies</li>
+          <li>From the team behind the world's largest mushroom research and ingredient company ($220M raised)</li>
+        </ul>
+        <button type="button" class="tpm-knobbtn" data-tpm-quiz-open><span>Find my match</span><span class="tpm-knob tpm-knob--light" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="tpm-sec tpm-feel" aria-labelledby="tpm-feel-title">
+    <div class="tpm-wrap">
+      <div class="tpm-feel__card">
+        <h2 class="tpm-h2" id="tpm-feel-title">What one can feels like</h2>
+        <svg class="tpm-feel__curve" viewBox="0 -4 600 228" role="img" aria-labelledby="tpm-curve-desc">
+          <desc id="tpm-curve-desc">Illustration of one can over about an hour: the feeling builds from around minute 10, peaks around minute 20, eases off, and ends around minute 60.</desc>
+          <defs><linearGradient id="tpm-curve-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe748" stop-opacity=".95"/><stop offset="1" stop-color="#ffe748" stop-opacity="0"/></linearGradient></defs>
+          <path d="M20 188 C 70 186, 90 150, 120 110 S 180 34, 213 32 S 300 40, 340 80 S 420 120, 460 140 S 540 186, 580 188 L 580 190 L 20 190 Z" fill="url(#tpm-curve-fill)"/>
+          <path d="M20 188 C 70 186, 90 150, 120 110 S 180 34, 213 32 S 300 40, 340 80 S 420 120, 460 140 S 540 186, 580 188" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+          <g font-size="20" font-weight="600" fill="#fff" font-family="inherit"><text x="20" y="216">0 min</text><text x="70" y="100">Hits</text><text x="186" y="20">Peaks</text><text x="440" y="122">Wave</text><text x="520" y="216">60 min</text></g>
+        </svg>
+        <p class="tpm-feel__note">Illustration. Everyone feels it a little differently. One can is one serving; have another to keep it going.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tpm-sec tpm-founder" aria-labelledby="tpm-founder-title">
+    <div class="tpm-wrap tpm-founder__inner">
+      <img src="https://gettipsy.com/cdn/shop/files/founders.png" width="336" height="190" loading="lazy" alt="TIPSY AF co-founders Josh Hahn and his father, each holding a can">
+      <div>
+        <h2 class="tpm-founder__quote" id="tpm-founder-title"><em>“I think I just reverse engineered alcohol.”</em></h2>
+        <p>After years of client dinners and hangovers, Josh put his mushroom expertise to work on a better buzz. Five years in, he called his dad with that line. His dad tried it, came out of retirement as CEO of that same mushroom company, and co-founded TIPSY AF with him.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tpm-sec tpm-buy" id="tpm-buy" aria-labelledby="tpm-buy-title">
+    <div class="tpm-wrap">
+      <div class="tpm-buy__inner">
+        <div class="tpm-buy__media" aria-hidden="true">
+          <div class="tpm-buy__stage" data-tpm-media="bo"><img src="assets/tipsy-can-blood-orange.webp" width="289" height="755" loading="lazy" alt=""></div>
+          <div class="tpm-buy__stage tpm-buy__stage--pm" data-tpm-media="pm" hidden><img src="assets/tipsy-can-pineapple.webp" width="415" height="1086" loading="lazy" alt=""></div>
+          <div class="tpm-buy__stage tpm-buy__stage--mix" data-tpm-media="mix" data-tpm-mix-only hidden>
+            <img src="assets/tipsy-can-blood-orange.webp" width="289" height="755" loading="lazy" alt="">
+            <img src="assets/tipsy-can-pineapple.webp" width="415" height="1086" loading="lazy" alt="">
+          </div>
+        </div>
+        <div>
+          <h2 class="tpm-h2" id="tpm-buy-title">Get TIPSY</h2>
+          <form class="tpm-offer" data-tpm-form novalidate>
+            <fieldset class="tpm-flavor-pick">
+              <legend class="tpm-visually-hidden">Flavor</legend>
+              <label class="tpm-seg"><input type="radio" name="tpm-flavor" value="bo" checked><span>Blood Orange</span></label>
+              <label class="tpm-seg"><input type="radio" name="tpm-flavor" value="pm"><span>Pineapple</span></label>
+              <label class="tpm-seg" data-tpm-mix-only><input type="radio" name="tpm-flavor" value="mix"><span>Mix</span></label>
+            </fieldset>
+            <fieldset>
+              <legend class="tpm-visually-hidden">Pack</legend>
+              <label class="tpm-opt">
+                <input type="radio" name="tpm-offer" value="trial" checked
+                  data-variant-bo="44868866212048" data-variant-pm="45108737507536" data-variant-mix="" data-plan="1777991888"
+                  data-mix-split="3 Blood Orange Margarita + 3 Pineapple Martini"
+                  data-label="Start my 6-pack trial · $29.94">
+                <span class="tpm-opt__box">
+                  <span class="tpm-opt__head"><span>6-pack trial</span><span>$29.94</span></span>
+                  <span class="tpm-opt__desc">Then 12 cans every month at $49.80 + $2.99 shipping. Cancel anytime.</span>
+                </span>
+              </label>
+              <label class="tpm-opt">
+                <input type="radio" name="tpm-offer" value="autoship"
+                  data-variant-bo="44868867064016" data-variant-pm="45108737605840" data-variant-mix="" data-plan="1778024656"
+                  data-mix-split="6 Blood Orange Margarita + 6 Pineapple Martini"
+                  data-label="Subscribe · $49.80/mo">
+                <span class="tpm-opt__box">
+                  <span class="tpm-opt__head"><span>12-pack auto ship</span><span>$49.80/mo</span></span>
+                  <span class="tpm-opt__desc">$4.15/can, 17% off. $2.99 shipping. Cancel anytime.</span>
+                </span>
+              </label>
+              <label class="tpm-opt">
+                <input type="radio" name="tpm-offer" value="onetime"
+                  data-variant-bo="44868867457232" data-variant-pm="45108737540304" data-variant-mix="" data-plan=""
+                  data-mix-split="6 Blood Orange Margarita + 6 Pineapple Martini"
+                  data-label="Add 12-pack to cart · $60.00">
+                <span class="tpm-opt__box">
+                  <span class="tpm-opt__head"><span>12-pack, one time</span><span>$60.00</span></span>
+                  <span class="tpm-opt__desc">$5.00/can. No subscription.</span>
+                </span>
+              </label>
+            </fieldset>
+            <p class="tpm-mixnote" data-tpm-mix-note hidden></p>
+            <ol class="tpm-timeline" data-tpm-trial-only aria-label="How the trial works">
+              <li><strong>Today</strong><span>6 cans ship</span></li>
+              <li><strong>Day 25</strong><span>We remind you</span></li>
+              <li><strong>Day 28</strong><span>12 cans, $49.80 + $2.99 shipping</span></li>
+            </ol>
+            <button type="submit" class="tpm-btn tpm-btn--accent tpm-btn--block" data-tpm-add>Start my 6-pack trial · $29.94</button>
+            <p class="tpm-error" data-tpm-error role="alert"></p>
+            <p class="tpm-assure">100-day money-back guarantee, even on opened cans. Most orders ship the same day; delivery usually takes 3–5 days.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tpm-sec tpm-faq" aria-labelledby="tpm-faq-title">
+    <div class="tpm-wrap tpm-wrap--narrow">
+      <h2 class="tpm-h2" id="tpm-faq-title">Questions</h2>
+      <details class="tpm-details"><summary>How many should I drink?</summary><p>One can is one serving. Start with one, give it 10–15 minutes, and have another if you want to turn it up. Each can lasts about an hour.</p></details>
+      <details class="tpm-details"><summary>Can I drive after drinking it?</summary><p>We don't recommend it. Your blood alcohol will be zero, but you can still be considered under the influence. Once the feeling has passed, you can drive.</p></details>
+      <details class="tpm-details"><summary>Is it legal? Who is it for?</summary><p>Everything in it is legal, and we ship to all 50 states. TIPSY AF is designed for adults 18 and over.</p></details>
+      <details class="tpm-details"><summary>How does the trial work?</summary><p>You get 6 cans for $29.94. We remind you on day 25. On day 28 it renews as a 12-pack at $49.80/mo plus $2.99 shipping. You can cancel anytime.</p></details>
+      <details class="tpm-details"><summary>What if I don't like it?</summary><p>Email <a href="mailto:hey@gettipsy.com">hey@gettipsy.com</a> within 100 days of your order for a full refund, even on opened cans. Shipping fees aren't refunded unless the problem was on our end. <a href="https://gettipsy.com/pages/returns-refunds-policy">Full policy</a>.</p></details>
+      <details class="tpm-details"><summary>What's in each can?</summary>
+        <p><strong>Blood Orange Margarita</strong> (30 calories, 8g sugar): Filtered Water, Organic Cane Sugar, Orange Juice Concentrate, Natural Flavors, Botanical Extracts, Key Lime Juice Concentrate, Citric Acid, Proprietary Mushroom Blend (Chaga, Maitake, Shiitake, Reishi, Turkey Tail), L-Theanine, GABA, Theobromine, Stevia Extract (Reb M).</p>
+        <p><strong>Pineapple Martini</strong> (35 calories, 9g sugar): Carbonated Water, Sugar, Pineapple Juice Concentrate, Natural Flavors, Botanical Extracts, Citric Acid, Proprietary Mushroom Blend (Chaga, Maitake, Shiitake, Reishi, Turkey Tail), Beta Carotene (Color), L-Theanine, GABA, Theobromine, Stevia Leaf Extract.</p>
+      </details>
+    </div>
+  </section>
+
+  <section class="tpm-statement" aria-label="TIPSY AF">
+    <p>The first-drink feeling. Zero booze.</p>
+    <a class="tpm-knobbtn tpm-knobbtn--accent" href="#tpm-buy" data-tpm-jump><span>Try 6 cans for $29.94</span><span class="tpm-knob tpm-knob--dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></a>
+  </section>
+
+  <dialog class="tpm-quiz" data-tpm-quiz aria-labelledby="tpm-quiz-title">
+    <form method="dialog" class="tpm-quiz__inner">
+      <div class="tpm-quiz__top">
+        <p class="tpm-quiz__step" data-tpm-quiz-step>Question 1 of 2</p>
+        <button type="submit" class="tpm-quiz__close" value="close" aria-label="Close">×</button>
+      </div>
+      <div class="tpm-quiz__panel" data-tpm-q="1">
+        <h2 class="tpm-quiz__title" id="tpm-quiz-title">Which sounds better?</h2>
+        <div class="tpm-quiz__choices">
+          <button type="button" class="tpm-choice" data-tpm-answer="flavor:bo"><img src="assets/tipsy-can-blood-orange.webp" width="289" height="755" alt=""><span><strong>Bright citrus, a little salty</strong><span>Like a margarita</span></span></button>
+          <button type="button" class="tpm-choice" data-tpm-answer="flavor:pm"><img src="assets/tipsy-can-pineapple.webp" width="415" height="1086" alt=""><span><strong>Fruity and dry</strong><span>Like a pineapple martini</span></span></button>
+          <button type="button" class="tpm-choice" data-tpm-answer="flavor:mix" data-tpm-mix-only><span class="tpm-choice__pair"><img src="assets/tipsy-can-blood-orange.webp" width="289" height="755" alt=""><img src="assets/tipsy-can-pineapple.webp" width="415" height="1086" alt=""></span><span><strong>I can't decide</strong><span>Half and half</span></span></button>
+        </div>
+      </div>
+      <div class="tpm-quiz__panel" data-tpm-q="2" hidden>
+        <h2 class="tpm-quiz__title">How often would you have one?</h2>
+        <div class="tpm-quiz__choices">
+          <button type="button" class="tpm-choice tpm-choice--text" data-tpm-answer="offer:trial"><span><strong>I just want to try it</strong><span>6 cans to start</span></span></button>
+          <button type="button" class="tpm-choice tpm-choice--text" data-tpm-answer="offer:onetime"><span><strong>Now and then</strong><span>A 12-pack, no subscription</span></span></button>
+          <button type="button" class="tpm-choice tpm-choice--text" data-tpm-answer="offer:autoship"><span><strong>Most weeks</strong><span>12 cans every month, best price</span></span></button>
+        </div>
+      </div>
+      <div class="tpm-quiz__panel tpm-quiz__result" data-tpm-q="3" hidden>
+        <h2 class="tpm-quiz__title">Your match</h2>
+        <p class="tpm-quiz__match" data-tpm-quiz-match></p>
+        <button type="button" class="tpm-knobbtn tpm-knobbtn--accent" data-tpm-quiz-apply><span>Use my match</span><span class="tpm-knob tpm-knob--dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button>
+        <button type="button" class="tpm-quiz__restart" data-tpm-quiz-restart>Start over</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="tpm-sticky" data-tpm-sticky hidden>
+    <span class="tpm-sticky__text">6-can trial · <strong>$29.94</strong></span>
+    <a class="tpm-btn tpm-btn--accent tpm-btn--sm" href="#tpm-buy" data-tpm-jump>Try it</a>
+  </div>
+</div>
+
+</main>
+<footer class="pv-footer">
+  <a href="https://gettipsy.com/pages/returns-refunds-policy">Returns &amp; Refunds</a>
+  <a href="https://gettipsy.com/pages/terms-of-service">Terms of Service</a>
+  <a href="https://gettipsy.com/pages/privacy-policy">Privacy Policy</a>
+  <p>&copy;2026 TIPSY Beverages LLC.</p>
+</footer>
+<script>
+(function () {
+  var root = document.getElementById('tpm');
+  if (!root) return;
+
+  // 'store' posts to Shopify's /cart/add.js; 'preview' (local file) only
+  // reports what would be added, because there is no cart to post to.
+  var MODE = root.getAttribute('data-tpm-mode') || 'store';
+
+  var form = root.querySelector('[data-tpm-form]');
+  var addBtn = root.querySelector('[data-tpm-add]');
+  var errorEl = root.querySelector('[data-tpm-error]');
+  var trialOnly = root.querySelector('[data-tpm-trial-only]');
+  var sticky = root.querySelector('[data-tpm-sticky]');
+  var mixNote = root.querySelector('[data-tpm-mix-note]');
+  var busy = false;
+
+  // The Mix option needs a mixed-pack variant for every purchase option (set in
+  // the theme editor). On the store, hide it until all three exist rather than
+  // offer something that can't be added. The preview keeps it visible.
+  var offerInputs = form.querySelectorAll('input[name="tpm-offer"]');
+  var mixReady = Array.prototype.every.call(offerInputs, function (i) {
+    return parseInt(i.getAttribute('data-variant-mix'), 10) > 0;
+  });
+  if (!mixReady && MODE !== 'preview') {
+    Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-mix-only]'), function (el) { el.remove(); });
+  }
+
+  function selected() {
+    return form.querySelector('input[name="tpm-offer"]:checked');
+  }
+
+  function selectedFlavor() {
+    var f = form.querySelector('input[name="tpm-flavor"]:checked');
+    return f ? f.value : null;
+  }
+
+  function syncOffer() {
+    var opt = selected();
+    if (!opt) return;
+    addBtn.textContent = opt.getAttribute('data-label');
+    if (trialOnly) trialOnly.hidden = opt.value !== 'trial';
+    var flavor = selectedFlavor();
+    Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-media]'), function (m) {
+      m.hidden = m.getAttribute('data-tpm-media') !== flavor;
+    });
+    if (mixNote) {
+      var isMix = selectedFlavor() === 'mix';
+      mixNote.hidden = !isMix;
+      mixNote.textContent = isMix ? 'Your pack: ' + opt.getAttribute('data-mix-split') + '.' : '';
+    }
+    showError('');
+  }
+
+  function showError(msg) {
+    errorEl.textContent = msg || '';
+  }
+
+  // Same behaviour as the theme's existing offer selector: open the Dawn cart
+  // drawer when it exists, otherwise go to the cart page so the click is never
+  // silent.
+  function cartDrawer() {
+    var el = document.querySelector('cart-drawer');
+    return el && typeof el.renderContents === 'function' ? el : null;
+  }
+
+  function afterAdd(data) {
+    var drawer = cartDrawer();
+    if (drawer && data && data.sections) {
+      drawer.classList.remove('is-empty');
+      drawer.renderContents(data);
+      return;
+    }
+    window.location.href = '/cart';
+  }
+
+  function addToCart(opt) {
+    var flavor = selectedFlavor();
+    var item = { id: parseInt(opt.getAttribute('data-variant-' + flavor), 10), quantity: 1 };
+    var plan = parseInt(opt.getAttribute('data-plan'), 10);
+    if (!isNaN(plan) && plan > 0) item.selling_plan = plan;
+
+    if (MODE === 'preview' && !item.id) {
+      window.alert('Preview only. The mixed ' + opt.getAttribute('data-mix-split') +
+        ' pack has no Shopify variant yet. Add its variant ID in the theme editor to enable it.');
+      return Promise.resolve();
+    }
+    if (!item.id) return Promise.reject(new Error('This option isn\'t available right now. Please pick another flavor.'));
+
+    if (MODE === 'preview') {
+      showError('');
+      window.alert('Preview only. On the store this adds: variant ' + item.id +
+        (item.selling_plan ? ', selling plan ' + item.selling_plan : ', one-time purchase') + ', quantity 1.');
+      return Promise.resolve();
+    }
+
+    var body = { items: [item] };
+    var drawer = cartDrawer();
+    if (drawer) {
+      body.sections = drawer.getSectionsToRender().map(function (s) { return s.id; });
+      body.sections_url = window.location.pathname;
+    }
+
+    return fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(body)
+    })
+      .then(function (r) {
+        return r.json().then(function (data) {
+          if (!r.ok) throw new Error(data.description || data.message || 'Something went wrong. Please try again.');
+          return data;
+        });
+      })
+      .then(afterAdd);
+  }
+
+  form.addEventListener('change', syncOffer);
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (busy) return;
+    var opt = selected();
+    if (!opt) { showError('Choose an option to continue.'); return; }
+    if (!selectedFlavor()) { showError('Pick a flavor to continue.'); return; }
+    busy = true;
+    addBtn.disabled = true;
+    var label = addBtn.textContent;
+    addBtn.textContent = 'Adding…';
+    showError('');
+    addToCart(opt)
+      .catch(function (err) { showError(err.message); })
+      .then(function () {
+        busy = false;
+        addBtn.disabled = false;
+        addBtn.textContent = label;
+      });
+  });
+
+  // In-page jumps: move focus to the purchase heading for keyboard users.
+  function jumpToBuy(focusEl) {
+    var target = document.getElementById('tpm-buy');
+    if (!target) return;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    var el = focusEl || target.querySelector('h2');
+    if (!focusEl) el.setAttribute('tabindex', '-1');
+    el.focus({ preventScroll: true });
+  }
+  Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-jump]'), function (a) {
+    a.addEventListener('click', function (e) { e.preventDefault(); jumpToBuy(); });
+  });
+
+  // Flavor cards preselect that flavor in the purchase form.
+  Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-pick]'), function (b) {
+    b.addEventListener('click', function () {
+      var input = form.querySelector('input[name="tpm-flavor"][value="' + b.getAttribute('data-tpm-pick') + '"]');
+      if (!input) return;
+      input.checked = true;
+      syncOffer();
+      jumpToBuy(input);
+    });
+  });
+
+  // Sticky CTA: shown once the hero button has scrolled away, hidden while the
+  // purchase section or anything after it is on screen so it never covers the
+  // options, terms or FAQ.
+  if (sticky) {
+    var heroBtn = root.querySelector('.tpm-hero [data-tpm-jump]');
+    var buy = document.getElementById('tpm-buy');
+    var queued = false;
+    sticky.hidden = false;
+    root.classList.add('has-sticky');
+    // Read positions on scroll (once per frame) rather than with an
+    // IntersectionObserver, which misses jumps straight past a section.
+    function update() {
+      queued = false;
+      var heroGone = heroBtn.getBoundingClientRect().bottom < 0;
+      var buyReached = buy.getBoundingClientRect().top < window.innerHeight;
+      var show = heroGone && !buyReached;
+      sticky.classList.toggle('is-visible', show);
+      sticky.inert = !show;
+      sticky.setAttribute('aria-hidden', show ? 'false' : 'true');
+    }
+    function queue() { if (!queued) { queued = true; window.requestAnimationFrame(update); } }
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue);
+    update();
+  }
+
+  // ---- Shared: preselect a flavor and pack in the buy box ----
+  var FLAVOR_NAMES = { bo: 'Blood Orange Margarita', pm: 'Pineapple Martini', mix: 'The Mix' };
+  function hasFlavor(f) { return !!form.querySelector('input[name="tpm-flavor"][value="' + f + '"]'); }
+  function applyPick(flavor, offer) {
+    if (!hasFlavor(flavor)) flavor = 'bo';
+    var f = form.querySelector('input[name="tpm-flavor"][value="' + flavor + '"]');
+    var o = form.querySelector('input[name="tpm-offer"][value="' + offer + '"]');
+    if (f) f.checked = true;
+    if (o) o.checked = true;
+    syncOffer();
+    jumpToBuy(addBtn);
+  }
+  Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-apply]'), function (b) {
+    var parts = b.getAttribute('data-tpm-apply').split(':');
+    // Without the Mix products on the store, recommend the fan favorite instead.
+    var pickText = b.parentNode.querySelector('.tpm-use__pick');
+    if (parts[0] === 'mix' && !hasFlavor('mix') && pickText) pickText.innerHTML = pickText.innerHTML.replace('The Mix', FLAVOR_NAMES.bo);
+    b.addEventListener('click', function () { applyPick(parts[0], parts[1]); });
+  });
+
+  // ---- Carousels: progress bar follows horizontal scroll ----
+  Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-carousel]'), function (track) {
+    var bar = track.parentNode.querySelector('[data-tpm-progress]');
+    if (!bar) return;
+    function paint() {
+      var max = track.scrollWidth - track.clientWidth;
+      var shown = track.clientWidth / track.scrollWidth;
+      bar.parentNode.hidden = max <= 1;
+      bar.style.width = (shown * 100) + '%';
+      bar.style.transform = 'translateX(' + (max > 0 ? (track.scrollLeft / max) * ((1 - shown) / shown) * 100 : 0) + '%)';
+    }
+    track.addEventListener('scroll', paint, { passive: true });
+    window.addEventListener('resize', paint);
+    paint();
+  });
+
+  // ---- "Help me choose" quiz ----
+  var quiz = root.querySelector('[data-tpm-quiz]');
+  if (quiz) {
+    var answers = {};
+    var stepLabel = quiz.querySelector('[data-tpm-quiz-step]');
+    var OFFER_NAMES = { trial: '6-pack trial · $29.94', onetime: '12-pack · $60.00', autoship: '12-pack auto ship · $49.80/mo' };
+    function show(n) {
+      Array.prototype.forEach.call(quiz.querySelectorAll('[data-tpm-q]'), function (p) {
+        p.hidden = p.getAttribute('data-tpm-q') !== String(n);
+      });
+      stepLabel.textContent = n < 3 ? 'Question ' + n + ' of 2' : 'Done';
+      var first = quiz.querySelector('[data-tpm-q="' + n + '"] button');
+      if (first) first.focus();
+    }
+    function openQuiz() {
+      answers = {};
+      if (typeof quiz.showModal === 'function') quiz.showModal(); else quiz.setAttribute('open', '');
+      show(1);
+    }
+    Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-quiz-open]'), function (b) {
+      b.addEventListener('click', openQuiz);
+    });
+    Array.prototype.forEach.call(quiz.querySelectorAll('[data-tpm-answer]'), function (b) {
+      b.addEventListener('click', function () {
+        var kv = b.getAttribute('data-tpm-answer').split(':');
+        answers[kv[0]] = kv[1];
+        if (kv[0] === 'flavor') { show(2); return; }
+        quiz.querySelector('[data-tpm-quiz-match]').textContent = FLAVOR_NAMES[answers.flavor] + ', ' + OFFER_NAMES[answers.offer];
+        show(3);
+      });
+    });
+    quiz.querySelector('[data-tpm-quiz-restart]').addEventListener('click', function () { answers = {}; show(1); });
+    quiz.querySelector('[data-tpm-quiz-apply]').addEventListener('click', function () {
+      if (typeof quiz.close === 'function') quiz.close(); else quiz.removeAttribute('open');
+      applyPick(answers.flavor || 'bo', answers.offer || 'trial');
+    });
+    // Close when the backdrop is clicked.
+    quiz.addEventListener('click', function (e) { if (e.target === quiz) quiz.close(); });
+  }
+
+  syncOffer();
+})();
+
+</script>
+</body>
+</html>

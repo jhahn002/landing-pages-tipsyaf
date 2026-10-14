@@ -3,7 +3,9 @@
 Each page folder has page.json ({"title", "section", "template", "section_name",
 optional "settings": [{"id", "label", "info"}]}). Every [[setting_id]] token in
 src/page.html becomes {{ section.settings.setting_id }} in Shopify (editable in the
-theme editor) and an empty string in the preview.
+theme editor) and an empty string in the preview. Every [[asset:name]] token becomes
+{{ 'name' | asset_url }} in Shopify and assets/name in the preview; files in the page
+folder's assets/ are copied to preview/assets/ and shopify/assets/ (upload those to the theme).
 and src/page.html, src/page.css, src/page.js. Writes into that folder:
   preview/index.html                       local preview (no cart)
   shopify/sections/<section>.liquid        Shopify section
@@ -12,6 +14,8 @@ and src/page.html, src/page.css, src/page.js. Writes into that folder:
 Usage: python3 build.py <page-folder> [<page-folder> ...]
 """
 import json
+import re
+import shutil
 import sys
 from pathlib import Path
 
@@ -101,6 +105,15 @@ def build(root):
         token = "[[" + st["id"] + "]]"
         html = html.replace(token, "")
         liquid_html = liquid_html.replace(token, "{{ section.settings." + st["id"] + " | escape }}")
+    html = re.sub(r"\[\[asset:([\w.-]+)\]\]", r"assets/\1", html)
+    liquid_html = re.sub(r"\[\[asset:([\w.-]+)\]\]", r"{{ '\1' | asset_url }}", liquid_html)
+    assets = root / "assets"
+    if assets.is_dir():
+        for dest in (root / "preview" / "assets", root / "shopify" / "assets"):
+            dest.mkdir(parents=True, exist_ok=True)
+            for f in assets.iterdir():
+                if f.is_file():
+                    shutil.copy2(f, dest / f.name)
     schema_settings = json.dumps([dict(type="text", **st) for st in settings], indent=4)
     preview_html = html.replace('<div class="tpm" id="tpm">', '<div class="tpm" id="tpm" data-tpm-mode="preview">', 1)
     # Relative store links point at the live store in the preview.
