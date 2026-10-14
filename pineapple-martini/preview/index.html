@@ -726,28 +726,27 @@ body { margin: 0; background: #fff; }
   // Sticky CTA: shown once the hero button has scrolled away, hidden while the
   // purchase section or anything after it is on screen so it never covers the
   // options, terms or FAQ.
-  if (sticky && 'IntersectionObserver' in window) {
+  if (sticky) {
     var heroBtn = root.querySelector('.tpm-hero [data-tpm-jump]');
     var buy = document.getElementById('tpm-buy');
-    var heroGone = false;
-    var buyReached = false;
+    var queued = false;
     sticky.hidden = false;
     root.classList.add('has-sticky');
+    // Read positions on scroll (once per frame) rather than with an
+    // IntersectionObserver, which misses jumps straight past a section.
     function update() {
+      queued = false;
+      var heroGone = heroBtn.getBoundingClientRect().bottom < 0;
+      var buyReached = buy.getBoundingClientRect().top < window.innerHeight;
       var show = heroGone && !buyReached;
       sticky.classList.toggle('is-visible', show);
       sticky.inert = !show;
       sticky.setAttribute('aria-hidden', show ? 'false' : 'true');
     }
-    new IntersectionObserver(function (entries) {
-      heroGone = !entries[0].isIntersecting && entries[0].boundingClientRect.top < 0;
-      update();
-    }).observe(heroBtn);
-    new IntersectionObserver(function (entries) {
-      var e = entries[0];
-      buyReached = e.isIntersecting || e.boundingClientRect.top < 0;
-      update();
-    }).observe(buy);
+    function queue() { if (!queued) { queued = true; window.requestAnimationFrame(update); } }
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue);
+    update();
   }
 
   syncOffer();

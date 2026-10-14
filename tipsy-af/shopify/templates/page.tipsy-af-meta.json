@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "main": {
+      "type": "tipsy-af-meta",
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}

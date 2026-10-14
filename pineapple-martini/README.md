@@ -8,7 +8,7 @@ Brief, angle and sources: [BRIEF.md](BRIEF.md). Status: **working preview, not p
 | Path | What it is |
 | --- | --- |
 | `src/page.html`, `src/page.css`, `src/page.js` | The page. Edit these. |
-| `build.py` | Builds the preview and the Shopify files from `src/` |
+| `page.json` | Page title and Shopify section/template names, read by `../build.py` |
 | `preview/index.html` | Local preview with a stand-in header/footer. The buy button shows what it *would* add instead of posting to a cart. |
 | `shopify/sections/tipsy-pineapple-martini-meta.liquid` | Generated Shopify section (do not edit by hand) |
 | `shopify/templates/page.pineapple-martini-meta.json` | Page template that uses the section |
@@ -18,7 +18,7 @@ Brief, angle and sources: [BRIEF.md](BRIEF.md). Status: **working preview, not p
 
 ```sh
 cd pineapple-martini
-python3 build.py                       # after any change in src/
+python3 ../build.py .                  # after any change in src/ (or from the repo root: python3 build.py pineapple-martini)
 python3 -m http.server 8765 -d preview # then open http://localhost:8765
 ```
 
