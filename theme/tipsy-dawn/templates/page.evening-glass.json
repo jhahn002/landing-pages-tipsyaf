@@ -3,14 +3,19 @@
     "hero": {
       "type": "tpm-hero",
       "settings": {
-        "image_mobile": "shopify://shop_images/weavy-Gemini_2.5_Flash_Nano_Banana_-2025-10-13_at_13.42.14.jpg",
-        "image_desktop": "shopify://shop_images/weavy-Gemini_2.5_Flash_Nano_Banana_-2025-10-02_at_09.38.40.jpg",
         "title_1": "Your 5pm glass.",
         "title_2": "Minus the wine.",
         "lede": "The end-of-day unwind, poured from a can. A zero proof cocktail you can feel in 10–15 minutes, done in about an hour.",
         "pill_title": "Try 6 cans",
         "pill_sub": "$29.94 trial",
-        "terms": "Then 12 cans every month for $49.80 + $2.99 shipping."
+        "terms": "Then 12 cans every month for $49.80 + $2.99 shipping.",
+        "image_asset": "evening-glass-hero.webp",
+        "image_asset_width": 1120,
+        "image_asset_height": 957,
+        "image_asset_alt": "A woman laughing as she pours TIPSY AF Blood Orange Margarita into a wine glass at a kitchen counter",
+        "mobile_stack": true,
+        "desktop_split": 50,
+        "desktop_focus": 5
       }
     },
     "ritual": {

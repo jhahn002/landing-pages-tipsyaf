@@ -33,7 +33,7 @@ trial is the lower commitment. Auto ship is offered in the flavor step's savings
 
 | Customer question | Section | Evidence or asset |
 | --- | --- | --- |
-| What is this, and is it for my 5pm? | Hero: "Your 5pm glass. Minus the wine." + Try 6 cans | Pour-into-glass photo (phone), home-bar pour (desktop) |
+| What is this, and is it for my 5pm? | Hero: "Your 5pm glass. Minus the wine." + Try 6 cans | Supplied photo of a Blood Orange pour into a wine glass (`assets/evening-glass-hero.webp`, 1120×957): whole image above the text on phones, right-hand panel from 50% on desktop |
 | How does it fit my evening? | Steps: pour it like a drink, feel it in 10–15 min, done in about an hour | Brand copy and FAQ timings |
 | Will I feel it, and how? | How the hour feels (illustrated curve) | Brand experience chart, labeled as an illustration |
 | How does it compare with what I drink now? | Comparison: TIPSY AF vs glass of wine vs NA wine | Category facts (see notes below) |

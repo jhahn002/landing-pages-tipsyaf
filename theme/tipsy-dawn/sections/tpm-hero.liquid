@@ -4,13 +4,17 @@
   assign mobile_img = s.image_mobile | default: s.image_desktop
 -%}
 <div class="tpm">
-  <section class="tpm-hero" aria-labelledby="tpm-hero-title-{{ section.id }}">
+  <section class="tpm-hero{% if s.mobile_stack %} tpm-hero--stack{% endif %}" style="--hero-split: {{ s.desktop_split | default: 40 }}%; --hero-focus: {{ s.desktop_focus | default: 45 }}%;" aria-labelledby="tpm-hero-title-{{ section.id }}">
     {%- if mobile_img != blank -%}
       <picture class="tpm-hero__media">
         {%- if s.image_desktop != blank -%}
           <source media="(min-width: 900px)" srcset="{{ s.image_desktop | image_url: width: 1600 }} 1600w, {{ s.image_desktop | image_url: width: 2200 }} 2200w" sizes="100vw">
         {%- endif -%}
         {{ mobile_img | image_url: width: 864 | image_tag: widths: '600, 864, 1200', sizes: '100vw', fetchpriority: 'high', loading: 'eager', alt: mobile_img.alt }}
+      </picture>
+    {%- elsif s.image_asset != blank -%}
+      <picture class="tpm-hero__media">
+        <img src="{{ s.image_asset | asset_url }}"{% if s.image_asset_width %} width="{{ s.image_asset_width }}" height="{{ s.image_asset_height }}"{% endif %} fetchpriority="high" alt="{{ s.image_asset_alt | escape }}">
       </picture>
     {%- endif -%}
     <div class="tpm-hero__content">
@@ -39,6 +43,13 @@
   "settings": [
     { "type": "image_picker", "id": "image_mobile", "label": "Image (phone)", "info": "Tall image. Falls back to the desktop image." },
     { "type": "image_picker", "id": "image_desktop", "label": "Image (desktop)", "info": "Wide image, shown from 900px." },
+    { "type": "text", "id": "image_asset", "label": "Or: image file in theme assets", "info": "Used only when both images above are empty. File name in assets/, e.g. evening-glass-hero.webp." },
+    { "type": "number", "id": "image_asset_width", "label": "Asset image width (px)" },
+    { "type": "number", "id": "image_asset_height", "label": "Asset image height (px)" },
+    { "type": "text", "id": "image_asset_alt", "label": "Asset image alt text" },
+    { "type": "range", "id": "desktop_split", "label": "Desktop: image starts at", "min": 30, "max": 60, "step": 2, "unit": "%", "default": 40, "info": "Move it right if the headline overlaps the subject." },
+    { "type": "range", "id": "desktop_focus", "label": "Desktop: image focus, left to right", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 45 },
+    { "type": "checkbox", "id": "mobile_stack", "label": "On phones, show the whole image above the text", "info": "For wide images. Off: the image fills the screen behind the text.", "default": false },
     { "type": "text", "id": "title_1", "label": "Headline", "default": "Zero proof." },
     { "type": "text", "id": "title_2", "label": "Headline, italic line", "default": "Real feeling." },
     { "type": "textarea", "id": "lede", "label": "Text", "default": "The first-drink feeling in 10–15 minutes, from functional mushrooms. No alcohol. No hangover." },
