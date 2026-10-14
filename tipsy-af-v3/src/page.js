@@ -114,14 +114,74 @@
   }
 
   var pickerCount = 0;
-  function pickerHtml(n) {
-    var html = '<fieldset class="tpm-flav"><legend class="tpm-pick__label">Flavor</legend><div class="tpm-flav__row">';
-    Object.keys(DATA.flavors).forEach(function (f) {
-      html += '<label class="tpm-flav__opt tpm-flav__opt--' + f + '"><input type="radio" name="tpm-flavor-' + n + '" value="' + f + '">' +
-        '<span class="tpm-flav__circle">' + canStack(f) + '</span><span class="tpm-flav__name">' + DATA.flavors[f].short + '</span></label>';
-    });
-    return html + '</div></fieldset>' + plansHtml(n) + '<p class="tpm-pick__terms" data-tpm-terms></p>';
+  // Flavor selector design direction: 'tiles', 'rows' or 'switch'.
+  var FLAVOR_STYLES = ['tiles', 'rows', 'switch'];
+  var flavorStyle = String(DATA.flavorStyle || '').trim();
+  if (MODE === 'preview') {
+    var fq = (window.location.search.match(/[?&]flavor=(\w+)/) || [])[1];
+    if (fq) flavorStyle = fq;
   }
+  if (FLAVOR_STYLES.indexOf(flavorStyle) < 0) flavorStyle = 'tiles';
+
+  var CHECK = '<span class="tpm-fcheck" aria-hidden="true"></span>';
+  function flavorRadio(n, f, cls, inner) {
+    return '<label class="' + cls + ' tpm-f--' + f + '"><input type="radio" name="tpm-flavor-' + n + '" value="' + f + '">' + inner + '</label>';
+  }
+  function flavorsHtml(n) {
+    var keys = Object.keys(DATA.flavors);
+    var legend = '<legend class="tpm-pick__label">Choose your flavor</legend>';
+    if (flavorStyle === 'rows') {
+      return '<fieldset class="tpm-flav tpm-flav--rows">' + legend + '<div class="tpm-frows">' + keys.map(function (f) {
+        var d = DATA.flavors[f];
+        return flavorRadio(n, f, 'tpm-frow', '<span class="tpm-frow__box"><span class="tpm-frow__img">' + canStack(f) + '</span>' +
+          '<span class="tpm-frow__text"><strong>' + d.name + '</strong><span>' + d.note + '</span></span>' + CHECK + '</span>');
+      }).join('') + '</div></fieldset>';
+    }
+    if (flavorStyle === 'switch') {
+      return '<fieldset class="tpm-flav tpm-flav--switch">' + legend + '<div class="tpm-fseg">' + keys.map(function (f) {
+        return flavorRadio(n, f, 'tpm-fseg__opt', '<span>' + DATA.flavors[f].short + '</span>');
+      }).join('') + '</div><div class="tpm-fstage">' + keys.map(function (f) {
+        var d = DATA.flavors[f];
+        return '<div class="tpm-fstage__panel tpm-f--' + f + '" data-tpm-fpanel="' + f + '" hidden><span class="tpm-fstage__img">' + canStack(f) + '</span>' +
+          '<span class="tpm-fstage__text"><strong>' + d.name + '</strong><span>' + d.note + '</span></span></div>';
+      }).join('') + '</div></fieldset>';
+    }
+    return '<fieldset class="tpm-flav tpm-flav--tiles">' + legend + '<div class="tpm-ftiles">' + keys.map(function (f) {
+      var d = DATA.flavors[f];
+      return flavorRadio(n, f, 'tpm-ftile', '<span class="tpm-ftile__box">' + CHECK + '<span class="tpm-ftile__img">' + canStack(f) + '</span>' +
+        '<span class="tpm-ftile__name">' + d.short + '</span><span class="tpm-ftile__note">' + d.note + '</span></span>');
+    }).join('') + '</div></fieldset>';
+  }
+
+  function pickerHtml(n) {
+    return flavorsHtml(n) + plansHtml(n) + '<p class="tpm-pick__terms" data-tpm-terms></p>';
+  }
+
+  // Preview only: compare flavor selector directions.
+  if (MODE === 'preview') {
+    var fsw = document.createElement('div');
+    fsw.className = 'tpm-styleswitch';
+    fsw.setAttribute('role', 'group');
+    fsw.setAttribute('aria-label', 'Preview: flavor selector design');
+    fsw.innerHTML = '<span>Flavor picker</span>' + FLAVOR_STYLES.map(function (st, k) {
+      return '<button type="button" data-style="' + st + '">' + (k + 1) + '</button>';
+    }).join('');
+    root.appendChild(fsw);
+    var paintFsw = function () {
+      $all('button', fsw).forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-style') === flavorStyle); });
+    };
+    fsw.addEventListener('click', function (e) {
+      var b = e.target.closest('button');
+      if (!b) return;
+      flavorStyle = b.getAttribute('data-style');
+      $all('[data-tpm-picker]').forEach(function (el) { el.innerHTML = pickerHtml(el.getAttribute('data-tpm-picker-n')); });
+      paintFsw();
+      sync();
+      if (window.history && history.replaceState) history.replaceState(null, '', '?flavor=' + flavorStyle + window.location.hash);
+    });
+    paintFsw();
+  }
+
   function renderPicker(el) {
     var n = ++pickerCount;
     el.setAttribute('data-tpm-picker-n', n);
@@ -285,6 +345,7 @@
       i.checked = (i.name.indexOf('tpm-flavor-') === 0 && i.value === state.flavor) ||
         (i.name.indexOf('tpm-offer-') === 0 && i.value === state.offer);
     });
+    $all('[data-tpm-fpanel]').forEach(function (p) { p.hidden = p.getAttribute('data-tpm-fpanel') !== state.flavor; });
     $all('[data-tpm-terms]').forEach(function (t) {
       t.textContent = (state.flavor === 'mix' ? o.split + '. ' : '') + o.terms;
     });
