@@ -115,7 +115,7 @@
 
   var pickerCount = 0;
   // Flavor selector design direction: 'tiles' (chosen), 'shelf', 'pop' or 'chips'.
-  var FLAVOR_STYLES = ['tiles', 'shelf', 'pop', 'chips'];
+  var FLAVOR_STYLES = ['tiles', 'shelf', 'pop', 'chips', 'shelflight'];
   var flavorStyle = String(DATA.flavorStyle || '').trim();
   if (MODE === 'preview') {
     var fq = (window.location.search.match(/[?&]flavor=(\w+)/) || [])[1];
@@ -132,9 +132,9 @@
     var legend = '<legend class="tpm-pick__label">Choose your flavor</legend>';
     var wrap = function (mod, inner) { return '<fieldset class="tpm-flav tpm-flav--' + mod + '">' + legend + inner + '</fieldset>'; };
 
-    if (flavorStyle === 'shelf') {
+    if (flavorStyle === 'shelf' || flavorStyle === 'shelflight') {
       // Cans standing on a shelf; the chosen can rises into a spotlight.
-      return wrap('shelf', '<div class="tpm-shelf">' + keys.map(function (f) {
+      return wrap(flavorStyle, '<div class="tpm-shelf">' + (flavorStyle === 'shelflight' ? '<span class="tpm-bokeh" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>' : '') + keys.map(function (f) {
         var d = DATA.flavors[f];
         return flavorRadio(n, f, 'tpm-shelf__opt', '<span class="tpm-shelf__box"><span class="tpm-shelf__img">' + canStack(f) + '</span>' +
           '<span class="tpm-shelf__name">' + d.name + '</span></span>');
