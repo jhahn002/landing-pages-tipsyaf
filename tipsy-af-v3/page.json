@@ -18,6 +18,12 @@
       "id": "mix_onetime_variant",
       "label": "Mix 12-pack one-time: variant ID",
       "info": "Variant of the mixed 12-pack one-time product (6 + 6)."
+    },
+    {
+      "id": "rewards",
+      "label": "Checkout rewards",
+      "info": "Optional. Spend thresholds shown as a progress bar in the add-ons step, e.g. 75:Free shipping|110:Free gift. Set up the matching automatic discounts in Shopify first. Leave empty to hide.",
+      "preview": "75:Free shipping|110:Free gift"
     }
   ],
   "stylesheets": [

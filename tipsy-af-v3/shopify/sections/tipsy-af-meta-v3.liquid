@@ -165,7 +165,9 @@
 
 /* ---- The lineup (dark carousel) ---- */
 .tpm-lineup { background: var(--tpm-ink); color: #fff; border-radius: var(--tpm-radius); margin: 0 8px; padding: 48px 0 36px; }
-.tpm-track--lineup { grid-auto-columns: 78%; }
+.tpm-track--lineup { grid-auto-columns: 58vw; padding: 0 calc(50% - 29vw); scroll-padding: 0; gap: 0; }
+.tpm-track--lineup::after { content: ""; width: 1px; }
+.tpm-track--lineup .tpm-item { padding-left: 6px; padding-right: 6px; }
 .tpm-item { scroll-snap-align: center; display: grid; justify-items: center; text-align: center; gap: 6px; padding: 8px 0 4px; }
 .tpm-outline-chip { border: 1.5px solid rgba(255,255,255,.9); border-radius: 10px; padding: 6px 14px; font-size: 15px; }
 .tpm-item__can { position: relative; height: 330px; width: 100%; display: flex; align-items: center; justify-content: center; margin: 10px 0 8px; }
@@ -177,7 +179,7 @@
 .tpm-item__can--pair img { height: 270px; }
 .tpm-item__can--pair img:first-child { transform: rotate(-7deg); margin-right: -26px; }
 .tpm-item__can--pair img:last-child { transform: rotate(7deg); }
-.tpm-item h3 { font-size: 26px; font-weight: 500; letter-spacing: -0.03em; }
+.tpm-item h3 { font-size: 22px; font-weight: 500; letter-spacing: -0.03em; }
 .tpm-item__desc { color: rgba(255,255,255,.65); font-size: 15px; }
 .tpm-item__price { color: rgba(255,255,255,.85); font-size: 18px; margin-bottom: 8px; }
 
@@ -216,16 +218,68 @@
 .tpm-explode__out li { background: var(--tpm-ink); color: #fff; text-decoration: line-through; text-decoration-color: var(--tpm-accent); text-decoration-thickness: 2px; }
 .tpm-explode__out li:nth-child(even) { transform: translateX(8px); }
 .tpm-science__copy { display: grid; gap: 14px; justify-items: start; }
-.tpm-science__copy > p { color: var(--tpm-muted); font-size: 18px; line-height: 1.45; }
-.tpm-facts { display: grid; gap: 10px; margin: 6px 0 10px; }
-.tpm-facts li { position: relative; padding-left: 30px; font-weight: 600; }
-.tpm-facts li::before { content: ""; position: absolute; left: 0; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--tpm-accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12l4 4 8-8' fill='none' stroke='%231f1e21' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 14px no-repeat; }
+.tpm-how { display: grid; gap: 16px; margin-bottom: 8px; }
+.tpm-how li { display: grid; grid-template-columns: 40px 1fr; gap: 14px; align-items: start; }
+.tpm-how__n { width: 40px; height: 40px; border-radius: 50%; background: var(--tpm-accent); display: grid; place-items: center; font-weight: 700; }
+.tpm-how h3 { font-size: 19px; margin-bottom: 2px; }
+.tpm-how p { color: var(--tpm-muted); font-size: 16px; }
+.tpm-badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 12px; }
+.tpm-badges li { border: 1.5px solid var(--tpm-line); border-radius: 999px; padding: 6px 12px; font-size: 14px; font-weight: 600; }
 
-/* ---- Experience curve ---- */
+/* ---- Experience chart ---- */
 .tpm-feel { padding-top: 0; }
-.tpm-feel__card { background: var(--tpm-night); color: #fff; border-radius: var(--tpm-radius); padding: 32px 20px 24px; }
-.tpm-feel__curve { width: 100%; height: auto; max-height: 300px; display: block; margin: 8px 0 12px; }
-.tpm-feel__note { font-size: 14px; color: rgba(255,255,255,.7); }
+.tpm-feel__card { background: var(--tpm-night); color: #fff; border-radius: var(--tpm-radius); padding: 32px 18px 22px; }
+.tpm-feel__head .tpm-h2 { margin-bottom: 6px; }
+.tpm-feel__note { font-size: 15px; color: rgba(255,255,255,.7); }
+.tpm-chart { margin-top: 18px; }
+.tpm-chart svg { width: 100%; height: auto; display: block; overflow: visible; font-family: var(--tpm-font); }
+.tpm-chart__grid line { stroke: rgba(255,255,255,.12); stroke-width: 1.5; stroke-dasharray: 4 6; }
+.tpm-chart__grid line:first-child { stroke-dasharray: none; stroke: rgba(255,255,255,.3); }
+.tpm-chart__area { fill: url(#tpm-chart-fill); }
+.tpm-chart__line { fill: none; stroke: var(--tpm-accent); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+.tpm-chart__pt circle { fill: var(--tpm-night); stroke: #fff; stroke-width: 3; }
+.tpm-chart__pt text { fill: #fff; font-size: 24px; font-weight: 700; }
+.tpm-chart__axis text { fill: rgba(255,255,255,.6); font-size: 21px; }
+.tpm-chart figcaption { font-size: 13px; color: rgba(255,255,255,.55); margin-top: 10px; }
+/* Animate only when JS has marked the card and motion is allowed */
+@media (prefers-reduced-motion: no-preference) {
+  .will-animate .tpm-chart__line { stroke-dashoffset: 1; }
+  .will-animate .tpm-chart__area, .will-animate .tpm-chart__pt { opacity: 0; }
+  .will-animate .tpm-chart__pt { transform-box: fill-box; transform-origin: center; transform: scale(.6); }
+  .is-in .tpm-chart__line { transition: stroke-dashoffset 1.6s cubic-bezier(.4,0,.2,1); stroke-dashoffset: 0; }
+  .is-in .tpm-chart__area { transition: opacity .8s ease .9s; opacity: 1; }
+  .is-in .tpm-chart__pt { transition: opacity .4s ease, transform .4s cubic-bezier(.3,1.6,.5,1); transition-delay: calc(var(--d) * 1.6); opacity: 1; transform: scale(1); }
+}
+
+/* ---- Comparison chart ---- */
+.tpm-compare .tpm-cond { font-size: clamp(54px, 15vw, 110px); }
+.tpm-hl { color: #6b7fe0; }
+.tpm-compare__sub { text-align: center; font-size: 18px; color: var(--tpm-muted); margin: 10px 0 28px; }
+.tpm-ctable { position: relative; display: grid; border: 2.5px solid var(--tpm-ink); border-radius: 22px; padding: 0 10px 6px; margin: 64px 0 28px; }
+.tpm-ctable__us { position: absolute; top: -56px; bottom: -14px; left: calc(10px + 44% + 2px); width: 22%; background: var(--tpm-accent); border-radius: 18px; display: flex; justify-content: center; padding-top: 10px; }
+.tpm-ctable__us img { height: 44px; width: auto; filter: drop-shadow(0 4px 4px rgba(0,0,0,.2)); }
+.tpm-ctable__us img + img { margin-left: -4px; }
+.tpm-crow { position: relative; display: grid; grid-template-columns: 44% 22% 17% 17%; align-items: center; border-bottom: 1.5px solid var(--tpm-line); min-height: 64px; }
+.tpm-crow:last-child { border-bottom: 0; }
+.tpm-crow > * { text-align: center; padding: 10px 2px; }
+.tpm-crow > [role=rowheader] { text-align: left; font-weight: 600; font-size: 15px; line-height: 1.25; padding-right: 8px; }
+.tpm-crow--head { min-height: 52px; border-bottom-width: 2px; }
+.tpm-crow--head > * { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; line-height: 1.15; }
+.tpm-crow--head .tpm-ccol-us { font-size: 14px; }
+.tpm-crow b { font-size: 13px; font-weight: 600; color: var(--tpm-muted); }
+.tpm-yes, .tpm-no { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; font-size: 0; vertical-align: middle; }
+.tpm-yes { background: var(--tpm-ink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23fff' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 20px no-repeat; }
+.tpm-yes--muted { width: 28px; height: 28px; background-color: #9a999d; background-size: 16px; }
+.tpm-no { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 7l10 10M17 7L7 17' fill='none' stroke='%231f1e21' stroke-width='2.8' stroke-linecap='round'/%3E%3C/svg%3E") center / 22px no-repeat; }
+.tpm-compare__note { font-size: 13px; color: var(--tpm-muted); margin-top: 14px; }
+@media (prefers-reduced-motion: no-preference) {
+  .will-animate .tpm-crow:not(.tpm-crow--head) .tpm-yes, .will-animate .tpm-crow:not(.tpm-crow--head) .tpm-no { transform: scale(0); }
+  .is-in .tpm-crow .tpm-yes, .is-in .tpm-crow .tpm-no { transform: scale(1); transition: transform .45s cubic-bezier(.3,1.6,.5,1); }
+  .is-in .tpm-crow:nth-child(4) i { transition-delay: .15s; }
+  .is-in .tpm-crow:nth-child(5) i { transition-delay: .3s; }
+  .is-in .tpm-crow:nth-child(6) i { transition-delay: .45s; }
+  .is-in .tpm-crow:nth-child(7) i { transition-delay: .6s; }
+}
 
 /* ---- Founder ---- */
 .tpm-founder { padding-top: 8px; }
@@ -235,44 +289,114 @@
 .tpm-founder p { color: var(--tpm-muted); font-size: 17px; }
 
 /* ---- Buy box ---- */
-.tpm-buy__inner { display: grid; gap: 20px; background: var(--tpm-panel); border-radius: var(--tpm-radius); padding: 28px 18px 22px; }
+.tpm-buy__inner { display: grid; gap: 20px; background: #eef4f8; border-radius: var(--tpm-radius); padding: 28px 18px 22px; }
 .tpm-buy__media { display: none; }
-.tpm-buy__media [hidden] { display: none !important; }
-.tpm-buy__stage { position: relative; height: 480px; border-radius: 22px; background: radial-gradient(closest-side, rgba(255,138,31,.55), rgba(255,138,31,0)); display: flex; align-items: center; justify-content: center; }
-.tpm-buy__stage--pm { background: radial-gradient(closest-side, rgba(255,210,63,.65), rgba(255,210,63,0)); }
-.tpm-buy__stage--mix { background: radial-gradient(closest-side, rgba(255,170,50,.6), rgba(255,170,50,0)); }
-.tpm-buy__stage img { height: 400px; width: auto; filter: drop-shadow(0 24px 26px rgba(0,0,0,.25)); }
-.tpm-buy__stage--mix img:first-child { transform: rotate(-7deg); margin-right: -34px; height: 370px; }
-.tpm-buy__stage--mix img:last-child { transform: rotate(7deg); height: 370px; }
-.tpm-buy .tpm-h2 { margin-bottom: 16px; }
-.tpm-offer fieldset { display: grid; gap: 8px; margin-bottom: 16px; }
-.tpm-flavor-pick { display: flex !important; background: #fff; border-radius: 999px; padding: 4px !important; gap: 4px !important; }
-.tpm-seg { position: relative; cursor: pointer; flex: 1 1 auto; }
-.tpm-seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.tpm-seg span { display: block; text-align: center; padding: 11px 12px; border-radius: 999px; font-size: 15px; font-weight: 600; white-space: nowrap; }
-.tpm-seg input:checked + span { background: var(--tpm-ink); color: #fff; }
-.tpm-seg input:focus-visible + span { outline: 3px solid var(--tpm-ink); outline-offset: 2px; }
-.tpm-opt { display: block; position: relative; cursor: pointer; }
-.tpm-opt input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.tpm-opt__box { display: grid; gap: 2px; padding: 14px 16px 14px 46px; border: 2px solid transparent; border-radius: 18px; background: #fff; position: relative; }
-.tpm-opt__box::before { content: ""; position: absolute; left: 16px; top: 17px; width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid #9a999d; }
-.tpm-opt input:checked + .tpm-opt__box { border-color: var(--tpm-ink); }
-.tpm-opt input:checked + .tpm-opt__box::before { border-color: var(--tpm-ink); background: var(--tpm-ink); box-shadow: inset 0 0 0 3px #fff; }
-.tpm-opt input:focus-visible + .tpm-opt__box { outline: 3px solid var(--tpm-ink); outline-offset: 2px; }
-.tpm-opt__head { display: flex; justify-content: space-between; gap: 12px; font-weight: 600; font-size: 17px; }
-.tpm-opt__desc { font-size: 14px; color: var(--tpm-muted); }
-.tpm-mixnote { font-size: 14px; background: #fff; border-radius: 14px; padding: 10px 14px; margin: -6px 0 14px; }
-.tpm-mixnote[hidden] { display: none; }
-.tpm-timeline { display: grid; grid-template-columns: repeat(3, 1fr); margin: 4px 0 18px; border-top: 2px solid var(--tpm-ink); }
+.tpm-buy__stage { height: 480px; display: flex; align-items: center; justify-content: center; border-radius: 22px; }
+.tpm-buy__stage img { height: 400px; width: auto; filter: drop-shadow(0 24px 26px rgba(0,0,0,.22)); }
+.tpm-buy__stage--bo { background: radial-gradient(closest-side, rgba(255,138,31,.45), rgba(255,138,31,0)); }
+.tpm-buy__stage--pm { background: radial-gradient(closest-side, rgba(255,210,63,.6), rgba(255,210,63,0)); }
+.tpm-buy__stage--mix { background: radial-gradient(closest-side, rgba(255,170,50,.5), rgba(255,170,50,0)); }
+.tpm-buy__stage .tpm-can-pair img { height: 370px; }
+.tpm-buy .tpm-h2 { margin-bottom: 18px; }
+.tpm-knobbtn--block { width: 100%; justify-content: space-between; margin-top: 18px; }
+.tpm-assure { margin-top: 12px; font-size: 14px; color: var(--tpm-muted); text-align: center; }
+
+/* Picker (inline buy box and checkout step 1) */
+.tpm-pick__label { font-family: var(--tpm-cond); text-transform: uppercase; font-size: 26px; line-height: 1; color: #4f8fb8; margin-bottom: 12px; padding: 0; }
+.tpm-flav { margin-bottom: 22px; }
+.tpm-flav__row { display: flex; gap: 14px; }
+.tpm-flav__opt { position: relative; display: grid; justify-items: center; gap: 6px; cursor: pointer; flex: 0 0 auto; }
+.tpm-flav__opt input, .tpm-plan__opt input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.tpm-flav__circle { width: 84px; height: 84px; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid transparent; transition: border-color .15s ease, transform .15s ease; }
+.tpm-flav__opt--bo .tpm-flav__circle { background: #ffd9b8; }
+.tpm-flav__opt--pm .tpm-flav__circle { background: #fff1b3; }
+.tpm-flav__opt--mix .tpm-flav__circle { background: linear-gradient(90deg, #ffd9b8 50%, #fff1b3 50%); }
+.tpm-flav__circle img { height: 72px; width: auto; transform: translateY(8px); }
+.tpm-flav__name { font-size: 15px; font-weight: 600; }
+.tpm-flav__opt input:checked + .tpm-flav__circle { border-color: #4f8fb8; transform: scale(1.04); }
+.tpm-flav__opt input:focus-visible + .tpm-flav__circle { outline: 3px solid var(--tpm-ink); outline-offset: 3px; }
+.tpm-can-pair { display: flex; align-items: flex-end; justify-content: center; }
+.tpm-can-pair img + img { margin-left: -10%; }
+.tpm-flav__circle .tpm-can-pair img { height: 64px; }
+.tpm-plan__row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.tpm-plan__opt { position: relative; cursor: pointer; display: block; }
+.tpm-plan__card { position: relative; display: grid; gap: 2px; height: 100%; padding: 30px 10px 12px; border-radius: 16px; background: #fff; border: 2px solid transparent; transition: border-color .15s ease; }
+.tpm-plan__card::before { content: ""; position: absolute; top: 10px; left: 10px; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #9a999d; }
+.tpm-plan__opt input:checked + .tpm-plan__card { border-color: var(--tpm-ink); background: #dcecf6; }
+.tpm-plan__opt input:checked + .tpm-plan__card::before { border-color: var(--tpm-ink); background: var(--tpm-ink); box-shadow: inset 0 0 0 3px #dcecf6; }
+.tpm-plan__opt input:focus-visible + .tpm-plan__card { outline: 3px solid var(--tpm-ink); outline-offset: 2px; }
+.tpm-plan__badge { position: absolute; top: -10px; right: 6px; background: var(--tpm-accent); border-radius: 999px; padding: 2px 8px; font-size: 11px; font-weight: 700; transform: rotate(4deg); }
+.tpm-plan__name { font-family: var(--tpm-cond); text-transform: uppercase; font-size: 21px; line-height: .95; }
+.tpm-plan__price { font-weight: 700; font-size: 17px; margin-top: 4px; }
+.tpm-plan__sub { font-size: 12px; color: var(--tpm-muted); line-height: 1.25; }
+.tpm-pick__terms { margin-top: 14px; font-size: 14px; color: var(--tpm-muted); line-height: 1.45; }
+
+/* Checkout sheet */
+.tpm-lock { overflow: hidden; }
+.tpm-sheet { border: 0; padding: 0; margin: 0; width: 100%; max-width: 100%; height: 100%; max-height: 100%; background: #fff; color: var(--tpm-ink); font-family: var(--tpm-font); }
+.tpm-sheet::backdrop { background: rgba(15,15,20,.55); backdrop-filter: blur(4px); }
+.tpm-sheet[open] { animation: tpm-sheet-in .28s cubic-bezier(.2,.8,.2,1); }
+@keyframes tpm-sheet-in { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+.tpm-sheet__inner { display: flex; flex-direction: column; height: 100%; }
+.tpm-sheet__top { display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; gap: 8px; padding: 12px 12px 8px; border-bottom: 1px solid var(--tpm-line); }
+.tpm-iconbtn { width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--tpm-panel); display: grid; place-items: center; cursor: pointer; }
+.tpm-iconbtn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.tpm-stepsbar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.tpm-stepsbar li { font-size: 12px; font-weight: 600; color: var(--tpm-muted); text-align: center; padding-top: 10px; position: relative; }
+.tpm-stepsbar li::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 5px; border-radius: 5px; background: var(--tpm-line); }
+.tpm-stepsbar li.is-done::before, .tpm-stepsbar li.is-on::before { background: var(--tpm-ink); }
+.tpm-stepsbar li.is-on { color: var(--tpm-ink); }
+.tpm-sheet__body { flex: 1; overflow-y: auto; padding: 22px 18px 24px; -webkit-overflow-scrolling: touch; }
+.tpm-sheet__title { font-size: 32px; font-weight: 500; letter-spacing: -0.035em; line-height: 1.05; margin-bottom: 20px; outline: none; }
+.tpm-step .tpm-plan__card { background: var(--tpm-panel); }
+.tpm-step .tpm-plan__opt input:checked + .tpm-plan__card { background: #dcecf6; }
+.tpm-sheet__foot { border-top: 1px solid var(--tpm-line); padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 14px; }
+.tpm-sheet__foot .tpm-error { grid-column: 1 / -1; }
+.tpm-sheet__total { display: grid; line-height: 1.1; }
+.tpm-sheet__total span { font-size: 12px; color: var(--tpm-muted); }
+.tpm-sheet__total strong { font-size: 22px; letter-spacing: -0.02em; }
+.tpm-sheet__foot .tpm-knobbtn { justify-content: space-between; width: 100%; min-height: 58px; font-size: 17px; padding-left: 22px; }
+.tpm-sheet__foot .tpm-knobbtn[disabled] { opacity: .7; cursor: progress; }
+.tpm-error { color: var(--tpm-error); font-size: 14px; }
+.tpm-error:empty { display: none; }
+
+/* Step 2: rewards + add-ons */
+.tpm-rewards { background: #1f1e21; color: #fff; border-radius: 18px; padding: 16px 16px 34px; margin-bottom: 18px; }
+.tpm-rewards__msg { font-size: 15px; margin-bottom: 12px; }
+.tpm-rewards__msg strong { color: var(--tpm-accent); }
+.tpm-rewards__bar { height: 10px; border-radius: 10px; background: rgba(255,255,255,.15); overflow: hidden; }
+.tpm-rewards__bar span { display: block; height: 100%; border-radius: 10px; background: linear-gradient(90deg, #8e7bf5, var(--tpm-accent)); transition: width .4s ease; }
+.tpm-rewards__marks { position: relative; height: 0; }
+.tpm-rewards__marks li { position: absolute; top: 6px; transform: translateX(-100%); font-size: 11px; font-weight: 700; text-transform: uppercase; color: rgba(255,255,255,.5); white-space: nowrap; }
+.tpm-rewards__marks li.is-on { color: var(--tpm-accent); }
+.tpm-addons { display: grid; gap: 10px; }
+.tpm-addon { display: grid; grid-template-columns: 64px 1fr auto; gap: 14px; align-items: center; border: 2px dashed var(--tpm-line); border-radius: 18px; padding: 12px 14px; }
+.tpm-addon.is-on { border-style: solid; border-color: var(--tpm-ink); background: #fffbe0; }
+.tpm-addon img { height: 64px; width: auto; justify-self: center; }
+.tpm-addon__text { display: grid; line-height: 1.25; }
+.tpm-addon__text strong { font-family: var(--tpm-cond); text-transform: uppercase; font-size: 22px; font-weight: 400; line-height: 1; }
+.tpm-addon__text span { font-size: 13px; color: var(--tpm-muted); margin: 2px 0; }
+.tpm-addon__text b { font-size: 16px; }
+.tpm-addon__btn { min-width: 74px; min-height: 42px; border-radius: 10px; border: 0; background: #4f8fb8; color: #fff; font-weight: 600; font-size: 15px; cursor: pointer; }
+.tpm-addon.is-on .tpm-addon__btn { background: var(--tpm-ink); }
+
+/* Step 3: review */
+.tpm-review { display: grid; gap: 10px; margin-bottom: 20px; }
+.tpm-review li { display: grid; grid-template-columns: 56px 1fr auto; gap: 12px; align-items: center; background: var(--tpm-panel); border-radius: 16px; padding: 10px 14px; }
+.tpm-review__img { display: flex; justify-content: center; }
+.tpm-review__img img, .tpm-review__img .tpm-can-pair img { height: 52px; width: auto; }
+.tpm-review li div { display: grid; line-height: 1.25; }
+.tpm-review strong { font-size: 16px; }
+.tpm-review li div span { font-size: 13px; color: var(--tpm-muted); }
+.tpm-review b { font-size: 16px; }
+.tpm-timeline { display: grid; grid-template-columns: repeat(3, 1fr); margin: 8px 0 18px; border-top: 2px solid var(--tpm-ink); }
 .tpm-timeline[hidden] { display: none; }
 .tpm-timeline li { padding: 10px 8px 0 0; display: grid; gap: 2px; align-content: start; position: relative; }
 .tpm-timeline li::before { content: ""; position: absolute; top: -7px; left: 0; width: 12px; height: 12px; border-radius: 50%; background: var(--tpm-ink); }
 .tpm-timeline li:first-child::before { background: var(--tpm-accent); box-shadow: 0 0 0 2px var(--tpm-ink); }
 .tpm-timeline strong { font-size: 14px; font-weight: 700; }
 .tpm-timeline span { font-size: 13px; color: var(--tpm-muted); line-height: 1.3; }
-.tpm-error { color: var(--tpm-error); font-size: 14px; margin-top: 8px; }
-.tpm-error:empty { display: none; }
-.tpm-assure { margin-top: 12px; font-size: 14px; color: var(--tpm-muted); }
+.tpm-sheet__assure { font-size: 14px; color: var(--tpm-muted); }
 
 /* ---- FAQ ---- */
 .tpm-details { border-bottom: 2px solid var(--tpm-line); }
@@ -323,6 +447,8 @@
 
 @media (min-width: 700px) {
   .tpm-track { grid-auto-columns: calc((100% - 32px - 24px) / 3); }
+  .tpm-track--lineup { padding: 0 16px; scroll-padding: 0 16px; gap: 12px; }
+  .tpm-ctable__us img { height: 54px; }
   .tpm-proof__grid { grid-template-columns: repeat(4, 1fr); gap: 16px; align-items: stretch; }
   .tpm-proof__head { grid-column: 1 / -1; order: 0; padding: 0 0 32px; }
   .tpm-proof__img--a { order: 1; aspect-ratio: auto; height: 100%; }
@@ -352,6 +478,7 @@
   .tpm-hero__content { justify-items: start; text-align: left; padding: 0 56px 56px; }
   .tpm-hero__lede { font-size: 19px; }
   .tpm-track { padding: 0 24px; scroll-padding: 0 24px; grid-auto-columns: calc((100% - 48px - 24px) / 3); }
+  .tpm-track--lineup { gap: 12px; }
   .tpm-lineup { margin: 0 16px; padding: 80px 0 56px; }
   .tpm-item__can { height: 420px; }
   .tpm-item__can img { height: 380px; }
@@ -361,8 +488,11 @@
   .tpm-science__title { grid-column: 1 / -1; }
   .tpm-explode__can img { height: 420px; }
   .tpm-explode li { font-size: 15px; padding: 8px 16px; }
-  .tpm-feel__card { padding: 56px; display: grid; grid-template-columns: 1fr 1.6fr; column-gap: 48px; align-items: center; }
-  .tpm-feel__card .tpm-h2 { grid-row: span 2; }
+  .tpm-feel__card { padding: 56px; display: grid; grid-template-columns: 1fr 1.7fr; column-gap: 56px; align-items: center; }
+  .tpm-chart { margin-top: 0; }
+  .tpm-sheet { width: min(560px, calc(100vw - 48px)); height: min(820px, calc(100svh - 48px)); margin: auto; border-radius: var(--tpm-radius); box-shadow: 0 30px 80px rgba(0,0,0,.35); }
+  .tpm-flav__circle { width: 96px; height: 96px; }
+  .tpm-flav__circle img { height: 82px; }
   .tpm-founder__inner { grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
   .tpm-buy__inner { grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; padding: 48px; }
   .tpm-buy__media { display: block; }
@@ -373,6 +503,7 @@
 @media (prefers-reduced-motion: reduce) {
   .tpm *, .tpm-sticky { transition: none !important; }
 }
+.tpm-example { font-style: normal; font-size: 11px; font-weight: 700; text-transform: uppercase; background: rgba(255,255,255,.15); border-radius: 6px; padding: 2px 6px; margin-left: 6px; }
 </style>
 
 <div class="tpm" id="tpm">
@@ -393,14 +524,14 @@
         <em>Real feeling.</em>
       </h1>
       <p class="tpm-hero__lede">The first-drink feeling in 10–15 minutes, from functional mushrooms. No alcohol. No hangover.</p>
-      <a class="tpm-pillcard" href="#tpm-buy" data-tpm-jump>
+      <button type="button" class="tpm-pillcard" data-tpm-start>
         <span class="tpm-pillcard__thumb" aria-hidden="true">
           <img src="{{ 'tipsy-can-blood-orange.webp' | asset_url }}" width="289" height="755" alt="">
           <img src="{{ 'tipsy-can-pineapple.webp' | asset_url }}" width="415" height="1086" alt="">
         </span>
         <span class="tpm-pillcard__text"><strong>Try 6 cans</strong><span>$29.94 trial</span></span>
         <span class="tpm-knob tpm-knob--dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
-      </a>
+      </button>
       <p class="tpm-hero__terms">Then 12 cans for $49.80/mo + $2.99 shipping. Cancel anytime.</p>
     </div>
   </section>
@@ -560,12 +691,40 @@
         <div class="tpm-proof__head">
           <h2 class="tpm-cond" id="tpm-proof-title">The buzz is real</h2>
           <p>In their own words, from people who tried it.</p>
-          <a class="tpm-knobbtn" href="#tpm-buy" data-tpm-jump><span>Join them</span><span class="tpm-knob tpm-knob--light" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></a>
+          <button type="button" class="tpm-knobbtn" data-tpm-start><span>Join them</span><span class="tpm-knob tpm-knob--light" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button>
         </div>
         <figure class="tpm-tile tpm-proof__q2"><blockquote>“I was skeptical, but I loved it! Nice little buzz, but doesn't make me crave alcohol.”</blockquote><figcaption>Carolyn L.</figcaption></figure>
         <img class="tpm-proof__img tpm-proof__img--b" src="https://gettipsy.com/cdn/shop/files/TIPSY_wide.jpg?width=800" width="800" height="420" loading="lazy" alt="">
         <figure class="tpm-tile tpm-tile--dark tpm-proof__q3"><blockquote>“When I found these it made alcohol a thing of the past… for good!”</blockquote><figcaption>Shelli M.</figcaption></figure>
         <figure class="tpm-tile tpm-proof__q4"><blockquote>“Had a half can… and immediately ordered 3 more cases!”</blockquote><figcaption>phillygurlnmass</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="tpm-sec tpm-compare" aria-labelledby="tpm-compare-title" data-tpm-animate>
+    <div class="tpm-wrap tpm-wrap--narrow">
+      <h2 class="tpm-cond tpm-center" id="tpm-compare-title">What makes <span class="tpm-hl">TIPSY AF</span> different</h2>
+      <p class="tpm-compare__sub">You have options. Here's how they stack up.</p>
+      <div class="tpm-ctable" role="table" aria-label="TIPSY AF compared with mocktails and kava or kratom drinks">
+        <div class="tpm-ctable__us" aria-hidden="true">
+          <img src="{{ 'tipsy-can-blood-orange.webp' | asset_url }}" width="289" height="755" alt="">
+          <img src="{{ 'tipsy-can-pineapple.webp' | asset_url }}" width="415" height="1086" alt="">
+        </div>
+        <div class="tpm-crow tpm-crow--head" role="row">
+          <span role="columnheader"><span class="tpm-visually-hidden">Benefit</span></span>
+          <span role="columnheader" class="tpm-ccol-us">TIPSY AF</span>
+          <span role="columnheader">Mock&shy;tails</span>
+          <span role="columnheader">Kava &amp; kratom</span>
+        </div>
+        <div class="tpm-crow" role="row"><span role="rowheader">A buzz you can actually feel</span><span role="cell" class="tpm-ccol-us"><i class="tpm-yes">Yes</i></span><span role="cell"><i class="tpm-no">No</i></span><span role="cell"><i class="tpm-yes tpm-yes--muted">Yes</i></span></div>
+        <div class="tpm-crow" role="row"><span role="rowheader">No kava, kratom or THC</span><span role="cell" class="tpm-ccol-us"><i class="tpm-yes">Yes</i></span><span role="cell"><i class="tpm-yes tpm-yes--muted">Yes</i></span><span role="cell"><i class="tpm-no">No</i></span></div>
+        <div class="tpm-crow" role="row"><span role="rowheader">Built by mushroom scientists</span><span role="cell" class="tpm-ccol-us"><i class="tpm-yes">Yes</i></span><span role="cell"><i class="tpm-no">No</i></span><span role="cell"><i class="tpm-no">No</i></span></div>
+        <div class="tpm-crow" role="row"><span role="rowheader">Legal in all 50 states</span><span role="cell" class="tpm-ccol-us"><i class="tpm-yes">Yes</i></span><span role="cell"><i class="tpm-yes tpm-yes--muted">Yes</i></span><span role="cell"><b>Varies</b></span></div>
+        <div class="tpm-crow" role="row"><span role="rowheader">100-day money-back guarantee</span><span role="cell" class="tpm-ccol-us"><i class="tpm-yes">Yes</i></span><span role="cell"><b>Varies</b></span><span role="cell"><b>Varies</b></span></div>
+      </div>
+      <div class="tpm-center">
+        <button type="button" class="tpm-knobbtn tpm-knobbtn--accent" data-tpm-start><span>Ready to get TIPSY</span><span class="tpm-knob tpm-knob--dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button>
+        <p class="tpm-compare__note">Kratom is restricted in some states. Mocktails and kava drinks vary by brand.</p>
       </div>
     </div>
   </section>
@@ -583,13 +742,13 @@
         </ul>
       </div>
       <div class="tpm-science__copy">
-        <h3>How it works</h3>
-        <p>When you exercise or laugh, your body makes feel-good compounds. Under the right conditions, mushrooms make their own. We grow them to produce those actives and pair them with L-theanine, GABA and theobromine. The result: the mood, the ease and the vibe of a drink, minus the alcohol.</p>
-        <ul class="tpm-facts">
-          <li>Patent-pending formula</li>
-          <li>FDA-reviewed ingredients</li>
-          <li>Backed by brain wave studies</li>
-          <li>From the team behind the world's largest mushroom research and ingredient company ($220M raised)</li>
+        <ol class="tpm-how">
+          <li><span class="tpm-how__n">1</span><div><h3>Grown to feel good</h3><p>Mushrooms cultivated to make their own feel-good actives.</p></div></li>
+          <li><span class="tpm-how__n">2</span><div><h3>Paired with plant actives</h3><p>L-theanine, GABA and theobromine.</p></div></li>
+          <li><span class="tpm-how__n">3</span><div><h3>Felt in 10–15 minutes</h3><p>The ease of a drink, minus the alcohol.</p></div></li>
+        </ol>
+        <ul class="tpm-badges" aria-label="Proof points">
+          <li>Patent pending</li><li>FDA-reviewed ingredients</li><li>Brain wave studies</li><li>$220M mushroom company team</li>
         </ul>
         <button type="button" class="tpm-knobbtn" data-tpm-quiz-open><span>Find my match</span><span class="tpm-knob tpm-knob--light" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button>
       </div>
@@ -598,16 +757,40 @@
 
   <section class="tpm-sec tpm-feel" aria-labelledby="tpm-feel-title">
     <div class="tpm-wrap">
-      <div class="tpm-feel__card">
-        <h2 class="tpm-h2" id="tpm-feel-title">What one can feels like</h2>
-        <svg class="tpm-feel__curve" viewBox="0 -4 600 228" role="img" aria-labelledby="tpm-curve-desc">
-          <desc id="tpm-curve-desc">Illustration of one can over about an hour: the feeling builds from around minute 10, peaks around minute 20, eases off, and ends around minute 60.</desc>
-          <defs><linearGradient id="tpm-curve-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe748" stop-opacity=".95"/><stop offset="1" stop-color="#ffe748" stop-opacity="0"/></linearGradient></defs>
-          <path d="M20 188 C 70 186, 90 150, 120 110 S 180 34, 213 32 S 300 40, 340 80 S 420 120, 460 140 S 540 186, 580 188 L 580 190 L 20 190 Z" fill="url(#tpm-curve-fill)"/>
-          <path d="M20 188 C 70 186, 90 150, 120 110 S 180 34, 213 32 S 300 40, 340 80 S 420 120, 460 140 S 540 186, 580 188" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
-          <g font-size="20" font-weight="600" fill="#fff" font-family="inherit"><text x="20" y="216">0 min</text><text x="70" y="100">Hits</text><text x="186" y="20">Peaks</text><text x="440" y="122">Wave</text><text x="520" y="216">60 min</text></g>
-        </svg>
-        <p class="tpm-feel__note">Illustration. Everyone feels it a little differently. One can is one serving; have another to keep it going.</p>
+      <div class="tpm-feel__card" data-tpm-animate>
+        <div class="tpm-feel__head">
+          <h2 class="tpm-h2" id="tpm-feel-title">What one can feels like</h2>
+          <p class="tpm-feel__note">One can is one serving. Have another to keep it going.</p>
+        </div>
+        <figure class="tpm-chart">
+          <svg viewBox="0 0 680 300" role="img" aria-labelledby="tpm-chart-desc">
+            <desc id="tpm-chart-desc">Illustration of one can over about an hour: you feel it around minute 10 to 15, it peaks around minute 20, then eases off and ends around minute 60.</desc>
+            <defs>
+              <linearGradient id="tpm-chart-fill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#ffe748" stop-opacity=".85"/>
+                <stop offset="1" stop-color="#ffe748" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <g class="tpm-chart__grid">
+              <line x1="40" y1="250" x2="620" y2="250"/>
+              <line x1="233" y1="40" x2="233" y2="250"/>
+              <line x1="427" y1="40" x2="427" y2="250"/>
+              <line x1="620" y1="40" x2="620" y2="250"/>
+            </g>
+            <path class="tpm-chart__area" d="M40 248 C 90 246, 120 210, 150 160 S 210 64, 233 62 S 330 74, 380 120 S 470 168, 520 196 S 590 246, 620 248 L 620 250 L 40 250 Z"/>
+            <path class="tpm-chart__line" pathLength="1" d="M40 248 C 90 246, 120 210, 150 160 S 210 64, 233 62 S 330 74, 380 120 S 470 168, 520 196 S 590 246, 620 248"/>
+            <g class="tpm-chart__pt" style="--d:.35s"><circle cx="150" cy="160" r="7"/><text x="134" y="168" text-anchor="end">You feel it</text></g>
+            <g class="tpm-chart__pt" style="--d:.6s"><circle cx="233" cy="62" r="7"/><text x="233" y="34" text-anchor="middle">Peak</text></g>
+            <g class="tpm-chart__pt" style="--d:.95s"><circle cx="520" cy="196" r="7"/><text x="536" y="178" text-anchor="start">Easing off</text></g>
+            <g class="tpm-chart__axis">
+              <text x="40" y="278">0 min</text>
+              <text x="233" y="278" text-anchor="middle">20</text>
+              <text x="427" y="278" text-anchor="middle">40</text>
+              <text x="620" y="278" text-anchor="end">60 min</text>
+            </g>
+          </svg>
+          <figcaption>Illustration. Everyone feels it a little differently.</figcaption>
+        </figure>
       </div>
     </div>
   </section>
@@ -625,66 +808,12 @@
   <section class="tpm-sec tpm-buy" id="tpm-buy" aria-labelledby="tpm-buy-title">
     <div class="tpm-wrap">
       <div class="tpm-buy__inner">
-        <div class="tpm-buy__media" aria-hidden="true">
-          <div class="tpm-buy__stage" data-tpm-media="bo"><img src="{{ 'tipsy-can-blood-orange.webp' | asset_url }}" width="289" height="755" loading="lazy" alt=""></div>
-          <div class="tpm-buy__stage tpm-buy__stage--pm" data-tpm-media="pm" hidden><img src="{{ 'tipsy-can-pineapple.webp' | asset_url }}" width="415" height="1086" loading="lazy" alt=""></div>
-          <div class="tpm-buy__stage tpm-buy__stage--mix" data-tpm-media="mix" data-tpm-mix-only hidden>
-            <img src="{{ 'tipsy-can-blood-orange.webp' | asset_url }}" width="289" height="755" loading="lazy" alt="">
-            <img src="{{ 'tipsy-can-pineapple.webp' | asset_url }}" width="415" height="1086" loading="lazy" alt="">
-          </div>
-        </div>
+        <div class="tpm-buy__media" aria-hidden="true" data-tpm-buy-media></div>
         <div>
           <h2 class="tpm-h2" id="tpm-buy-title">Get TIPSY</h2>
-          <form class="tpm-offer" data-tpm-form novalidate>
-            <fieldset class="tpm-flavor-pick">
-              <legend class="tpm-visually-hidden">Flavor</legend>
-              <label class="tpm-seg"><input type="radio" name="tpm-flavor" value="bo" checked><span>Blood Orange</span></label>
-              <label class="tpm-seg"><input type="radio" name="tpm-flavor" value="pm"><span>Pineapple</span></label>
-              <label class="tpm-seg" data-tpm-mix-only><input type="radio" name="tpm-flavor" value="mix"><span>Mix</span></label>
-            </fieldset>
-            <fieldset>
-              <legend class="tpm-visually-hidden">Pack</legend>
-              <label class="tpm-opt">
-                <input type="radio" name="tpm-offer" value="trial" checked
-                  data-variant-bo="44868866212048" data-variant-pm="45108737507536" data-variant-mix="{{ section.settings.mix_trial_variant | escape }}" data-plan="1777991888"
-                  data-mix-split="3 Blood Orange Margarita + 3 Pineapple Martini"
-                  data-label="Start my 6-pack trial · $29.94">
-                <span class="tpm-opt__box">
-                  <span class="tpm-opt__head"><span>6-pack trial</span><span>$29.94</span></span>
-                  <span class="tpm-opt__desc">Then 12 cans every month at $49.80 + $2.99 shipping. Cancel anytime.</span>
-                </span>
-              </label>
-              <label class="tpm-opt">
-                <input type="radio" name="tpm-offer" value="autoship"
-                  data-variant-bo="44868867064016" data-variant-pm="45108737605840" data-variant-mix="{{ section.settings.mix_autoship_variant | escape }}" data-plan="1778024656"
-                  data-mix-split="6 Blood Orange Margarita + 6 Pineapple Martini"
-                  data-label="Subscribe · $49.80/mo">
-                <span class="tpm-opt__box">
-                  <span class="tpm-opt__head"><span>12-pack auto ship</span><span>$49.80/mo</span></span>
-                  <span class="tpm-opt__desc">$4.15/can, 17% off. $2.99 shipping. Cancel anytime.</span>
-                </span>
-              </label>
-              <label class="tpm-opt">
-                <input type="radio" name="tpm-offer" value="onetime"
-                  data-variant-bo="44868867457232" data-variant-pm="45108737540304" data-variant-mix="{{ section.settings.mix_onetime_variant | escape }}" data-plan=""
-                  data-mix-split="6 Blood Orange Margarita + 6 Pineapple Martini"
-                  data-label="Add 12-pack to cart · $60.00">
-                <span class="tpm-opt__box">
-                  <span class="tpm-opt__head"><span>12-pack, one time</span><span>$60.00</span></span>
-                  <span class="tpm-opt__desc">$5.00/can. No subscription.</span>
-                </span>
-              </label>
-            </fieldset>
-            <p class="tpm-mixnote" data-tpm-mix-note hidden></p>
-            <ol class="tpm-timeline" data-tpm-trial-only aria-label="How the trial works">
-              <li><strong>Today</strong><span>6 cans ship</span></li>
-              <li><strong>Day 25</strong><span>We remind you</span></li>
-              <li><strong>Day 28</strong><span>12 cans, $49.80 + $2.99 shipping</span></li>
-            </ol>
-            <button type="submit" class="tpm-btn tpm-btn--accent tpm-btn--block" data-tpm-add>Start my 6-pack trial · $29.94</button>
-            <p class="tpm-error" data-tpm-error role="alert"></p>
-            <p class="tpm-assure">100-day money-back guarantee, even on opened cans. Most orders ship the same day; delivery usually takes 3–5 days.</p>
-          </form>
+          <div data-tpm-picker></div>
+          <button type="button" class="tpm-knobbtn tpm-knobbtn--accent tpm-knobbtn--block" data-tpm-start data-tpm-start-step="2"><span>Continue</span><span class="tpm-knob tpm-knob--dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button>
+          <p class="tpm-assure">100-day money-back guarantee, even on opened cans. Most orders ship the same day.</p>
         </div>
       </div>
     </div>
@@ -707,7 +836,7 @@
 
   <section class="tpm-statement" aria-label="TIPSY AF">
     <p>The first-drink feeling. Zero booze.</p>
-    <a class="tpm-knobbtn tpm-knobbtn--accent" href="#tpm-buy" data-tpm-jump><span>Try 6 cans for $29.94</span><span class="tpm-knob tpm-knob--dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></a>
+    <button type="button" class="tpm-knobbtn tpm-knobbtn--accent" data-tpm-start><span>Try 6 cans for $29.94</span><span class="tpm-knob tpm-knob--dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button>
   </section>
 
   <dialog class="tpm-quiz" data-tpm-quiz aria-labelledby="tpm-quiz-title">
@@ -741,9 +870,80 @@
     </form>
   </dialog>
 
+  <dialog class="tpm-sheet" data-tpm-checkout aria-labelledby="tpm-sheet-title">
+    <div class="tpm-sheet__inner">
+      <header class="tpm-sheet__top">
+        <button type="button" class="tpm-iconbtn" data-tpm-back aria-label="Back"><svg viewBox="0 0 24 24"><path d="M19 12H6M11 6l-6 6 6 6"/></svg></button>
+        <ol class="tpm-stepsbar" aria-label="Checkout steps">
+          <li data-tpm-stepdot="1">Flavor</li><li data-tpm-stepdot="2">Add-ons</li><li data-tpm-stepdot="3">Review</li>
+        </ol>
+        <button type="button" class="tpm-iconbtn" data-tpm-close aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </header>
+      <div class="tpm-sheet__body">
+        <section class="tpm-step" data-tpm-step="1">
+          <h2 class="tpm-sheet__title" id="tpm-sheet-title">Pick your cocktail</h2>
+          <div data-tpm-picker></div>
+        </section>
+        <section class="tpm-step" data-tpm-step="2" hidden>
+          <h2 class="tpm-sheet__title">Make it a round</h2>
+          <div class="tpm-rewards" data-tpm-rewards hidden>
+            <p class="tpm-rewards__msg" data-tpm-rewards-msg></p>
+            <div class="tpm-rewards__bar"><span data-tpm-rewards-fill></span></div>
+            <ol class="tpm-rewards__marks" data-tpm-rewards-marks></ol>
+          </div>
+          <div class="tpm-addons" data-tpm-addons></div>
+        </section>
+        <section class="tpm-step" data-tpm-step="3" hidden>
+          <h2 class="tpm-sheet__title">Your order</h2>
+          <ul class="tpm-review" data-tpm-review></ul>
+          <ol class="tpm-timeline" data-tpm-timeline aria-label="How the trial works">
+            <li><strong>Today</strong><span>6 cans ship</span></li>
+            <li><strong>Day 25</strong><span>We remind you</span></li>
+            <li><strong>Day 28</strong><span>12 cans, $49.80 + $2.99 shipping</span></li>
+          </ol>
+          <p class="tpm-sheet__assure">100-day money-back guarantee, even on opened cans. Cancel subscriptions anytime.</p>
+        </section>
+      </div>
+      <footer class="tpm-sheet__foot">
+        <p class="tpm-error" data-tpm-error role="alert"></p>
+        <div class="tpm-sheet__total"><span>Due today</span><strong data-tpm-total></strong></div>
+        <button type="button" class="tpm-knobbtn tpm-knobbtn--accent" data-tpm-next><span data-tpm-next-label>Continue</span><span class="tpm-knob tpm-knob--dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button>
+      </footer>
+    </div>
+  </dialog>
+
+  <script type="application/json" data-tpm-data>
+  {
+    "flavors": {
+      "bo": {"name": "Blood Orange Margarita", "short": "Blood Orange", "img": "{{ 'tipsy-can-blood-orange.webp' | asset_url }}"},
+      "pm": {"name": "Pineapple Martini", "short": "Pineapple", "img": "{{ 'tipsy-can-pineapple.webp' | asset_url }}"},
+      "mix": {"name": "The Mix", "short": "Mix"}
+    },
+    "offers": {
+      "trial": {"name": "6-pack trial", "price": 29.94, "sub": "then $49.80/mo", "badge": "Start here", "plan": 1777991888,
+        "variants": {"bo": "44868866212048", "pm": "45108737507536", "mix": "{{ section.settings.mix_trial_variant | escape }}"},
+        "split": "3 Blood Orange Margarita + 3 Pineapple Martini",
+        "terms": "6 cans today. On day 28 it becomes 12 cans every month for $49.80 + $2.99 shipping. Reminder on day 25. Cancel anytime."},
+      "autoship": {"name": "12-pack auto ship", "price": 49.80, "sub": "$4.15/can, monthly", "plan": 1778024656,
+        "variants": {"bo": "44868867064016", "pm": "45108737605840", "mix": "{{ section.settings.mix_autoship_variant | escape }}"},
+        "split": "6 Blood Orange Margarita + 6 Pineapple Martini",
+        "terms": "12 cans every month for $49.80 + $2.99 shipping. 17% off one-time. Cancel anytime."},
+      "onetime": {"name": "12-pack", "price": 60.00, "sub": "$5.00/can, one time", "plan": null,
+        "variants": {"bo": "44868867457232", "pm": "45108737540304", "mix": "{{ section.settings.mix_onetime_variant | escape }}"},
+        "split": "6 Blood Orange Margarita + 6 Pineapple Martini",
+        "terms": "12 cans, one time. No subscription."}
+    },
+    "addons": [
+      {"id": "bo12", "name": "Blood Orange Margarita 12-pack", "note": "One time, $5.00/can", "price": 60.00, "variant": "44868867457232", "img": "{{ 'tipsy-can-blood-orange.webp' | asset_url }}"},
+      {"id": "pm12", "name": "Pineapple Martini 12-pack", "note": "One time, $5.00/can", "price": 60.00, "variant": "45108737540304", "img": "{{ 'tipsy-can-pineapple.webp' | asset_url }}"}
+    ],
+    "rewards": "{{ section.settings.rewards | escape }}"
+  }
+  </script>
+
   <div class="tpm-sticky" data-tpm-sticky hidden>
     <span class="tpm-sticky__text">6-can trial · <strong>$29.94</strong></span>
-    <a class="tpm-btn tpm-btn--accent tpm-btn--sm" href="#tpm-buy" data-tpm-jump>Try it</a>
+    <button type="button" class="tpm-btn tpm-btn--accent tpm-btn--sm" data-tpm-start>Try it</button>
   </div>
 </div>
 
@@ -752,212 +952,250 @@
   var root = document.getElementById('tpm');
   if (!root) return;
 
-  // 'store' posts to Shopify's /cart/add.js; 'preview' (local file) only
-  // reports what would be added, because there is no cart to post to.
+  // 'store' adds to the Shopify cart and goes to checkout; 'preview' (local
+  // file) only reports what would be added, because there is no cart.
   var MODE = root.getAttribute('data-tpm-mode') || 'store';
+  var DATA = JSON.parse(root.querySelector('[data-tpm-data]').textContent);
 
-  var form = root.querySelector('[data-tpm-form]');
-  var addBtn = root.querySelector('[data-tpm-add]');
-  var errorEl = root.querySelector('[data-tpm-error]');
-  var trialOnly = root.querySelector('[data-tpm-trial-only]');
-  var sticky = root.querySelector('[data-tpm-sticky]');
-  var mixNote = root.querySelector('[data-tpm-mix-note]');
+  function money(n) { return '$' + n.toFixed(2); }
+  function id(v) { var n = parseInt(v, 10); return n > 0 ? n : 0; }
+  function $all(sel, el) { return Array.prototype.slice.call((el || root).querySelectorAll(sel)); }
+
+  // ---- The Mix only exists once all three mixed variants are set ----
+  var mixReady = Object.keys(DATA.offers).every(function (k) { return id(DATA.offers[k].variants.mix); });
+  if (!mixReady && MODE !== 'preview') {
+    delete DATA.flavors.mix;
+    $all('[data-tpm-mix-only]').forEach(function (el) { el.remove(); });
+  }
+  function hasFlavor(f) { return !!DATA.flavors[f]; }
+
+  // ---- Optional rewards ("60:Free shipping|100:Free gift") ----
+  var REWARDS = String(DATA.rewards || '').split('|').map(function (part) {
+    var kv = part.split(':');
+    return { at: parseFloat(kv[0]), label: (kv.slice(1).join(':') || '').trim() };
+  }).filter(function (r) { return r.at > 0 && r.label; }).sort(function (a, b) { return a.at - b.at; });
+
+  // ---- Shared state ----
+  var state = { flavor: 'bo', offer: 'trial', addons: {} };
+
+  function dueToday() {
+    var t = DATA.offers[state.offer].price;
+    DATA.addons.forEach(function (a) { if (state.addons[a.id]) t += a.price; });
+    return Math.round(t * 100) / 100;
+  }
+
+  function canStack(flavor) {
+    if (flavor === 'mix') {
+      return '<span class="tpm-can-pair"><img src="' + DATA.flavors.bo.img + '" alt=""><img src="' + DATA.flavors.pm.img + '" alt=""></span>';
+    }
+    return '<img src="' + DATA.flavors[flavor].img + '" alt="">';
+  }
+
+  // ---- Picker: flavor circles + size & plan cards (used inline and in the sheet) ----
+  var pickerCount = 0;
+  function renderPicker(el) {
+    var n = ++pickerCount;
+    var html = '<fieldset class="tpm-flav"><legend class="tpm-pick__label">Flavor</legend><div class="tpm-flav__row">';
+    Object.keys(DATA.flavors).forEach(function (f) {
+      html += '<label class="tpm-flav__opt tpm-flav__opt--' + f + '"><input type="radio" name="tpm-flavor-' + n + '" value="' + f + '">' +
+        '<span class="tpm-flav__circle">' + canStack(f) + '</span><span class="tpm-flav__name">' + DATA.flavors[f].short + '</span></label>';
+    });
+    html += '</div></fieldset><fieldset class="tpm-plan"><legend class="tpm-pick__label">Size &amp; plan</legend><div class="tpm-plan__row">';
+    Object.keys(DATA.offers).forEach(function (k) {
+      var o = DATA.offers[k];
+      html += '<label class="tpm-plan__opt"><input type="radio" name="tpm-offer-' + n + '" value="' + k + '">' +
+        '<span class="tpm-plan__card">' + (o.badge ? '<span class="tpm-plan__badge">' + o.badge + '</span>' : '') +
+        '<span class="tpm-plan__name">' + o.name + '</span><span class="tpm-plan__price">' + money(o.price) + '</span>' +
+        '<span class="tpm-plan__sub">' + o.sub + '</span></span></label>';
+    });
+    html += '</div></fieldset><p class="tpm-pick__terms" data-tpm-terms></p>';
+    el.innerHTML = html;
+    el.addEventListener('change', function (e) {
+      if (e.target.name.indexOf('tpm-flavor-') === 0) state.flavor = e.target.value;
+      if (e.target.name.indexOf('tpm-offer-') === 0) state.offer = e.target.value;
+      sync();
+    });
+  }
+  $all('[data-tpm-picker]').forEach(renderPicker);
+
+  // ---- Checkout sheet ----
+  var sheet = root.querySelector('[data-tpm-checkout]');
+  var step = 1;
+  var errorEl = sheet.querySelector('[data-tpm-error]');
+  var nextBtn = sheet.querySelector('[data-tpm-next]');
   var busy = false;
 
-  // The Mix option needs a mixed-pack variant for every purchase option (set in
-  // the theme editor). On the store, hide it until all three exist rather than
-  // offer something that can't be added. The preview keeps it visible.
-  var offerInputs = form.querySelectorAll('input[name="tpm-offer"]');
-  var mixReady = Array.prototype.every.call(offerInputs, function (i) {
-    return parseInt(i.getAttribute('data-variant-mix'), 10) > 0;
-  });
-  if (!mixReady && MODE !== 'preview') {
-    Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-mix-only]'), function (el) { el.remove(); });
+  function renderAddons() {
+    var box = sheet.querySelector('[data-tpm-addons]');
+    box.innerHTML = DATA.addons.map(function (a) {
+      var on = !!state.addons[a.id];
+      return '<div class="tpm-addon' + (on ? ' is-on' : '') + '"><img src="' + a.img + '" alt="">' +
+        '<div class="tpm-addon__text"><strong>' + a.name + '</strong><span>' + a.note + '</span><b>' + money(a.price) + '</b></div>' +
+        '<button type="button" class="tpm-addon__btn" data-tpm-addon="' + a.id + '" aria-pressed="' + on + '">' + (on ? 'Added' : 'Add') + '</button></div>';
+    }).join('');
   }
 
-  function selected() {
-    return form.querySelector('input[name="tpm-offer"]:checked');
+  function renderRewards() {
+    var wrap = sheet.querySelector('[data-tpm-rewards]');
+    if (!REWARDS.length) { wrap.hidden = true; return; }
+    wrap.hidden = false;
+    var total = dueToday();
+    var top = REWARDS[REWARDS.length - 1].at;
+    var next = REWARDS.filter(function (r) { return total < r.at; })[0];
+    sheet.querySelector('[data-tpm-rewards-fill]').style.width = Math.min(100, (total / top) * 100) + '%';
+    sheet.querySelector('[data-tpm-rewards-msg]').innerHTML = next
+      ? 'Add <strong>' + money(next.at - total) + '</strong> to unlock ' + next.label.toLowerCase()
+      : '<strong>Every reward unlocked</strong>';
+    if (MODE === 'preview') sheet.querySelector('[data-tpm-rewards-msg]').innerHTML += ' <em class="tpm-example">Example rewards</em>';
+    sheet.querySelector('[data-tpm-rewards-marks]').innerHTML = REWARDS.map(function (r) {
+      return '<li class="' + (total >= r.at ? 'is-on' : '') + '" style="left:' + (r.at / top) * 100 + '%"><span>' + r.label + '</span></li>';
+    }).join('');
   }
 
-  function selectedFlavor() {
-    var f = form.querySelector('input[name="tpm-flavor"]:checked');
-    return f ? f.value : null;
-  }
-
-  function syncOffer() {
-    var opt = selected();
-    if (!opt) return;
-    addBtn.textContent = opt.getAttribute('data-label');
-    if (trialOnly) trialOnly.hidden = opt.value !== 'trial';
-    var flavor = selectedFlavor();
-    Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-media]'), function (m) {
-      m.hidden = m.getAttribute('data-tpm-media') !== flavor;
+  function renderReview() {
+    var o = DATA.offers[state.offer];
+    var f = DATA.flavors[state.flavor];
+    var lines = '<li><span class="tpm-review__img">' + canStack(state.flavor) + '</span><div><strong>' + f.name + '</strong><span>' + o.name +
+      (state.flavor === 'mix' ? ' · ' + o.split : '') + '</span></div><b>' + money(o.price) + '</b></li>';
+    DATA.addons.forEach(function (a) {
+      if (state.addons[a.id]) lines += '<li><span class="tpm-review__img"><img src="' + a.img + '" alt=""></span><div><strong>' + a.name + '</strong><span>' + a.note + '</span></div><b>' + money(a.price) + '</b></li>';
     });
-    if (mixNote) {
-      var isMix = selectedFlavor() === 'mix';
-      mixNote.hidden = !isMix;
-      mixNote.textContent = isMix ? 'Your pack: ' + opt.getAttribute('data-mix-split') + '.' : '';
+    sheet.querySelector('[data-tpm-review]').innerHTML = lines;
+    sheet.querySelector('[data-tpm-timeline]').hidden = state.offer !== 'trial';
+  }
+
+  function showStep(n) {
+    step = n;
+    $all('[data-tpm-step]', sheet).forEach(function (s) { s.hidden = s.getAttribute('data-tpm-step') !== String(n); });
+    $all('[data-tpm-stepdot]', sheet).forEach(function (d) {
+      var k = parseInt(d.getAttribute('data-tpm-stepdot'), 10);
+      d.classList.toggle('is-done', k < n);
+      d.classList.toggle('is-on', k === n);
+      if (k === n) d.setAttribute('aria-current', 'step'); else d.removeAttribute('aria-current');
+    });
+    sheet.querySelector('[data-tpm-back]').style.visibility = n > 1 ? 'visible' : 'hidden';
+    if (n === 2) { renderAddons(); renderRewards(); }
+    if (n === 3) renderReview();
+    errorEl.textContent = '';
+    sync();
+    var body = sheet.querySelector('.tpm-sheet__body');
+    body.scrollTop = 0;
+    var title = sheet.querySelector('[data-tpm-step="' + n + '"] .tpm-sheet__title');
+    if (title) { title.setAttribute('tabindex', '-1'); title.focus({ preventScroll: true }); }
+  }
+
+  function openCheckout(opts) {
+    opts = opts || {};
+    if (opts.flavor) state.flavor = hasFlavor(opts.flavor) ? opts.flavor : 'bo';
+    if (opts.offer) state.offer = opts.offer;
+    if (typeof sheet.showModal === 'function') { if (!sheet.open) sheet.showModal(); } else sheet.setAttribute('open', '');
+    document.documentElement.classList.add('tpm-lock');
+    showStep(opts.step || 1);
+  }
+  function closeCheckout() {
+    if (typeof sheet.close === 'function') sheet.close(); else sheet.removeAttribute('open');
+  }
+  sheet.addEventListener('close', function () { document.documentElement.classList.remove('tpm-lock'); });
+  sheet.addEventListener('click', function (e) {
+    if (e.target === sheet) closeCheckout();
+    var add = e.target.closest('[data-tpm-addon]');
+    if (add) {
+      var k = add.getAttribute('data-tpm-addon');
+      state.addons[k] = !state.addons[k];
+      renderAddons(); renderRewards(); sync();
     }
-    showError('');
+  });
+  sheet.querySelector('[data-tpm-close]').addEventListener('click', closeCheckout);
+  sheet.querySelector('[data-tpm-back]').addEventListener('click', function () { if (step > 1) showStep(step - 1); });
+  nextBtn.addEventListener('click', function () {
+    if (step < 3) showStep(step + 1); else checkout();
+  });
+
+  function cartItems() {
+    var o = DATA.offers[state.offer];
+    var main = { id: id(o.variants[state.flavor]), quantity: 1 };
+    if (o.plan) main.selling_plan = o.plan;
+    var items = [main];
+    DATA.addons.forEach(function (a) { if (state.addons[a.id]) items.push({ id: id(a.variant), quantity: 1 }); });
+    return items;
   }
 
-  function showError(msg) {
-    errorEl.textContent = msg || '';
-  }
-
-  // Same behaviour as the theme's existing offer selector: open the Dawn cart
-  // drawer when it exists, otherwise go to the cart page so the click is never
-  // silent.
-  function cartDrawer() {
-    var el = document.querySelector('cart-drawer');
-    return el && typeof el.renderContents === 'function' ? el : null;
-  }
-
-  function afterAdd(data) {
-    var drawer = cartDrawer();
-    if (drawer && data && data.sections) {
-      drawer.classList.remove('is-empty');
-      drawer.renderContents(data);
+  function checkout() {
+    if (busy) return;
+    var items = cartItems();
+    if (!items[0].id) {
+      if (MODE === 'preview') {
+        window.alert('Preview only. The mixed pack has no Shopify variant yet. Add its variant ID in the theme editor to enable it.');
+        return;
+      }
+      errorEl.textContent = 'This option isn\'t available right now. Please pick another flavor.';
       return;
     }
-    window.location.href = '/cart';
-  }
-
-  function addToCart(opt) {
-    var flavor = selectedFlavor();
-    var item = { id: parseInt(opt.getAttribute('data-variant-' + flavor), 10), quantity: 1 };
-    var plan = parseInt(opt.getAttribute('data-plan'), 10);
-    if (!isNaN(plan) && plan > 0) item.selling_plan = plan;
-
-    if (MODE === 'preview' && !item.id) {
-      window.alert('Preview only. The mixed ' + opt.getAttribute('data-mix-split') +
-        ' pack has no Shopify variant yet. Add its variant ID in the theme editor to enable it.');
-      return Promise.resolve();
-    }
-    if (!item.id) return Promise.reject(new Error('This option isn\'t available right now. Please pick another flavor.'));
-
     if (MODE === 'preview') {
-      showError('');
-      window.alert('Preview only. On the store this adds: variant ' + item.id +
-        (item.selling_plan ? ', selling plan ' + item.selling_plan : ', one-time purchase') + ', quantity 1.');
-      return Promise.resolve();
+      window.alert('Preview only. On the store this adds ' + items.map(function (i) {
+        return 'variant ' + i.id + (i.selling_plan ? ' (plan ' + i.selling_plan + ')' : '');
+      }).join(' + ') + ' to the cart and goes to checkout.');
+      return;
     }
-
-    var body = { items: [item] };
-    var drawer = cartDrawer();
-    if (drawer) {
-      body.sections = drawer.getSectionsToRender().map(function (s) { return s.id; });
-      body.sections_url = window.location.pathname;
-    }
-
-    return fetch('/cart/add.js', {
+    busy = true;
+    nextBtn.disabled = true;
+    sheet.querySelector('[data-tpm-next-label]').textContent = 'Heading to checkout…';
+    errorEl.textContent = '';
+    fetch('/cart/add.js', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(body)
+      body: JSON.stringify({ items: items })
     })
       .then(function (r) {
-        return r.json().then(function (data) {
-          if (!r.ok) throw new Error(data.description || data.message || 'Something went wrong. Please try again.');
-          return data;
+        return r.json().then(function (d) {
+          if (!r.ok) throw new Error(d.description || d.message || 'Something went wrong. Please try again.');
         });
       })
-      .then(afterAdd);
-  }
-
-  form.addEventListener('change', syncOffer);
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    if (busy) return;
-    var opt = selected();
-    if (!opt) { showError('Choose an option to continue.'); return; }
-    if (!selectedFlavor()) { showError('Pick a flavor to continue.'); return; }
-    busy = true;
-    addBtn.disabled = true;
-    var label = addBtn.textContent;
-    addBtn.textContent = 'Adding…';
-    showError('');
-    addToCart(opt)
-      .catch(function (err) { showError(err.message); })
-      .then(function () {
+      .then(function () { window.location.href = '/checkout'; })
+      .catch(function (err) {
+        errorEl.textContent = err.message;
         busy = false;
-        addBtn.disabled = false;
-        addBtn.textContent = label;
+        nextBtn.disabled = false;
+        sync();
       });
-  });
-
-  // In-page jumps: move focus to the purchase heading for keyboard users.
-  function jumpToBuy(focusEl) {
-    var target = document.getElementById('tpm-buy');
-    if (!target) return;
-    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
-    var el = focusEl || target.querySelector('h2');
-    if (!focusEl) el.setAttribute('tabindex', '-1');
-    el.focus({ preventScroll: true });
   }
-  Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-jump]'), function (a) {
-    a.addEventListener('click', function (e) { e.preventDefault(); jumpToBuy(); });
-  });
 
-  // Flavor cards preselect that flavor in the purchase form.
-  Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-pick]'), function (b) {
-    b.addEventListener('click', function () {
-      var input = form.querySelector('input[name="tpm-flavor"][value="' + b.getAttribute('data-tpm-pick') + '"]');
-      if (!input) return;
-      input.checked = true;
-      syncOffer();
-      jumpToBuy(input);
+  // ---- Keep every picker, label and total in step ----
+  function sync() {
+    if (!hasFlavor(state.flavor)) state.flavor = 'bo';
+    var o = DATA.offers[state.offer];
+    $all('[data-tpm-picker] input').forEach(function (i) {
+      i.checked = (i.name.indexOf('tpm-flavor-') === 0 && i.value === state.flavor) ||
+        (i.name.indexOf('tpm-offer-') === 0 && i.value === state.offer);
+    });
+    $all('[data-tpm-terms]').forEach(function (t) {
+      t.textContent = (state.flavor === 'mix' ? o.split + '. ' : '') + o.terms;
+    });
+    var media = root.querySelector('[data-tpm-buy-media]');
+    if (media) media.innerHTML = '<div class="tpm-buy__stage tpm-buy__stage--' + state.flavor + '">' + canStack(state.flavor) + '</div>';
+    sheet.querySelector('[data-tpm-total]').textContent = money(dueToday());
+    if (!busy) sheet.querySelector('[data-tpm-next-label]').textContent = step < 3 ? 'Continue' : 'Checkout · ' + money(dueToday());
+  }
+
+  // ---- Entry points into the checkout flow ----
+  $all('[data-tpm-start]').forEach(function (b) {
+    b.addEventListener('click', function (e) {
+      e.preventDefault();
+      openCheckout({ step: parseInt(b.getAttribute('data-tpm-start-step'), 10) || 1 });
     });
   });
-
-  // Sticky CTA: shown once the hero button has scrolled away, hidden while the
-  // purchase section or anything after it is on screen so it never covers the
-  // options, terms or FAQ.
-  if (sticky) {
-    var heroBtn = root.querySelector('.tpm-hero [data-tpm-jump]');
-    var buy = document.getElementById('tpm-buy');
-    var queued = false;
-    sticky.hidden = false;
-    root.classList.add('has-sticky');
-    // Read positions on scroll (once per frame) rather than with an
-    // IntersectionObserver, which misses jumps straight past a section.
-    function update() {
-      queued = false;
-      var heroGone = heroBtn.getBoundingClientRect().bottom < 0;
-      var buyReached = buy.getBoundingClientRect().top < window.innerHeight;
-      var show = heroGone && !buyReached;
-      sticky.classList.toggle('is-visible', show);
-      sticky.inert = !show;
-      sticky.setAttribute('aria-hidden', show ? 'false' : 'true');
-    }
-    function queue() { if (!queued) { queued = true; window.requestAnimationFrame(update); } }
-    window.addEventListener('scroll', queue, { passive: true });
-    window.addEventListener('resize', queue);
-    update();
-  }
-
-  // ---- Shared: preselect a flavor and pack in the buy box ----
-  var FLAVOR_NAMES = { bo: 'Blood Orange Margarita', pm: 'Pineapple Martini', mix: 'The Mix' };
-  function hasFlavor(f) { return !!form.querySelector('input[name="tpm-flavor"][value="' + f + '"]'); }
-  function applyPick(flavor, offer) {
-    if (!hasFlavor(flavor)) flavor = 'bo';
-    var f = form.querySelector('input[name="tpm-flavor"][value="' + flavor + '"]');
-    var o = form.querySelector('input[name="tpm-offer"][value="' + offer + '"]');
-    if (f) f.checked = true;
-    if (o) o.checked = true;
-    syncOffer();
-    jumpToBuy(addBtn);
-  }
-  Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-apply]'), function (b) {
+  $all('[data-tpm-pick]').forEach(function (b) {
+    b.addEventListener('click', function () { openCheckout({ flavor: b.getAttribute('data-tpm-pick'), step: 1 }); });
+  });
+  $all('[data-tpm-apply]').forEach(function (b) {
     var parts = b.getAttribute('data-tpm-apply').split(':');
-    // Without the Mix products on the store, recommend the fan favorite instead.
     var pickText = b.parentNode.querySelector('.tpm-use__pick');
-    if (parts[0] === 'mix' && !hasFlavor('mix') && pickText) pickText.innerHTML = pickText.innerHTML.replace('The Mix', FLAVOR_NAMES.bo);
-    b.addEventListener('click', function () { applyPick(parts[0], parts[1]); });
+    if (parts[0] === 'mix' && !hasFlavor('mix') && pickText) pickText.innerHTML = pickText.innerHTML.replace('The Mix', DATA.flavors.bo.name);
+    b.addEventListener('click', function () { openCheckout({ flavor: parts[0], offer: parts[1], step: 1 }); });
   });
 
   // ---- Carousels: progress bar follows horizontal scroll ----
-  Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-carousel]'), function (track) {
+  $all('[data-tpm-carousel]').forEach(function (track) {
     var bar = track.parentNode.querySelector('[data-tpm-progress]');
     if (!bar) return;
     function paint() {
@@ -978,41 +1216,66 @@
     var answers = {};
     var stepLabel = quiz.querySelector('[data-tpm-quiz-step]');
     var OFFER_NAMES = { trial: '6-pack trial · $29.94', onetime: '12-pack · $60.00', autoship: '12-pack auto ship · $49.80/mo' };
-    function show(n) {
-      Array.prototype.forEach.call(quiz.querySelectorAll('[data-tpm-q]'), function (p) {
-        p.hidden = p.getAttribute('data-tpm-q') !== String(n);
-      });
+    var showQ = function (n) {
+      $all('[data-tpm-q]', quiz).forEach(function (p) { p.hidden = p.getAttribute('data-tpm-q') !== String(n); });
       stepLabel.textContent = n < 3 ? 'Question ' + n + ' of 2' : 'Done';
       var first = quiz.querySelector('[data-tpm-q="' + n + '"] button');
       if (first) first.focus();
-    }
-    function openQuiz() {
-      answers = {};
-      if (typeof quiz.showModal === 'function') quiz.showModal(); else quiz.setAttribute('open', '');
-      show(1);
-    }
-    Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-quiz-open]'), function (b) {
-      b.addEventListener('click', openQuiz);
+    };
+    $all('[data-tpm-quiz-open]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        answers = {};
+        if (typeof quiz.showModal === 'function') quiz.showModal(); else quiz.setAttribute('open', '');
+        showQ(1);
+      });
     });
-    Array.prototype.forEach.call(quiz.querySelectorAll('[data-tpm-answer]'), function (b) {
+    $all('[data-tpm-answer]', quiz).forEach(function (b) {
       b.addEventListener('click', function () {
         var kv = b.getAttribute('data-tpm-answer').split(':');
         answers[kv[0]] = kv[1];
-        if (kv[0] === 'flavor') { show(2); return; }
-        quiz.querySelector('[data-tpm-quiz-match]').textContent = FLAVOR_NAMES[answers.flavor] + ', ' + OFFER_NAMES[answers.offer];
-        show(3);
+        if (kv[0] === 'flavor') { showQ(2); return; }
+        quiz.querySelector('[data-tpm-quiz-match]').textContent = DATA.flavors[answers.flavor].name + ', ' + OFFER_NAMES[answers.offer];
+        showQ(3);
       });
     });
-    quiz.querySelector('[data-tpm-quiz-restart]').addEventListener('click', function () { answers = {}; show(1); });
+    quiz.querySelector('[data-tpm-quiz-restart]').addEventListener('click', function () { answers = {}; showQ(1); });
     quiz.querySelector('[data-tpm-quiz-apply]').addEventListener('click', function () {
       if (typeof quiz.close === 'function') quiz.close(); else quiz.removeAttribute('open');
-      applyPick(answers.flavor || 'bo', answers.offer || 'trial');
+      openCheckout({ flavor: answers.flavor || 'bo', offer: answers.offer || 'trial', step: 1 });
     });
-    // Close when the backdrop is clicked.
     quiz.addEventListener('click', function (e) { if (e.target === quiz) quiz.close(); });
   }
 
-  syncOffer();
+  // ---- Reveal animations (chart draw, comparison checks) ----
+  var animated = $all('[data-tpm-animate]');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.remove('will-animate'); en.target.classList.add('is-in'); io.unobserve(en.target); } });
+    }, { threshold: 0.35 });
+    animated.forEach(function (el) { el.classList.add('will-animate'); io.observe(el); });
+  }
+
+  // ---- Sticky CTA: after the hero, until the buy box ----
+  var sticky = root.querySelector('[data-tpm-sticky]');
+  if (sticky) {
+    var heroBtn = root.querySelector('.tpm-hero [data-tpm-start]');
+    var buy = document.getElementById('tpm-buy');
+    var queued = false;
+    sticky.hidden = false;
+    var update = function () {
+      queued = false;
+      var show = heroBtn.getBoundingClientRect().bottom < 0 && buy.getBoundingClientRect().top >= window.innerHeight;
+      sticky.classList.toggle('is-visible', show);
+      sticky.inert = !show;
+      sticky.setAttribute('aria-hidden', show ? 'false' : 'true');
+    };
+    var queue = function () { if (!queued) { queued = true; window.requestAnimationFrame(update); } };
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue);
+    update();
+  }
+
+  sync();
 })();
 </script>
 
@@ -1039,6 +1302,12 @@
         "id": "mix_onetime_variant",
         "label": "Mix 12-pack one-time: variant ID",
         "info": "Variant of the mixed 12-pack one-time product (6 + 6)."
+    },
+    {
+        "type": "text",
+        "id": "rewards",
+        "label": "Checkout rewards",
+        "info": "Optional. Spend thresholds shown as a progress bar in the add-ons step, e.g. 75:Free shipping|110:Free gift. Set up the matching automatic discounts in Shopify first. Leave empty to hide."
     }
 ],
   "presets": [{ "name": "TIPSY AF Meta landing page v3" }]

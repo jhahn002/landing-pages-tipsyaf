@@ -2,212 +2,250 @@
   var root = document.getElementById('tpm');
   if (!root) return;
 
-  // 'store' posts to Shopify's /cart/add.js; 'preview' (local file) only
-  // reports what would be added, because there is no cart to post to.
+  // 'store' adds to the Shopify cart and goes to checkout; 'preview' (local
+  // file) only reports what would be added, because there is no cart.
   var MODE = root.getAttribute('data-tpm-mode') || 'store';
+  var DATA = JSON.parse(root.querySelector('[data-tpm-data]').textContent);
 
-  var form = root.querySelector('[data-tpm-form]');
-  var addBtn = root.querySelector('[data-tpm-add]');
-  var errorEl = root.querySelector('[data-tpm-error]');
-  var trialOnly = root.querySelector('[data-tpm-trial-only]');
-  var sticky = root.querySelector('[data-tpm-sticky]');
-  var mixNote = root.querySelector('[data-tpm-mix-note]');
+  function money(n) { return '$' + n.toFixed(2); }
+  function id(v) { var n = parseInt(v, 10); return n > 0 ? n : 0; }
+  function $all(sel, el) { return Array.prototype.slice.call((el || root).querySelectorAll(sel)); }
+
+  // ---- The Mix only exists once all three mixed variants are set ----
+  var mixReady = Object.keys(DATA.offers).every(function (k) { return id(DATA.offers[k].variants.mix); });
+  if (!mixReady && MODE !== 'preview') {
+    delete DATA.flavors.mix;
+    $all('[data-tpm-mix-only]').forEach(function (el) { el.remove(); });
+  }
+  function hasFlavor(f) { return !!DATA.flavors[f]; }
+
+  // ---- Optional rewards ("60:Free shipping|100:Free gift") ----
+  var REWARDS = String(DATA.rewards || '').split('|').map(function (part) {
+    var kv = part.split(':');
+    return { at: parseFloat(kv[0]), label: (kv.slice(1).join(':') || '').trim() };
+  }).filter(function (r) { return r.at > 0 && r.label; }).sort(function (a, b) { return a.at - b.at; });
+
+  // ---- Shared state ----
+  var state = { flavor: 'bo', offer: 'trial', addons: {} };
+
+  function dueToday() {
+    var t = DATA.offers[state.offer].price;
+    DATA.addons.forEach(function (a) { if (state.addons[a.id]) t += a.price; });
+    return Math.round(t * 100) / 100;
+  }
+
+  function canStack(flavor) {
+    if (flavor === 'mix') {
+      return '<span class="tpm-can-pair"><img src="' + DATA.flavors.bo.img + '" alt=""><img src="' + DATA.flavors.pm.img + '" alt=""></span>';
+    }
+    return '<img src="' + DATA.flavors[flavor].img + '" alt="">';
+  }
+
+  // ---- Picker: flavor circles + size & plan cards (used inline and in the sheet) ----
+  var pickerCount = 0;
+  function renderPicker(el) {
+    var n = ++pickerCount;
+    var html = '<fieldset class="tpm-flav"><legend class="tpm-pick__label">Flavor</legend><div class="tpm-flav__row">';
+    Object.keys(DATA.flavors).forEach(function (f) {
+      html += '<label class="tpm-flav__opt tpm-flav__opt--' + f + '"><input type="radio" name="tpm-flavor-' + n + '" value="' + f + '">' +
+        '<span class="tpm-flav__circle">' + canStack(f) + '</span><span class="tpm-flav__name">' + DATA.flavors[f].short + '</span></label>';
+    });
+    html += '</div></fieldset><fieldset class="tpm-plan"><legend class="tpm-pick__label">Size &amp; plan</legend><div class="tpm-plan__row">';
+    Object.keys(DATA.offers).forEach(function (k) {
+      var o = DATA.offers[k];
+      html += '<label class="tpm-plan__opt"><input type="radio" name="tpm-offer-' + n + '" value="' + k + '">' +
+        '<span class="tpm-plan__card">' + (o.badge ? '<span class="tpm-plan__badge">' + o.badge + '</span>' : '') +
+        '<span class="tpm-plan__name">' + o.name + '</span><span class="tpm-plan__price">' + money(o.price) + '</span>' +
+        '<span class="tpm-plan__sub">' + o.sub + '</span></span></label>';
+    });
+    html += '</div></fieldset><p class="tpm-pick__terms" data-tpm-terms></p>';
+    el.innerHTML = html;
+    el.addEventListener('change', function (e) {
+      if (e.target.name.indexOf('tpm-flavor-') === 0) state.flavor = e.target.value;
+      if (e.target.name.indexOf('tpm-offer-') === 0) state.offer = e.target.value;
+      sync();
+    });
+  }
+  $all('[data-tpm-picker]').forEach(renderPicker);
+
+  // ---- Checkout sheet ----
+  var sheet = root.querySelector('[data-tpm-checkout]');
+  var step = 1;
+  var errorEl = sheet.querySelector('[data-tpm-error]');
+  var nextBtn = sheet.querySelector('[data-tpm-next]');
   var busy = false;
 
-  // The Mix option needs a mixed-pack variant for every purchase option (set in
-  // the theme editor). On the store, hide it until all three exist rather than
-  // offer something that can't be added. The preview keeps it visible.
-  var offerInputs = form.querySelectorAll('input[name="tpm-offer"]');
-  var mixReady = Array.prototype.every.call(offerInputs, function (i) {
-    return parseInt(i.getAttribute('data-variant-mix'), 10) > 0;
-  });
-  if (!mixReady && MODE !== 'preview') {
-    Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-mix-only]'), function (el) { el.remove(); });
+  function renderAddons() {
+    var box = sheet.querySelector('[data-tpm-addons]');
+    box.innerHTML = DATA.addons.map(function (a) {
+      var on = !!state.addons[a.id];
+      return '<div class="tpm-addon' + (on ? ' is-on' : '') + '"><img src="' + a.img + '" alt="">' +
+        '<div class="tpm-addon__text"><strong>' + a.name + '</strong><span>' + a.note + '</span><b>' + money(a.price) + '</b></div>' +
+        '<button type="button" class="tpm-addon__btn" data-tpm-addon="' + a.id + '" aria-pressed="' + on + '">' + (on ? 'Added' : 'Add') + '</button></div>';
+    }).join('');
   }
 
-  function selected() {
-    return form.querySelector('input[name="tpm-offer"]:checked');
+  function renderRewards() {
+    var wrap = sheet.querySelector('[data-tpm-rewards]');
+    if (!REWARDS.length) { wrap.hidden = true; return; }
+    wrap.hidden = false;
+    var total = dueToday();
+    var top = REWARDS[REWARDS.length - 1].at;
+    var next = REWARDS.filter(function (r) { return total < r.at; })[0];
+    sheet.querySelector('[data-tpm-rewards-fill]').style.width = Math.min(100, (total / top) * 100) + '%';
+    sheet.querySelector('[data-tpm-rewards-msg]').innerHTML = next
+      ? 'Add <strong>' + money(next.at - total) + '</strong> to unlock ' + next.label.toLowerCase()
+      : '<strong>Every reward unlocked</strong>';
+    if (MODE === 'preview') sheet.querySelector('[data-tpm-rewards-msg]').innerHTML += ' <em class="tpm-example">Example rewards</em>';
+    sheet.querySelector('[data-tpm-rewards-marks]').innerHTML = REWARDS.map(function (r) {
+      return '<li class="' + (total >= r.at ? 'is-on' : '') + '" style="left:' + (r.at / top) * 100 + '%"><span>' + r.label + '</span></li>';
+    }).join('');
   }
 
-  function selectedFlavor() {
-    var f = form.querySelector('input[name="tpm-flavor"]:checked');
-    return f ? f.value : null;
-  }
-
-  function syncOffer() {
-    var opt = selected();
-    if (!opt) return;
-    addBtn.textContent = opt.getAttribute('data-label');
-    if (trialOnly) trialOnly.hidden = opt.value !== 'trial';
-    var flavor = selectedFlavor();
-    Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-media]'), function (m) {
-      m.hidden = m.getAttribute('data-tpm-media') !== flavor;
+  function renderReview() {
+    var o = DATA.offers[state.offer];
+    var f = DATA.flavors[state.flavor];
+    var lines = '<li><span class="tpm-review__img">' + canStack(state.flavor) + '</span><div><strong>' + f.name + '</strong><span>' + o.name +
+      (state.flavor === 'mix' ? ' · ' + o.split : '') + '</span></div><b>' + money(o.price) + '</b></li>';
+    DATA.addons.forEach(function (a) {
+      if (state.addons[a.id]) lines += '<li><span class="tpm-review__img"><img src="' + a.img + '" alt=""></span><div><strong>' + a.name + '</strong><span>' + a.note + '</span></div><b>' + money(a.price) + '</b></li>';
     });
-    if (mixNote) {
-      var isMix = selectedFlavor() === 'mix';
-      mixNote.hidden = !isMix;
-      mixNote.textContent = isMix ? 'Your pack: ' + opt.getAttribute('data-mix-split') + '.' : '';
+    sheet.querySelector('[data-tpm-review]').innerHTML = lines;
+    sheet.querySelector('[data-tpm-timeline]').hidden = state.offer !== 'trial';
+  }
+
+  function showStep(n) {
+    step = n;
+    $all('[data-tpm-step]', sheet).forEach(function (s) { s.hidden = s.getAttribute('data-tpm-step') !== String(n); });
+    $all('[data-tpm-stepdot]', sheet).forEach(function (d) {
+      var k = parseInt(d.getAttribute('data-tpm-stepdot'), 10);
+      d.classList.toggle('is-done', k < n);
+      d.classList.toggle('is-on', k === n);
+      if (k === n) d.setAttribute('aria-current', 'step'); else d.removeAttribute('aria-current');
+    });
+    sheet.querySelector('[data-tpm-back]').style.visibility = n > 1 ? 'visible' : 'hidden';
+    if (n === 2) { renderAddons(); renderRewards(); }
+    if (n === 3) renderReview();
+    errorEl.textContent = '';
+    sync();
+    var body = sheet.querySelector('.tpm-sheet__body');
+    body.scrollTop = 0;
+    var title = sheet.querySelector('[data-tpm-step="' + n + '"] .tpm-sheet__title');
+    if (title) { title.setAttribute('tabindex', '-1'); title.focus({ preventScroll: true }); }
+  }
+
+  function openCheckout(opts) {
+    opts = opts || {};
+    if (opts.flavor) state.flavor = hasFlavor(opts.flavor) ? opts.flavor : 'bo';
+    if (opts.offer) state.offer = opts.offer;
+    if (typeof sheet.showModal === 'function') { if (!sheet.open) sheet.showModal(); } else sheet.setAttribute('open', '');
+    document.documentElement.classList.add('tpm-lock');
+    showStep(opts.step || 1);
+  }
+  function closeCheckout() {
+    if (typeof sheet.close === 'function') sheet.close(); else sheet.removeAttribute('open');
+  }
+  sheet.addEventListener('close', function () { document.documentElement.classList.remove('tpm-lock'); });
+  sheet.addEventListener('click', function (e) {
+    if (e.target === sheet) closeCheckout();
+    var add = e.target.closest('[data-tpm-addon]');
+    if (add) {
+      var k = add.getAttribute('data-tpm-addon');
+      state.addons[k] = !state.addons[k];
+      renderAddons(); renderRewards(); sync();
     }
-    showError('');
+  });
+  sheet.querySelector('[data-tpm-close]').addEventListener('click', closeCheckout);
+  sheet.querySelector('[data-tpm-back]').addEventListener('click', function () { if (step > 1) showStep(step - 1); });
+  nextBtn.addEventListener('click', function () {
+    if (step < 3) showStep(step + 1); else checkout();
+  });
+
+  function cartItems() {
+    var o = DATA.offers[state.offer];
+    var main = { id: id(o.variants[state.flavor]), quantity: 1 };
+    if (o.plan) main.selling_plan = o.plan;
+    var items = [main];
+    DATA.addons.forEach(function (a) { if (state.addons[a.id]) items.push({ id: id(a.variant), quantity: 1 }); });
+    return items;
   }
 
-  function showError(msg) {
-    errorEl.textContent = msg || '';
-  }
-
-  // Same behaviour as the theme's existing offer selector: open the Dawn cart
-  // drawer when it exists, otherwise go to the cart page so the click is never
-  // silent.
-  function cartDrawer() {
-    var el = document.querySelector('cart-drawer');
-    return el && typeof el.renderContents === 'function' ? el : null;
-  }
-
-  function afterAdd(data) {
-    var drawer = cartDrawer();
-    if (drawer && data && data.sections) {
-      drawer.classList.remove('is-empty');
-      drawer.renderContents(data);
+  function checkout() {
+    if (busy) return;
+    var items = cartItems();
+    if (!items[0].id) {
+      if (MODE === 'preview') {
+        window.alert('Preview only. The mixed pack has no Shopify variant yet. Add its variant ID in the theme editor to enable it.');
+        return;
+      }
+      errorEl.textContent = 'This option isn\'t available right now. Please pick another flavor.';
       return;
     }
-    window.location.href = '/cart';
-  }
-
-  function addToCart(opt) {
-    var flavor = selectedFlavor();
-    var item = { id: parseInt(opt.getAttribute('data-variant-' + flavor), 10), quantity: 1 };
-    var plan = parseInt(opt.getAttribute('data-plan'), 10);
-    if (!isNaN(plan) && plan > 0) item.selling_plan = plan;
-
-    if (MODE === 'preview' && !item.id) {
-      window.alert('Preview only. The mixed ' + opt.getAttribute('data-mix-split') +
-        ' pack has no Shopify variant yet. Add its variant ID in the theme editor to enable it.');
-      return Promise.resolve();
-    }
-    if (!item.id) return Promise.reject(new Error('This option isn\'t available right now. Please pick another flavor.'));
-
     if (MODE === 'preview') {
-      showError('');
-      window.alert('Preview only. On the store this adds: variant ' + item.id +
-        (item.selling_plan ? ', selling plan ' + item.selling_plan : ', one-time purchase') + ', quantity 1.');
-      return Promise.resolve();
+      window.alert('Preview only. On the store this adds ' + items.map(function (i) {
+        return 'variant ' + i.id + (i.selling_plan ? ' (plan ' + i.selling_plan + ')' : '');
+      }).join(' + ') + ' to the cart and goes to checkout.');
+      return;
     }
-
-    var body = { items: [item] };
-    var drawer = cartDrawer();
-    if (drawer) {
-      body.sections = drawer.getSectionsToRender().map(function (s) { return s.id; });
-      body.sections_url = window.location.pathname;
-    }
-
-    return fetch('/cart/add.js', {
+    busy = true;
+    nextBtn.disabled = true;
+    sheet.querySelector('[data-tpm-next-label]').textContent = 'Heading to checkout…';
+    errorEl.textContent = '';
+    fetch('/cart/add.js', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(body)
+      body: JSON.stringify({ items: items })
     })
       .then(function (r) {
-        return r.json().then(function (data) {
-          if (!r.ok) throw new Error(data.description || data.message || 'Something went wrong. Please try again.');
-          return data;
+        return r.json().then(function (d) {
+          if (!r.ok) throw new Error(d.description || d.message || 'Something went wrong. Please try again.');
         });
       })
-      .then(afterAdd);
-  }
-
-  form.addEventListener('change', syncOffer);
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    if (busy) return;
-    var opt = selected();
-    if (!opt) { showError('Choose an option to continue.'); return; }
-    if (!selectedFlavor()) { showError('Pick a flavor to continue.'); return; }
-    busy = true;
-    addBtn.disabled = true;
-    var label = addBtn.textContent;
-    addBtn.textContent = 'Adding…';
-    showError('');
-    addToCart(opt)
-      .catch(function (err) { showError(err.message); })
-      .then(function () {
+      .then(function () { window.location.href = '/checkout'; })
+      .catch(function (err) {
+        errorEl.textContent = err.message;
         busy = false;
-        addBtn.disabled = false;
-        addBtn.textContent = label;
+        nextBtn.disabled = false;
+        sync();
       });
-  });
-
-  // In-page jumps: move focus to the purchase heading for keyboard users.
-  function jumpToBuy(focusEl) {
-    var target = document.getElementById('tpm-buy');
-    if (!target) return;
-    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
-    var el = focusEl || target.querySelector('h2');
-    if (!focusEl) el.setAttribute('tabindex', '-1');
-    el.focus({ preventScroll: true });
   }
-  Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-jump]'), function (a) {
-    a.addEventListener('click', function (e) { e.preventDefault(); jumpToBuy(); });
-  });
 
-  // Flavor cards preselect that flavor in the purchase form.
-  Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-pick]'), function (b) {
-    b.addEventListener('click', function () {
-      var input = form.querySelector('input[name="tpm-flavor"][value="' + b.getAttribute('data-tpm-pick') + '"]');
-      if (!input) return;
-      input.checked = true;
-      syncOffer();
-      jumpToBuy(input);
+  // ---- Keep every picker, label and total in step ----
+  function sync() {
+    if (!hasFlavor(state.flavor)) state.flavor = 'bo';
+    var o = DATA.offers[state.offer];
+    $all('[data-tpm-picker] input').forEach(function (i) {
+      i.checked = (i.name.indexOf('tpm-flavor-') === 0 && i.value === state.flavor) ||
+        (i.name.indexOf('tpm-offer-') === 0 && i.value === state.offer);
+    });
+    $all('[data-tpm-terms]').forEach(function (t) {
+      t.textContent = (state.flavor === 'mix' ? o.split + '. ' : '') + o.terms;
+    });
+    var media = root.querySelector('[data-tpm-buy-media]');
+    if (media) media.innerHTML = '<div class="tpm-buy__stage tpm-buy__stage--' + state.flavor + '">' + canStack(state.flavor) + '</div>';
+    sheet.querySelector('[data-tpm-total]').textContent = money(dueToday());
+    if (!busy) sheet.querySelector('[data-tpm-next-label]').textContent = step < 3 ? 'Continue' : 'Checkout · ' + money(dueToday());
+  }
+
+  // ---- Entry points into the checkout flow ----
+  $all('[data-tpm-start]').forEach(function (b) {
+    b.addEventListener('click', function (e) {
+      e.preventDefault();
+      openCheckout({ step: parseInt(b.getAttribute('data-tpm-start-step'), 10) || 1 });
     });
   });
-
-  // Sticky CTA: shown once the hero button has scrolled away, hidden while the
-  // purchase section or anything after it is on screen so it never covers the
-  // options, terms or FAQ.
-  if (sticky) {
-    var heroBtn = root.querySelector('.tpm-hero [data-tpm-jump]');
-    var buy = document.getElementById('tpm-buy');
-    var queued = false;
-    sticky.hidden = false;
-    root.classList.add('has-sticky');
-    // Read positions on scroll (once per frame) rather than with an
-    // IntersectionObserver, which misses jumps straight past a section.
-    function update() {
-      queued = false;
-      var heroGone = heroBtn.getBoundingClientRect().bottom < 0;
-      var buyReached = buy.getBoundingClientRect().top < window.innerHeight;
-      var show = heroGone && !buyReached;
-      sticky.classList.toggle('is-visible', show);
-      sticky.inert = !show;
-      sticky.setAttribute('aria-hidden', show ? 'false' : 'true');
-    }
-    function queue() { if (!queued) { queued = true; window.requestAnimationFrame(update); } }
-    window.addEventListener('scroll', queue, { passive: true });
-    window.addEventListener('resize', queue);
-    update();
-  }
-
-  // ---- Shared: preselect a flavor and pack in the buy box ----
-  var FLAVOR_NAMES = { bo: 'Blood Orange Margarita', pm: 'Pineapple Martini', mix: 'The Mix' };
-  function hasFlavor(f) { return !!form.querySelector('input[name="tpm-flavor"][value="' + f + '"]'); }
-  function applyPick(flavor, offer) {
-    if (!hasFlavor(flavor)) flavor = 'bo';
-    var f = form.querySelector('input[name="tpm-flavor"][value="' + flavor + '"]');
-    var o = form.querySelector('input[name="tpm-offer"][value="' + offer + '"]');
-    if (f) f.checked = true;
-    if (o) o.checked = true;
-    syncOffer();
-    jumpToBuy(addBtn);
-  }
-  Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-apply]'), function (b) {
+  $all('[data-tpm-pick]').forEach(function (b) {
+    b.addEventListener('click', function () { openCheckout({ flavor: b.getAttribute('data-tpm-pick'), step: 1 }); });
+  });
+  $all('[data-tpm-apply]').forEach(function (b) {
     var parts = b.getAttribute('data-tpm-apply').split(':');
-    // Without the Mix products on the store, recommend the fan favorite instead.
     var pickText = b.parentNode.querySelector('.tpm-use__pick');
-    if (parts[0] === 'mix' && !hasFlavor('mix') && pickText) pickText.innerHTML = pickText.innerHTML.replace('The Mix', FLAVOR_NAMES.bo);
-    b.addEventListener('click', function () { applyPick(parts[0], parts[1]); });
+    if (parts[0] === 'mix' && !hasFlavor('mix') && pickText) pickText.innerHTML = pickText.innerHTML.replace('The Mix', DATA.flavors.bo.name);
+    b.addEventListener('click', function () { openCheckout({ flavor: parts[0], offer: parts[1], step: 1 }); });
   });
 
   // ---- Carousels: progress bar follows horizontal scroll ----
-  Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-carousel]'), function (track) {
+  $all('[data-tpm-carousel]').forEach(function (track) {
     var bar = track.parentNode.querySelector('[data-tpm-progress]');
     if (!bar) return;
     function paint() {
@@ -228,39 +266,64 @@
     var answers = {};
     var stepLabel = quiz.querySelector('[data-tpm-quiz-step]');
     var OFFER_NAMES = { trial: '6-pack trial · $29.94', onetime: '12-pack · $60.00', autoship: '12-pack auto ship · $49.80/mo' };
-    function show(n) {
-      Array.prototype.forEach.call(quiz.querySelectorAll('[data-tpm-q]'), function (p) {
-        p.hidden = p.getAttribute('data-tpm-q') !== String(n);
-      });
+    var showQ = function (n) {
+      $all('[data-tpm-q]', quiz).forEach(function (p) { p.hidden = p.getAttribute('data-tpm-q') !== String(n); });
       stepLabel.textContent = n < 3 ? 'Question ' + n + ' of 2' : 'Done';
       var first = quiz.querySelector('[data-tpm-q="' + n + '"] button');
       if (first) first.focus();
-    }
-    function openQuiz() {
-      answers = {};
-      if (typeof quiz.showModal === 'function') quiz.showModal(); else quiz.setAttribute('open', '');
-      show(1);
-    }
-    Array.prototype.forEach.call(root.querySelectorAll('[data-tpm-quiz-open]'), function (b) {
-      b.addEventListener('click', openQuiz);
+    };
+    $all('[data-tpm-quiz-open]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        answers = {};
+        if (typeof quiz.showModal === 'function') quiz.showModal(); else quiz.setAttribute('open', '');
+        showQ(1);
+      });
     });
-    Array.prototype.forEach.call(quiz.querySelectorAll('[data-tpm-answer]'), function (b) {
+    $all('[data-tpm-answer]', quiz).forEach(function (b) {
       b.addEventListener('click', function () {
         var kv = b.getAttribute('data-tpm-answer').split(':');
         answers[kv[0]] = kv[1];
-        if (kv[0] === 'flavor') { show(2); return; }
-        quiz.querySelector('[data-tpm-quiz-match]').textContent = FLAVOR_NAMES[answers.flavor] + ', ' + OFFER_NAMES[answers.offer];
-        show(3);
+        if (kv[0] === 'flavor') { showQ(2); return; }
+        quiz.querySelector('[data-tpm-quiz-match]').textContent = DATA.flavors[answers.flavor].name + ', ' + OFFER_NAMES[answers.offer];
+        showQ(3);
       });
     });
-    quiz.querySelector('[data-tpm-quiz-restart]').addEventListener('click', function () { answers = {}; show(1); });
+    quiz.querySelector('[data-tpm-quiz-restart]').addEventListener('click', function () { answers = {}; showQ(1); });
     quiz.querySelector('[data-tpm-quiz-apply]').addEventListener('click', function () {
       if (typeof quiz.close === 'function') quiz.close(); else quiz.removeAttribute('open');
-      applyPick(answers.flavor || 'bo', answers.offer || 'trial');
+      openCheckout({ flavor: answers.flavor || 'bo', offer: answers.offer || 'trial', step: 1 });
     });
-    // Close when the backdrop is clicked.
     quiz.addEventListener('click', function (e) { if (e.target === quiz) quiz.close(); });
   }
 
-  syncOffer();
+  // ---- Reveal animations (chart draw, comparison checks) ----
+  var animated = $all('[data-tpm-animate]');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.remove('will-animate'); en.target.classList.add('is-in'); io.unobserve(en.target); } });
+    }, { threshold: 0.35 });
+    animated.forEach(function (el) { el.classList.add('will-animate'); io.observe(el); });
+  }
+
+  // ---- Sticky CTA: after the hero, until the buy box ----
+  var sticky = root.querySelector('[data-tpm-sticky]');
+  if (sticky) {
+    var heroBtn = root.querySelector('.tpm-hero [data-tpm-start]');
+    var buy = document.getElementById('tpm-buy');
+    var queued = false;
+    sticky.hidden = false;
+    var update = function () {
+      queued = false;
+      var show = heroBtn.getBoundingClientRect().bottom < 0 && buy.getBoundingClientRect().top >= window.innerHeight;
+      sticky.classList.toggle('is-visible', show);
+      sticky.inert = !show;
+      sticky.setAttribute('aria-hidden', show ? 'false' : 'true');
+    };
+    var queue = function () { if (!queued) { queued = true; window.requestAnimationFrame(update); } };
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue);
+    update();
+  }
+
+  sync();
 })();
