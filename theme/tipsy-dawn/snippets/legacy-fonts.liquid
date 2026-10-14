@@ -1,0 +1,162 @@
+{%- comment -%}
+  LEGACY font override, copied verbatim from the live theme's layout/theme.liquid.
+  Used only by layout/control.liquid so the control product page looks exactly like the
+  live home page. Do not render this anywhere else: it forces fonts on every element
+  with !important and is what broke fonts in the old themes.
+{%- endcomment -%}
+  <!-- Custom Font Implementation -->
+<!-- Preload fonts for better performance -->
+<link rel="preload" href="https://cdn.shopify.com/s/files/1/0647/7696/2256/files/Coolvetica_Hv_Comp.woff2?v=1758909708" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="https://cdn.shopify.com/s/files/1/0647/7696/2256/files/Sofia_Pro_Regular_Az.woff2?v=1757613796" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="https://cdn.shopify.com/s/files/1/0647/7696/2256/files/Sofia_Pro_Semi_Bold_Az.woff2?v=1757613796" as="font" type="font/woff2" crossorigin>
+
+<!-- Font-face declarations and CSS -->
+<style>
+  /* Font-face declarations */
+  @font-face {
+    font-family: 'Coolvetica';
+    src: url('https://cdn.shopify.com/s/files/1/0647/7696/2256/files/Coolvetica_Hv_Comp.woff2?v=1758909708') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Sofia Pro';
+    src: url('https://cdn.shopify.com/s/files/1/0647/7696/2256/files/Sofia_Pro_Regular_Az.woff2?v=1757613796') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Sofia Pro';
+    src: url('https://cdn.shopify.com/s/files/1/0647/7696/2256/files/Sofia_Pro_Semi_Bold_Az.woff2?v=1757613796') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  /* Override Shopify's CSS variables with custom fonts */
+  :root {
+    --font-body-family: 'Sofia Pro', sans-serif !important;
+    --font-body-weight: 400 !important;
+    --font-body-weight-bold: 600 !important;
+    --font-heading-family: 'Sofia Pro', sans-serif !important;
+    --font-heading-weight: 600 !important;
+  }
+
+  /* Apply fonts to elements with high specificity */
+  
+  /* H1 - Coolvetica - with more comprehensive targeting */
+  h1, .h1,
+  .h0, 
+  h1.h1,
+  h1 *,
+  h1 p,
+  h1 span,
+  .h1 *,
+  .h1 p,
+  .h1 span,
+  [class*="heading"] h1,
+  [class*="heading"] h1 *,
+  .hero__heading,
+  .hero__heading *,
+  .banner__heading,
+  .banner__heading *,
+  .banner__box h1,
+  .banner__box h1 *,
+  .headline,
+  .headline *,
+  [class*="headline"],
+  [class*="headline"] * {
+    font-family: 'Coolvetica', sans-serif !important;
+    font-weight: 900 !important;
+    --font-heading-family: 'Coolvetica', sans-serif !important;
+  }
+
+  /* Other headings - Sofia Pro Semi Bold */
+  h2, h3, h4, h5, h6,
+  .h2, .h3, .h4, .h5, .h6,
+  h2.h2, h3.h3, h4.h4, h5.h5, h6.h6,
+  [class*="heading"] h2,
+  [class*="heading"] h3,
+  [class*="heading"] h4,
+  [class*="heading"] h5,
+  [class*="heading"] h6 {
+    font-family: 'Sofia Pro', sans-serif !important;
+    font-weight: 600 !important;
+  }
+
+  /* Body text and paragraphs - Sofia Pro Regular */
+  body,
+  p,
+  div,
+  span,
+  li,
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  label,
+  td, th,
+  .text-body,
+  .body-text,
+  .product__text,
+  .rte,
+  .card__content,
+  .card-information,
+  [class*="text"],
+  [class*="description"],
+  [class*="content"] {
+    font-family: 'Sofia Pro', sans-serif !important;
+    font-weight: 400;
+  }
+
+  /* Ensure bold text uses Semi Bold */
+  b, strong,
+  .bold,
+  [class*="bold"] {
+    font-family: 'Sofia Pro', sans-serif !important;
+    font-weight: 600 !important;
+  }
+
+  /* Specific Shopify elements */
+  .product-title,
+  .collection-title,
+  .card__heading,
+  .card-information__text,
+  .title {
+    font-family: 'Sofia Pro', sans-serif !important;
+    font-weight: 600 !important;
+  }
+
+  .price,
+  .product-price,
+  .price__regular,
+  .price__sale,
+  .price-item {
+    font-family: 'Sofia Pro', sans-serif !important;
+    font-weight: 400 !important;
+  }
+
+  /* Navigation and menu items */
+  .header__menu-item,
+  .list-menu__item,
+  nav a,
+  .mega-menu__link {
+    font-family: 'Sofia Pro', sans-serif !important;
+    font-weight: 400 !important;
+  }
+
+  /* Buttons */
+  .button,
+  button,
+  .btn,
+  [type="submit"],
+  [type="button"] {
+    font-family: 'Sofia Pro', sans-serif !important;
+    font-weight: 600 !important;
+  }
+</style>

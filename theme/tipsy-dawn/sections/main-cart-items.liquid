@@ -82,6 +82,19 @@
 
               <tbody>
                 {%- for item in cart.items -%}
+{%- comment -%}
+  Cart strikes the compare-at price when there is one, not just the variant
+  price. Without this a product that is both on sale and discounted shows the
+  sale price struck through, which understates the saving.
+{%- endcomment -%}
+{%- liquid
+  assign pm_was = item.original_price
+  assign pm_line_was = item.original_line_price
+  if item.variant.compare_at_price > item.variant.price
+    assign pm_was = item.variant.compare_at_price
+    assign pm_line_was = item.variant.compare_at_price | times: item.quantity
+  endif
+-%}
                   <tr
                     class="cart-item {% if item.parent_relationship.parent != null %}cart-item__nested-line{% endif %}"
                     id="CartItem-{{ item.index | plus: 1 }}"
@@ -120,13 +133,13 @@
                         -%}
                       </div>
 
-                      {%- if item.original_price != item.final_price -%}
+                      {%- if pm_was != item.final_price -%}
                         <div class="cart-item__discounted-prices">
                           <span class="visually-hidden">
                             {{ 'products.product.price.regular_price' | t }}
                           </span>
                           <s class="cart-item__old-price product-option">
-                            {{- item.original_price | money -}}
+                            {{- pm_was | money -}}
                           </s>
                           <span class="visually-hidden">
                             {{ 'products.product.price.sale_price' | t }}
@@ -137,7 +150,7 @@
                         </div>
                       {%- else -%}
                         <div class="product-option">
-                          {{ item.original_price | money }}
+                          {{ pm_was | money }}
                         </div>
                       {%- endif -%}
 
@@ -190,14 +203,14 @@
                     <td class="cart-item__totals right medium-hide large-up-hide">
                       {%- render 'loading-spinner' -%}
                       <div class="cart-item__price-wrapper">
-                        {%- if item.original_line_price != item.final_line_price -%}
+                        {%- if pm_line_was != item.final_line_price -%}
                           <dl class="cart-item__discounted-prices">
                             <dt class="visually-hidden">
                               {{ 'products.product.price.regular_price' | t }}
                             </dt>
                             <dd>
                               <s class="cart-item__old-price price price--end">
-                                {{ item.original_line_price | money }}
+                                {{ pm_line_was | money }}
                               </s>
                             </dd>
                             <dt class="visually-hidden">
@@ -209,7 +222,7 @@
                           </dl>
                         {%- else -%}
                           <span class="price price--end">
-                            {{ item.original_line_price | money }}
+                            {{ pm_line_was | money }}
                           </span>
                         {%- endif -%}
 
@@ -245,80 +258,67 @@
                                 {{- 'icon-info.svg' | inline_asset_content -}}
                               </button>
                             {%- endif -%}
-                            <quantity-input class="quantity cart-quantity">
-                              {% assign can_update_quantity = item.instructions.can_update_quantity | default: true %}
-                              <button
-                                class="quantity__button"
-                                name="minus"
-                                type="button"
-                                {% if can_update_quantity == false %}
-                                  disabled
-                                {% endif %}
+                            {%- comment -%} PACK-BASED QUANTITY CONTROL {%- endcomment -%}
+                            {%- assign pack_size = 12 -%}
+                            {%- assign num_packs = item.quantity | divided_by: pack_size -%}
+
+                            <div class="cart-pack-quantity" data-index="{{ item.index | plus: 1 }}" data-pack-size="{{ pack_size }}" data-key="{{ item.key }}">
+                              <button 
+                                type="button" 
+                                class="quantity__button cart-pack-decrease" 
+                                aria-label="Decrease by {{ pack_size }} cans"
+                                {% if num_packs <= 1 %}disabled{% endif %}
                               >
                                 <span class="visually-hidden">
-                                  {{- 'products.product.quantity.decrease' | t: product: item.product.title | escape -}}
+                                  {{ 'products.product.quantity.decrease' | t: product: item.product.title | escape }}
                                 </span>
                                 <span class="svg-wrapper">
-                                  {{- 'icon-minus.svg' | inline_asset_content -}}
+                                  {{ 'icon-minus.svg' | inline_asset_content }}
                                 </span>
                               </button>
-                              <input
-                                class="quantity__input"
-                                data-quantity-variant-id="{{ item.variant.id }}"
-                                data-quantity-line-key="{{ item.key }}"
-                                type="number"
-                                name="updates[]"
-                                value="{{ item.quantity }}"
-                                {% # theme-check-disable %}
-                                data-cart-quantity="{{ cart | item_count_for_variant: item.variant.id }}"
-                                min="0"
-                                data-min="{{ item.variant.quantity_rule.min }}"
-                                {% if item.variant.quantity_rule.max != null %}
-                                  max="{{ item.variant.quantity_rule.max }}"
-                                {% endif %}
-                                step="{{ item.variant.quantity_rule.increment }}"
-                                {% # theme-check-enable %}
-                                aria-label="{{ 'products.product.quantity.input_label' | t: product: item.product.title | escape }}"
+                              
+                              <div class="cart-pack-display">
+                                <span class="cart-pack-number" data-cart-pack-quantity>{{ item.quantity }}</span>
+                                <span class="cart-pack-label">cans</span>
+                              </div>
+                              
+                              <button 
+                                type="button" 
+                                class="quantity__button cart-pack-increase" 
+                                aria-label="Increase by {{ pack_size }} cans"
+                              >
+                                <span class="visually-hidden">
+                                  {{ 'products.product.quantity.increase' | t: product: item.product.title | escape }}
+                                </span>
+                                <span class="svg-wrapper">
+                                  {{ 'icon-plus.svg' | inline_asset_content }}
+                                </span>
+                              </button>
+                              
+                              <input 
+                                type="hidden" 
+                                name="updates[]" 
+                                value="{{ item.quantity }}" 
+                                data-cart-pack-input
                                 id="Quantity-{{ item.index | plus: 1 }}"
                                 data-index="{{ item.index | plus: 1 }}"
-                                {% if can_update_quantity == false %}
-                                  disabled
-                                {% endif %}
                               >
-                              <button
-                                class="quantity__button"
-                                name="plus"
-                                type="button"
-                                {% if can_update_quantity == false %}
-                                  disabled
-                                {% endif %}
-                              >
-                                <span class="visually-hidden">
-                                  {{- 'products.product.quantity.increase' | t: product: item.product.title | escape -}}
-                                </span>
-                                <span class="svg-wrapper">
-                                  {{- 'icon-plus.svg' | inline_asset_content -}}
-                                </span>
-                              </button>
-                            </quantity-input>
+                            </div>
                           </div>
                           <cart-remove-button
                             id="Remove-{{ item.index | plus: 1 }}"
                             data-index="{{ item.index | plus: 1 }}"
-                            {% assign can_remove = item.instructions.can_remove | default: true %}
-                            {% if can_remove == false %}
-                              class="hidden"
-                            {% endif %}
                           >
-                            <a
-                              href="{{ item.url_to_remove }}"
-                              class="button button--tertiary"
+                            <button
+                              type="button"
+                              class="button button--tertiary cart-remove-button"
                               aria-label="{{ 'sections.cart.remove_title' | t: title: item.title | escape }}"
+                              data-cart-remove-key="{{ item.key }}"
                             >
                               <span class="svg-wrapper">
                                 {{- 'icon-remove.svg' | inline_asset_content -}}
                               </span>
-                            </a>
+                            </button>
                           </cart-remove-button>
                         </div>
                         {%- if has_qty_rules or has_vol_pricing -%}
@@ -418,14 +418,14 @@
                     <td class="cart-item__totals right small-hide">
                       {%- render 'loading-spinner' -%}
                       <div class="cart-item__price-wrapper">
-                        {%- if item.original_line_price != item.final_line_price -%}
+                        {%- if pm_line_was != item.final_line_price -%}
                           <dl class="cart-item__discounted-prices">
                             <dt class="visually-hidden">
                               {{ 'products.product.price.regular_price' | t }}
                             </dt>
                             <dd>
                               <s class="cart-item__old-price price price--end">
-                                {{ item.original_line_price | money }}
+                                {{ pm_line_was | money }}
                               </s>
                             </dd>
                             <dt class="visually-hidden">
@@ -437,7 +437,7 @@
                           </dl>
                         {%- else -%}
                           <span class="price price--end">
-                            {{ item.original_line_price | money }}
+                            {{ pm_line_was | money }}
                           </span>
                         {%- endif -%}
 
@@ -467,6 +467,182 @@
     </form>
   </div>
 </cart-items>
+
+<script>
+(function() {
+  'use strict';
+  
+  let isUpdating = false;
+  
+  function initCartPackQuantities() {
+    const packQuantities = document.querySelectorAll('.cart-pack-quantity');
+    
+    packQuantities.forEach(function(container) {
+      // Skip if already initialized
+      if (container.dataset.initialized) return;
+      container.dataset.initialized = 'true';
+      
+      const packSize = parseInt(container.dataset.packSize);
+      const key = container.dataset.key;
+      
+      const decreaseBtn = container.querySelector('.cart-pack-decrease');
+      const increaseBtn = container.querySelector('.cart-pack-increase');
+      const hiddenInput = container.querySelector('[data-cart-pack-input]');
+      
+      function updateCart(newQty) {
+        if (isUpdating) return;
+        isUpdating = true;
+        
+        decreaseBtn.disabled = true;
+        increaseBtn.disabled = true;
+        container.style.opacity = '0.6';
+        
+        fetch(window.Shopify.routes.root + 'cart/change.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: key,
+            quantity: newQty
+          })
+        })
+        .then(response => response.json())
+        .then(cart => {
+          // Simple page reload after successful update
+          window.location.reload();
+        })
+        .catch((e) => {
+          console.error('Cart update error:', e);
+          decreaseBtn.disabled = false;
+          increaseBtn.disabled = false;
+          container.style.opacity = '1';
+          isUpdating = false;
+        });
+      }
+      
+      decreaseBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (isUpdating) return;
+        
+        const currentQty = parseInt(hiddenInput.value);
+        const newQty = currentQty - packSize;
+        
+        if (newQty >= packSize) {
+          updateCart(newQty);
+        } else {
+          if (confirm('Remove this item from your cart?')) {
+            updateCart(0);
+          }
+        }
+      });
+      
+      increaseBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (isUpdating) return;
+        
+        const currentQty = parseInt(hiddenInput.value);
+        const newQty = currentQty + packSize;
+        updateCart(newQty);
+      });
+    });
+  }
+  
+  // Handle remove button clicks
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('[data-cart-remove-key]')) {
+      e.preventDefault();
+      if (isUpdating) return;
+      
+      const btn = e.target.closest('[data-cart-remove-key]');
+      const key = btn.dataset.cartRemoveKey;
+      
+      if (confirm('Remove this item from your cart?')) {
+        isUpdating = true;
+        fetch(window.Shopify.routes.root + 'cart/change.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: key, quantity: 0 })
+        })
+        .then(() => window.location.reload());
+      }
+    }
+  });
+  
+  // Initialize on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCartPackQuantities);
+  } else {
+    initCartPackQuantities();
+  }
+})();
+</script>
+
+<style>
+.cart-pack-quantity {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: center;
+  min-height: 4.5rem;
+}
+
+.cart-pack-quantity .quantity__button {
+  width: 4.5rem;
+  height: 4.5rem;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.cart-pack-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 7rem;
+  padding: 0 1rem;
+}
+
+.cart-pack-number {
+  font-size: 2.4rem;
+  font-weight: 600;
+  line-height: 1;
+  color: rgb(var(--color-foreground));
+}
+
+.cart-pack-label {
+  font-size: 1.1rem;
+  color: rgba(var(--color-foreground), 0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 0.3rem;
+  font-weight: 500;
+}
+
+.cart-pack-quantity .quantity__button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+@media screen and (max-width: 749px) {
+  .cart-pack-quantity .quantity__button {
+    width: 4rem;
+    height: 4rem;
+  }
+  
+  .cart-pack-number {
+    font-size: 2rem;
+  }
+  
+  .cart-pack-label {
+    font-size: 1rem;
+  }
+  
+  .cart-pack-display {
+    min-width: 6rem;
+    padding: 0 0.5rem;
+  }
+}
+</style>
 
 {% schema %}
 {

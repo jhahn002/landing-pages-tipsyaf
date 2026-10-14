@@ -120,6 +120,19 @@
 
                   <tbody role="rowgroup">
                     {%- for item in cart.items -%}
+{%- comment -%}
+  Cart strikes the compare-at price when there is one, not just the variant
+  price. Without this a product that is both on sale and discounted shows the
+  sale price struck through, which understates the saving.
+{%- endcomment -%}
+{%- liquid
+  assign pm_was = item.original_price
+  assign pm_line_was = item.original_line_price
+  if item.variant.compare_at_price > item.variant.price
+    assign pm_was = item.variant.compare_at_price
+    assign pm_line_was = item.variant.compare_at_price | times: item.quantity
+  endif
+-%}
                       <tr
                         id="CartDrawer-Item-{{ item.index | plus: 1 }}"
                         class="cart-item{% if item.parent_relationship.parent != null %} cart-item__nested-line{% endif %}"
@@ -163,13 +176,13 @@
                             -%}
                           </div>
 
-                          {%- if item.original_price != item.final_price -%}
+                          {%- if pm_was != item.final_price -%}
                             <div class="cart-item__discounted-prices">
                               <span class="visually-hidden">
                                 {{ 'products.product.price.regular_price' | t }}
                               </span>
                               <s class="cart-item__old-price product-option">
-                                {{- item.original_price | money -}}
+                                {{- pm_was | money -}}
                               </s>
                               <span class="visually-hidden">
                                 {{ 'products.product.price.sale_price' | t }}
@@ -180,7 +193,7 @@
                             </div>
                           {%- else -%}
                             <div class="product-option">
-                              {{ item.original_price | money }}
+                              {{ pm_was | money }}
                             </div>
                           {%- endif -%}
 
@@ -245,13 +258,13 @@
                         <td class="cart-item__totals right" role="cell" headers="CartDrawer-ColumnTotal">
                           {%- render 'loading-spinner' -%}
                           <div class="cart-item__price-wrapper">
-                            {%- if item.original_line_price != item.final_line_price -%}
+                            {%- if pm_line_was != item.final_line_price -%}
                               <div class="cart-item__discounted-prices">
                                 <span class="visually-hidden">
                                   {{ 'products.product.price.regular_price' | t }}
                                 </span>
                                 <s class="cart-item__old-price price price--end">
-                                  {{ item.original_line_price | money }}
+                                  {{ pm_line_was | money }}
                                 </s>
                                 <span class="visually-hidden">
                                   {{ 'products.product.price.sale_price' | t }}
@@ -262,7 +275,7 @@
                               </div>
                             {%- else -%}
                               <span class="price price--end">
-                                {{ item.original_line_price | money }}
+                                {{ pm_line_was | money }}
                               </span>
                             {%- endif -%}
 

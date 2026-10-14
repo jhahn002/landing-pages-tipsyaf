@@ -1,0 +1,63 @@
+{% comment %}
+  s703-flavor-picker — flavour dropdown for the home hero (703-hero-banner-mobile)
+
+  One control rendered twice: once inside the trial card, once above the
+  12-pack quantity row. Both write to the same JS state, so choosing a flavour
+  in either place repoints every purchase option.
+
+  Accepts:
+    role          (string) — 'trial' or 'pack'. 'trial' carries the 6-pack
+                             variant; 'pack' carries the 12-pack auto-ship and
+                             one-time variants, which always move together.
+    extra_class   (string) — appended to the wrapper, e.g. ' in-trial'
+    blocks        (array)  — the section's flavor blocks
+    first         (block)  — the block to show collapsed
+    footer        (string) — footer text when only one flavour exists
+    variety_label (string) — footer text when there are several
+    variety_url   (url)    — optional link for that footer
+{% endcomment %}
+
+<div class="s703-flavor-selector{{ extra_class }}" id="s703-flavor-wrap-{{ role }}">
+  <div class="s703-flavor-selected" id="s703-flavor-trigger-{{ role }}">
+    <div class="s703-flavor-swatch" id="s703-flavor-swatch-{{ role }}"
+      style="background-color: {{ first.settings.swatch_color }};{%- if first.settings.swatch_image != blank -%} background-image: url('{{ first.settings.swatch_image | image_url: width: 80 }}');{%- endif -%}">
+    </div>
+    <div class="s703-flavor-info">
+      <span class="s703-flavor-name" id="s703-flavor-name-{{ role }}">{{ first.settings.flavor_name }}</span>
+      <span class="s703-flavor-desc" id="s703-flavor-desc-{{ role }}">{{ first.settings.flavor_desc }}</span>
+    </div>
+    <span class="s703-flavor-chevron" id="s703-flavor-chevron-{{ role }}">More &#9662;</span>
+  </div>
+
+  <div class="s703-flavor-dropdown" id="s703-flavor-dropdown-{{ role }}" style="display:none;" aria-hidden="true">
+    {%- for block in blocks -%}
+      <div class="s703-flavor-option{% if forloop.first %} is-active{% endif %}"
+        data-target="{{ role }}"
+        data-trial-id="{{ block.settings.trial_variant_id }}"
+        data-autoship-id="{{ block.settings.autoship_variant_id }}"
+        data-onetime-id="{{ block.settings.onetime_variant_id }}"
+        data-swatch-color="{{ block.settings.swatch_color }}"
+        data-swatch-image="{%- if block.settings.swatch_image != blank -%}{{ block.settings.swatch_image | image_url: width: 80 }}{%- endif -%}"
+        data-name="{{ block.settings.flavor_name }}"
+        data-desc="{{ block.settings.flavor_desc }}"
+        {{ block.shopify_attributes }}>
+        <div class="s703-flavor-option-swatch"
+          style="background-color: {{ block.settings.swatch_color }};{%- if block.settings.swatch_image != blank -%} background-image: url('{{ block.settings.swatch_image | image_url: width: 80 }}');{%- endif -%}">
+        </div>
+        <div class="s703-flavor-option-info">
+          <span class="s703-flavor-option-name">{{ block.settings.flavor_name }}</span>
+          <span class="s703-flavor-option-desc">{{ block.settings.flavor_desc }}</span>
+        </div>
+      </div>
+    {%- endfor -%}
+    <div class="s703-flavor-footer">
+      {%- if blocks.size == 1 -%}
+        {{ footer }}
+      {%- elsif variety_url != blank -%}
+        <a href="{{ variety_url }}">{{ variety_label }}</a>
+      {%- else -%}
+        {{ variety_label }}
+      {%- endif -%}
+    </div>
+  </div>
+</div>

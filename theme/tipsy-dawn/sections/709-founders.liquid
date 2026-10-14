@@ -1,0 +1,605 @@
+{% comment %}
+  Section: 709-founders
+  Purpose: Founder story section with video/image and content
+  Performance: Strict mode - minimal code, inline styles, native lazy loading
+{% endcomment %}
+
+<style>
+  @font-face {
+    font-family: 'Coolvetica Compressed Heavy';
+    src: url('https://cdn.shopify.com/s/files/1/0647/7696/2256/files/Coolvetica_Hv_Comp.woff2?v=1758909708') format('woff2');
+    font-weight: 900;
+    font-stretch: condensed;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  .section-709-founders {
+    --s709-bg: {{ section.settings.background_color }};
+    --s709-text: {{ section.settings.text_color }};
+    --s709-heading-size: {{ section.settings.heading_size }}px;
+    --s709-heading-lh: {{ section.settings.heading_line_height }}%;
+    --s709-heading-max-w: {{ section.settings.heading_max_width }}px;
+    --s709-desc-size: {{ section.settings.description_size }}px;
+    --s709-desc-lh: {{ section.settings.description_line_height }}%;
+    --s709-desc-max-w: {{ section.settings.description_max_width }}px;
+    --s709-btn-bg: {{ section.settings.button_background }};
+    --s709-btn-text: {{ section.settings.button_text_color }};
+    --s709-btn-hover-bg: {{ section.settings.button_hover_background }};
+    --s709-btn-hover-text: {{ section.settings.button_hover_text_color }};
+    --s709-btn-size: {{ section.settings.button_font_size }}px;
+    --s709-btn-padding: {{ section.settings.button_padding_vertical }}px {{ section.settings.button_padding_horizontal }}px;
+    --s709-pt: {{ section.settings.padding_top }}px;
+    --s709-pb: {{ section.settings.padding_bottom }}px;
+    --s709-container-px: {{ section.settings.container_padding_horizontal }}px;
+    --s709-mobile-heading-size: {{ section.settings.mobile_heading_size }}px;
+    --s709-mobile-desc-size: {{ section.settings.mobile_description_size }}px;
+    --s709-media-max-w: {{ section.settings.media_max_width }}px;
+    
+    background-color: var(--s709-bg);
+    color: var(--s709-text);
+    padding: var(--s709-pt) 0 var(--s709-pb);
+  }
+
+  .s709-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 var(--s709-container-px);
+  }
+
+  .s709-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 110px;
+    align-items: center;
+  }
+
+  .s709-media-column {
+    width: var(--s709-media-max-w);
+  }
+
+  .s709-media-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 593 / 347;
+    overflow: hidden;
+    border-radius: 25px;
+  }
+
+  .s709-media {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .s709-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+  }
+
+  /* Maximum specificity targeting */
+  .section-709-founders .s709-content .s709-heading,
+  .section-709-founders .s709-heading,
+  section.section-709-founders h2.s709-heading,
+  h2.s709-heading {
+    font-family: 'Coolvetica Compressed Heavy', 'Impact', 'Arial Black', sans-serif !important;
+    font-size: var(--s709-heading-size) !important;
+    font-weight: 900 !important;
+    font-stretch: condensed !important;
+    line-height: var(--s709-heading-lh) !important;
+    margin: 0 0 10px 0 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0 !important;
+    max-width: var(--s709-heading-max-w) !important;
+  }
+
+  .s709-description {
+    font-size: var(--s709-desc-size);
+    line-height: var(--s709-desc-lh);
+    margin: 0 0 23px 0;
+    max-width: var(--s709-desc-max-w);
+  }
+
+  .s709-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--s709-btn-padding);
+    background-color: var(--s709-btn-bg);
+    color: var(--s709-btn-text);
+    text-decoration: none;
+    border-radius: 100px;
+    font-size: var(--s709-btn-size);
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+    cursor: pointer;
+  }
+
+  .s709-button:hover {
+    background-color: var(--s709-btn-hover-bg);
+    color: var(--s709-btn-hover-text);
+    opacity: 0.9;
+  }
+
+  .s709-button:focus-visible {
+    outline: 2px solid var(--s709-text);
+    outline-offset: 2px;
+  }
+
+  /* Mobile layout */
+  @media (max-width: 989px) {
+    .section-709-founders {
+      padding: var(--s709-mobile-padding, 40px) 0;
+    }
+
+    .s709-container {
+      padding: 0 20px;
+    }
+
+    .s709-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .s709-media-column {
+      width: 100%;
+    }
+
+    .s709-media-wrapper {
+      max-width: 100%;
+      width: 100%;
+    }
+
+    .section-709-founders .s709-content .s709-heading,
+    .section-709-founders .s709-heading,
+    section.section-709-founders h2.s709-heading,
+    h2.s709-heading {
+      font-size: var(--s709-mobile-heading-size) !important;
+      max-width: 100% !important;
+    }
+
+    .s709-description {
+      font-size: var(--s709-mobile-desc-size);
+      max-width: 100%;
+    }
+  }
+
+  @media (max-width: 749px) {
+    .s709-container {
+      padding: 0 16px;
+    }
+
+    .s709-grid {
+      gap: 20px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .s709-button {
+      transition: none;
+    }
+  }
+</style>
+
+<section 
+  id="s709-{{ section.id }}" 
+  class="section-709-founders"
+  role="region"
+  aria-label="{{ section.settings.heading | escape }}"
+>
+  <div class="s709-container">
+    <div class="s709-grid">
+      
+      <!-- Media Column -->
+      <div class="s709-media-column">
+        <div class="s709-media-wrapper">
+          {% if section.settings.media_type == 'video' and section.settings.video_file != blank %}
+            <video
+              class="s709-media"
+              id="s709-{{ section.id }}-video"
+              muted
+              playsinline
+              loop
+              preload="metadata"
+              {% if section.settings.video_poster != blank %}
+                poster="{{ section.settings.video_poster | image_url: width: 1200 }}"
+              {% endif %}
+              aria-label="{{ section.settings.heading | escape }}"
+            >
+              {% if section.settings.video_file.sources %}
+                {% for source in section.settings.video_file.sources %}
+                  <source src="{{ source.url }}" type="{{ source.mime_type }}">
+                {% endfor %}
+              {% else %}
+                <source src="{{ section.settings.video_file }}" type="video/mp4">
+              {% endif %}
+              Your browser does not support the video tag.
+            </video>
+          {% elsif section.settings.image != blank %}
+            <img
+              class="s709-media"
+              src="{{ section.settings.image | image_url: width: 1200 }}"
+              srcset="{{ section.settings.image | image_url: width: 600 }} 600w,
+                      {{ section.settings.image | image_url: width: 1200 }} 1200w"
+              sizes="(max-width: 989px) 100vw, 50vw"
+              alt="{{ section.settings.image.alt | escape }}"
+              loading="lazy"
+              decoding="async"
+              width="{{ section.settings.image.width }}"
+              height="{{ section.settings.image.height }}"
+            >
+          {% else %}
+            <div 
+              class="s709-media s709-placeholder"
+              style="
+                background: #f5f5f5;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 14px;
+                color: #999;
+              "
+            >
+              Add image or video in theme editor
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="s709-content">
+        {% if section.settings.heading != blank %}
+          <h2 class="s709-heading" style="font-family: 'Coolvetica Compressed Heavy', 'Impact', 'Arial Black', sans-serif !important;">
+            {{ section.settings.heading }}
+          </h2>
+        {% endif %}
+
+        {% if section.settings.description != blank %}
+          <p class="s709-description">{{ section.settings.description }}</p>
+        {% endif %}
+
+        {% if section.settings.button_text != blank and section.settings.button_link != blank %}
+          <a 
+            href="{{ section.settings.button_link }}" 
+            class="s709-button"
+            aria-label="{{ section.settings.button_text | escape }}"
+          >
+            {{ section.settings.button_text }}
+          </a>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+
+  {% if section.settings.media_type == 'video' and section.settings.video_file != blank %}
+  <script>
+    (function() {
+      var video = document.getElementById('s709-{{ section.id }}-video');
+      
+      if (!video) return;
+
+      var hasPlayed = false;
+
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting && !hasPlayed) {
+            video.play().then(function() {
+              hasPlayed = true;
+            }).catch(function(error) {
+              console.log('Video autoplay prevented:', error);
+            });
+          }
+        });
+      }, {
+        threshold: 0.5,
+        rootMargin: '0px'
+      });
+
+      observer.observe(video);
+
+      window.addEventListener('beforeunload', function() {
+        observer.disconnect();
+      });
+    })();
+  </script>
+  {% endif %}
+
+</section>
+
+{% schema %}
+{
+  "name": "709-founders",
+  "tag": "section",
+  "class": "section-709-founders",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "select",
+      "id": "media_type",
+      "label": "Media type",
+      "options": [
+        {
+          "value": "image",
+          "label": "Image"
+        },
+        {
+          "value": "video",
+          "label": "Video"
+        }
+      ],
+      "default": "image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "Recommended: 1200 x 700px"
+    },
+    {
+      "type": "video",
+      "id": "video_file",
+      "label": "Video file",
+      "info": "MP4 recommended. Plays automatically on loop when scrolled into view."
+    },
+    {
+      "type": "image_picker",
+      "id": "video_poster",
+      "label": "Video poster image",
+      "info": "Optional: Shown before video loads"
+    },
+    {
+      "type": "range",
+      "id": "media_max_width",
+      "min": 300,
+      "max": 1000,
+      "step": 10,
+      "unit": "px",
+      "label": "Media max width",
+      "default": 590,
+      "info": "Maximum width of the media container"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "AFTER ONE TOO MANY HANGOVERS, I KNEW THERE HAD TO BE A BETTER WAY"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 24,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading font size (Desktop)",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "mobile_heading_size",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading font size (Mobile)",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "heading_line_height",
+      "min": 75,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "label": "Heading line height",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "heading_max_width",
+      "min": 300,
+      "max": 1200,
+      "step": 10,
+      "unit": "px",
+      "label": "Heading max width",
+      "default": 800,
+      "info": "Maximum width of the heading text"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "At one point I was sick of putting up with the hangover so I did what any normal person would do... I reversed engineered the feel good effects of alcohol by using mushrooms"
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Description font size (Desktop)",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "mobile_description_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Description font size (Mobile)",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "description_line_height",
+      "min": 100,
+      "max": 200,
+      "step": 5,
+      "unit": "%",
+      "label": "Description line height",
+      "default": 150
+    },
+    {
+      "type": "range",
+      "id": "description_max_width",
+      "min": 300,
+      "max": 1200,
+      "step": 10,
+      "unit": "px",
+      "label": "Description max width",
+      "default": 800,
+      "info": "Maximum width of the description text"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Behind the buzz"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Button font size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Button padding (top/bottom)",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "min": 16,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "label": "Button padding (left/right)",
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Button background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_background",
+      "label": "Button hover background",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text_color",
+      "label": "Button hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "container_padding_horizontal",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Container padding (left/right)",
+      "default": 40,
+      "info": "Padding on left and right sides of the section"
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Mobile padding top/bottom",
+      "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "709 Founders",
+      "category": "Content"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,340 @@
+<style>
+  .section-707-two-column-images {
+    --s707-height: {{ section.settings.section_height }}px;
+    --s707-height-mobile: {{ section.settings.section_height_mobile }}px;
+    --s707-skeleton-bg: #f0f0f0;
+    --s707-skeleton-shine: #e0e0e0;
+    
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .s707-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    height: var(--s707-height-mobile);
+    gap: 0;
+  }
+
+  @media (min-width: 750px) {
+    .s707-container {
+      height: var(--s707-height);
+    }
+  }
+
+  .s707-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--s707-skeleton-bg);
+  }
+
+  .s707-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  /* Skeleton Loader */
+  .s707-skeleton {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      var(--s707-skeleton-bg) 0%,
+      var(--s707-skeleton-shine) 50%,
+      var(--s707-skeleton-bg) 100%
+    );
+    background-size: 200% 100%;
+    animation: s707-pulse 2s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes s707-pulse {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .s707-skeleton {
+      animation: none;
+      background: var(--s707-skeleton-bg);
+    }
+  }
+
+  .s707-image-wrapper.s707-loaded .s707-skeleton {
+    display: none;
+  }
+
+  /* Overlay gradients if enabled */
+  .s707-image-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      180deg,
+      rgba(33, 62, 58, 0) 0%,
+      rgba(33, 62, 58, 1) 100%
+    );
+    opacity: var(--s707-overlay-opacity, 0);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .section-707-two-column-images[data-overlay="true"] .s707-image-wrapper::after {
+    --s707-overlay-opacity: 1;
+  }
+</style>
+
+<section 
+  class="section-707-two-column-images" 
+  data-overlay="{{ section.settings.enable_overlay }}"
+  role="region"
+  aria-label="{{ section.settings.section_label | default: 'Product imagery' }}"
+>
+  <div class="s707-container">
+    {% if section.settings.image_left != blank %}
+      <div class="s707-image-wrapper" data-image-index="1">
+        {% if section.settings.skeleton_enabled %}
+          <div class="s707-skeleton" aria-hidden="true"></div>
+        {% endif %}
+        {% if section.settings.link_left != blank %}
+          <a href="{{ section.settings.link_left }}" aria-label="{{ section.settings.link_left_label | default: 'View product' }}">
+            <img 
+              src="{{ section.settings.image_left | image_url: width: 1000 }}"
+              srcset="
+                {{ section.settings.image_left | image_url: width: 400 }} 400w,
+                {{ section.settings.image_left | image_url: width: 600 }} 600w,
+                {{ section.settings.image_left | image_url: width: 800 }} 800w,
+                {{ section.settings.image_left | image_url: width: 1000 }} 1000w,
+                {{ section.settings.image_left | image_url: width: 1200 }} 1200w
+              "
+              sizes="(min-width: 750px) 50vw, 100vw"
+              alt="{{ section.settings.image_left.alt | default: section.settings.image_left_alt | default: 'Product image' }}"
+              loading="lazy"
+              decoding="async"
+              width="{{ section.settings.image_left.width }}"
+              height="{{ section.settings.image_left.height }}"
+              class="s707-image"
+              onload="this.parentElement.classList.add('s707-loaded')"
+            >
+          </a>
+        {% else %}
+          <img 
+            src="{{ section.settings.image_left | image_url: width: 1000 }}"
+            srcset="
+              {{ section.settings.image_left | image_url: width: 400 }} 400w,
+              {{ section.settings.image_left | image_url: width: 600 }} 600w,
+              {{ section.settings.image_left | image_url: width: 800 }} 800w,
+              {{ section.settings.image_left | image_url: width: 1000 }} 1000w,
+              {{ section.settings.image_left | image_url: width: 1200 }} 1200w
+            "
+            sizes="(min-width: 750px) 50vw, 100vw"
+            alt="{{ section.settings.image_left.alt | default: section.settings.image_left_alt | default: 'Product image' }}"
+            loading="lazy"
+            decoding="async"
+            width="{{ section.settings.image_left.width }}"
+            height="{{ section.settings.image_left.height }}"
+            class="s707-image"
+            onload="this.parentElement.classList.add('s707-loaded')"
+          >
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="s707-image-wrapper" data-image-index="1">
+        <div class="s707-skeleton" aria-hidden="true"></div>
+      </div>
+    {% endif %}
+
+    {% if section.settings.image_right != blank %}
+      <div class="s707-image-wrapper" data-image-index="2">
+        {% if section.settings.skeleton_enabled %}
+          <div class="s707-skeleton" aria-hidden="true"></div>
+        {% endif %}
+        {% if section.settings.link_right != blank %}
+          <a href="{{ section.settings.link_right }}" aria-label="{{ section.settings.link_right_label | default: 'View product' }}">
+            <img 
+              src="{{ section.settings.image_right | image_url: width: 1000 }}"
+              srcset="
+                {{ section.settings.image_right | image_url: width: 400 }} 400w,
+                {{ section.settings.image_right | image_url: width: 600 }} 600w,
+                {{ section.settings.image_right | image_url: width: 800 }} 800w,
+                {{ section.settings.image_right | image_url: width: 1000 }} 1000w,
+                {{ section.settings.image_right | image_url: width: 1200 }} 1200w
+              "
+              sizes="(min-width: 750px) 50vw, 100vw"
+              alt="{{ section.settings.image_right.alt | default: section.settings.image_right_alt | default: 'Product image' }}"
+              loading="lazy"
+              decoding="async"
+              width="{{ section.settings.image_right.width }}"
+              height="{{ section.settings.image_right.height }}"
+              class="s707-image"
+              onload="this.parentElement.classList.add('s707-loaded')"
+            >
+          </a>
+        {% else %}
+          <img 
+            src="{{ section.settings.image_right | image_url: width: 1000 }}"
+            srcset="
+              {{ section.settings.image_right | image_url: width: 400 }} 400w,
+              {{ section.settings.image_right | image_url: width: 600 }} 600w,
+              {{ section.settings.image_right | image_url: width: 800 }} 800w,
+              {{ section.settings.image_right | image_url: width: 1000 }} 1000w,
+              {{ section.settings.image_right | image_url: width: 1200 }} 1200w
+            "
+            sizes="(min-width: 750px) 50vw, 100vw"
+            alt="{{ section.settings.image_right.alt | default: section.settings.image_right_alt | default: 'Product image' }}"
+            loading="lazy"
+            decoding="async"
+            width="{{ section.settings.image_right.width }}"
+            height="{{ section.settings.image_right.height }}"
+            class="s707-image"
+            onload="this.parentElement.classList.add('s707-loaded')"
+          >
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="s707-image-wrapper" data-image-index="2">
+        <div class="s707-skeleton" aria-hidden="true"></div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "707-two-column-images",
+  "tag": "section",
+  "class": "section-707-two-column-images",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "text",
+      "id": "section_label",
+      "label": "Section Label (for screen readers)",
+      "default": "Product imagery",
+      "info": "Improves accessibility for users with screen readers"
+    },
+    {
+      "type": "range",
+      "id": "section_height",
+      "label": "Section Height (Desktop)",
+      "min": 200,
+      "max": 1000,
+      "step": 10,
+      "unit": "px",
+      "default": 400
+    },
+    {
+      "type": "range",
+      "id": "section_height_mobile",
+      "label": "Section Height (Mobile)",
+      "min": 150,
+      "max": 600,
+      "step": 10,
+      "unit": "px",
+      "default": 300
+    },
+    {
+      "type": "header",
+      "content": "Left Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_left",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "image_left_alt",
+      "label": "Image Alt Text",
+      "info": "Describe the image for accessibility. Leave blank to use the alt text from the image file."
+    },
+    {
+      "type": "url",
+      "id": "link_left",
+      "label": "Link URL (optional)"
+    },
+    {
+      "type": "text",
+      "id": "link_left_label",
+      "label": "Link Label (for screen readers)",
+      "default": "View product",
+      "info": "Describes the link destination for users with screen readers"
+    },
+    {
+      "type": "header",
+      "content": "Right Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_right",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "image_right_alt",
+      "label": "Image Alt Text",
+      "info": "Describe the image for accessibility. Leave blank to use the alt text from the image file."
+    },
+    {
+      "type": "url",
+      "id": "link_right",
+      "label": "Link URL (optional)"
+    },
+    {
+      "type": "text",
+      "id": "link_right_label",
+      "label": "Link Label (for screen readers)",
+      "default": "View product",
+      "info": "Describes the link destination for users with screen readers"
+    },
+    {
+      "type": "header",
+      "content": "Visual Options"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_overlay",
+      "label": "Enable Gradient Overlay",
+      "default": false,
+      "info": "Adds a dark gradient overlay at the bottom of images"
+    },
+    {
+      "type": "header",
+      "content": "Performance"
+    },
+    {
+      "type": "checkbox",
+      "id": "skeleton_enabled",
+      "label": "Enable Skeleton Loader",
+      "default": true,
+      "info": "Shows a loading animation while images load"
+    }
+  ],
+  "presets": [
+    {
+      "name": "707 Two Column Images",
+      "category": "Image"
+    }
+  ]
+}
+{% endschema %}

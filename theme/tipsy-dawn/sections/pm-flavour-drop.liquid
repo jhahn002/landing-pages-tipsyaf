@@ -1,0 +1,575 @@
+{% comment %}
+  pm-flavour-drop — sticky bottom prompt styled as an incoming call
+  (Figma 245:1833 "Dynamic Island")
+
+  Slides up from the bottom a few seconds after load. The red handset declines
+  and dismisses; the green one answers and goes to the flavour page. That
+  metaphor is the whole design, so the two buttons are deliberately the only
+  controls - there is no separate close X.
+
+  Deliberately uses the system font rather than the brand faces: the point is
+  that it reads as an OS notification, and SF Pro on iOS is what sells it.
+
+  The phone glyphs are drawn here rather than exported, because they are SF
+  Symbols in the design and Figma returns them as placeholders - the exported
+  assets are the plain circles only.
+
+  Dismissal is remembered so it does not nag on every page view; the scope is a
+  setting.
+{% endcomment %}
+
+{%- liquid
+  assign s = section.settings
+  assign uid = section.id
+-%}
+
+{%- if s.enabled -%}
+<style>
+  #pm-drop-{{ uid }} {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%) translateY(140%);
+    bottom: calc({{ s.offset_bottom }}px + env(safe-area-inset-bottom, 0px));
+    z-index: {{ s.z_index }};
+    width: calc(100% - {{ s.side_margin | times: 2 }}px);
+    max-width: {{ s.max_width }}px;
+    opacity: 0;
+    visibility: hidden;
+    transition: transform {{ s.speed }}ms cubic-bezier(0.16, 1, 0.3, 1),
+                opacity {{ s.speed }}ms ease,
+                visibility 0s linear {{ s.speed }}ms;
+  }
+  #pm-drop-{{ uid }}.is-in {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    visibility: visible;
+    transition: transform {{ s.speed }}ms cubic-bezier(0.16, 1, 0.3, 1),
+                opacity {{ s.speed }}ms ease,
+                visibility 0s linear 0s;
+  }
+
+  #pm-drop-{{ uid }} .pm-drop__bar {
+    background: {{ s.background_color }};
+    border-radius: {{ s.radius }}px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+    padding: {{ s.pad_y }}px {{ s.pad_x }}px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  #pm-drop-{{ uid }} .pm-drop__lead {
+    display: flex;
+    align-items: center;
+    gap: {{ s.avatar_gap }}px;
+    min-width: 0;
+  }
+  #pm-drop-{{ uid }} .pm-drop__avatar {
+    flex: 0 0 auto;
+    width: {{ s.avatar_size }}px;
+    height: {{ s.avatar_size }}px;
+    border-radius: {{ s.avatar_radius }}px;
+    overflow: hidden;
+    display: block;
+  }
+  #pm-drop-{{ uid }} .pm-drop__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  #pm-drop-{{ uid }} .pm-drop__text { min-width: 0; }
+  #pm-drop-{{ uid }} .pm-drop__eyebrow,
+  #pm-drop-{{ uid }} .pm-drop__title {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif !important;
+    letter-spacing: -0.24px;
+    margin: 0;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  #pm-drop-{{ uid }} .pm-drop__eyebrow {
+    font-size: {{ s.eyebrow_size }}px;
+    line-height: 1.25;
+    color: {{ s.eyebrow_color }};
+    margin-bottom: {{ s.text_gap }}px;
+  }
+  #pm-drop-{{ uid }} .pm-drop__title {
+    font-size: {{ s.title_size }}px;
+    line-height: 1.25;
+    color: {{ s.title_color }};
+  }
+
+  #pm-drop-{{ uid }} .pm-drop__actions {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: {{ s.button_gap }}px;
+  }
+  #pm-drop-{{ uid }} .pm-drop__btn {
+    appearance: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    width: {{ s.button_size }}px;
+    height: {{ s.button_size }}px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-decoration: none;
+    transition: transform 0.12s ease, filter 0.12s ease;
+  }
+  #pm-drop-{{ uid }} .pm-drop__btn:active { transform: scale(0.92); }
+  #pm-drop-{{ uid }} .pm-drop__btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+  #pm-drop-{{ uid }} .pm-drop__btn--decline { background: {{ s.decline_color }}; }
+  #pm-drop-{{ uid }} .pm-drop__btn--accept { background: {{ s.accept_color }}; }
+  #pm-drop-{{ uid }} .pm-drop__btn svg {
+    width: {{ s.icon_size }}px;
+    height: {{ s.icon_size }}px;
+    display: block;
+  }
+  /* the decline handset is the same glyph, turned down */
+  #pm-drop-{{ uid }} .pm-drop__btn--decline svg { transform: rotate(135deg); }
+
+  {%- if s.pulse -%}
+    #pm-drop-{{ uid }}.is-in .pm-drop__btn--accept {
+      animation: pm-drop-pulse-{{ uid }} 2s ease-in-out 0.4s 3;
+    }
+    @keyframes pm-drop-pulse-{{ uid }} {
+      0%, 100% { box-shadow: 0 0 0 0 {{ s.accept_color }}00; }
+      35%      { box-shadow: 0 0 0 8px {{ s.accept_color }}33; }
+      70%      { box-shadow: 0 0 0 14px {{ s.accept_color }}00; }
+    }
+  {%- endif -%}
+
+  @media (prefers-reduced-motion: reduce) {
+    #pm-drop-{{ uid }} { transition: opacity 0.2s ease, visibility 0s; transform: translateX(-50%) translateY(0); }
+    #pm-drop-{{ uid }}.is-in .pm-drop__btn--accept { animation: none; }
+  }
+</style>
+
+<div
+  id="pm-drop-{{ uid }}"
+  class="pm-drop"
+  role="region"
+  aria-label="{{ s.aria_label | escape }}"
+  data-pm-drop
+  data-delay="{{ s.delay | times: 1000 }}"
+  data-remember="{{ s.remember }}"
+  data-key="pm-drop-{{ s.remember_key | default: 'pineapple' }}"
+  hidden
+>
+  <div class="pm-drop__bar">
+    <div class="pm-drop__lead">
+      <span class="pm-drop__avatar">
+        {%- if s.avatar != blank -%}
+          {{ s.avatar | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}
+        {%- else -%}
+          <img src="{{ 'pm-flavour-drop-avatar.png' | asset_url }}" alt="" width="56" height="56" loading="lazy">
+        {%- endif -%}
+      </span>
+      <span class="pm-drop__text">
+        {%- if s.eyebrow != blank -%}<span class="pm-drop__eyebrow">{{ s.eyebrow }}</span>{%- endif -%}
+        {%- if s.title != blank -%}<span class="pm-drop__title">{{ s.title }}</span>{%- endif -%}
+      </span>
+    </div>
+
+    <div class="pm-drop__actions">
+      <button type="button" class="pm-drop__btn pm-drop__btn--decline" data-pm-drop-decline aria-label="{{ s.decline_label | escape }}">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7.5 3.2h3.1l1.6 3.9-2.2 1.3a11.6 11.6 0 0 0 5.6 5.6l1.3-2.2 3.9 1.6v3.1a1.7 1.7 0 0 1-1.8 1.7C11.4 17.7 6.3 12.6 5.8 5A1.7 1.7 0 0 1 7.5 3.2Z" fill="currentColor"/>
+        </svg>
+      </button>
+      <a class="pm-drop__btn pm-drop__btn--accept" href="{{ s.link }}" data-pm-drop-accept aria-label="{{ s.accept_label | escape }}">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7.5 3.2h3.1l1.6 3.9-2.2 1.3a11.6 11.6 0 0 0 5.6 5.6l1.3-2.2 3.9 1.6v3.1a1.7 1.7 0 0 1-1.8 1.7C11.4 17.7 6.3 12.6 5.8 5A1.7 1.7 0 0 1 7.5 3.2Z" fill="currentColor"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var el = document.getElementById('pm-drop-{{ uid }}');
+    if (!el) return;
+
+    var remember = el.getAttribute('data-remember');
+    var key = el.getAttribute('data-key');
+
+    function store() {
+      return remember === 'local' ? window.localStorage : window.sessionStorage;
+    }
+    function alreadyDismissed() {
+      if (remember === 'never') return false;
+      try { return store().getItem(key) === '1'; } catch (e) { return false; }
+    }
+    function remember_() {
+      if (remember === 'never') return;
+      try { store().setItem(key, '1'); } catch (e) {}
+    }
+
+    // In the theme editor it should always be visible, otherwise it is
+    // impossible to style something that hides itself after one dismissal.
+    var editor = {{ request.design_mode | json }};
+    if (alreadyDismissed() && !editor) return;
+
+    el.hidden = false;
+
+    function show() {
+      // double rAF so the transition has a frame to start from
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { el.classList.add('is-in'); });
+      });
+    }
+    var delay = parseInt(el.getAttribute('data-delay'), 10);
+    if (isNaN(delay)) delay = 3000;
+    if (editor) { show(); } else { setTimeout(show, delay); }
+
+    function hide() {
+      el.classList.remove('is-in');
+      remember_();
+      setTimeout(function () { el.hidden = true; }, {{ s.speed }});
+    }
+
+    el.querySelector('[data-pm-drop-decline]').addEventListener('click', hide);
+    el.querySelector('[data-pm-drop-accept]').addEventListener('click', function () { remember_(); });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && el.classList.contains('is-in')) hide();
+    });
+  })();
+</script>
+
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "PM Flavour drop",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "On / off"
+    },
+    {
+      "type": "checkbox",
+      "id": "enabled",
+      "label": "Show the prompt",
+      "default": true,
+      "info": "Off means it never renders - no markup, no script. Use this to publish the theme without sending anyone to the page yet."
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "New Flavor Just Dropped"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Headline",
+      "default": "Want to check it out?"
+    },
+    {
+      "type": "image_picker",
+      "id": "avatar",
+      "label": "Avatar",
+      "info": "Falls back to the packaged can tile."
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Green button goes to"
+    },
+    {
+      "type": "header",
+      "content": "Behaviour"
+    },
+    {
+      "type": "range",
+      "id": "delay",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "s",
+      "label": "Appear after",
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "min": 100,
+      "max": 900,
+      "step": 20,
+      "unit": "ms",
+      "label": "Slide speed",
+      "default": 520
+    },
+    {
+      "type": "select",
+      "id": "remember",
+      "label": "After dismissing",
+      "options": [
+        {
+          "value": "session",
+          "label": "Stay hidden for this visit"
+        },
+        {
+          "value": "local",
+          "label": "Stay hidden on this device"
+        },
+        {
+          "value": "never",
+          "label": "Show again every page"
+        }
+      ],
+      "default": "session"
+    },
+    {
+      "type": "text",
+      "id": "remember_key",
+      "label": "Memory key",
+      "default": "pineapple",
+      "info": "Change this to show the prompt again to people who already dismissed it."
+    },
+    {
+      "type": "checkbox",
+      "id": "pulse",
+      "label": "Pulse the green button",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Position"
+    },
+    {
+      "type": "range",
+      "id": "offset_bottom",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Distance from bottom",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "side_margin",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Side margin",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 280,
+      "max": 720,
+      "step": 10,
+      "unit": "px",
+      "label": "Maximum width",
+      "default": 440
+    },
+    {
+      "type": "number",
+      "id": "z_index",
+      "label": "Layer",
+      "default": 9998,
+      "info": "Raise this if a sticky header or chat widget covers it."
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow text",
+      "default": "#a4a4a9"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Headline text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "decline_color",
+      "label": "Decline button",
+      "default": "#fa3532"
+    },
+    {
+      "type": "color",
+      "id": "accept_color",
+      "label": "Accept button",
+      "default": "#37c058"
+    },
+    {
+      "type": "range",
+      "id": "radius",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Corner radius",
+      "default": 160
+    },
+    {
+      "type": "range",
+      "id": "pad_y",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding top/bottom",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "pad_x",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding left/right",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "avatar_size",
+      "min": 28,
+      "max": 90,
+      "step": 2,
+      "unit": "px",
+      "label": "Avatar size",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "avatar_radius",
+      "min": 0,
+      "max": 45,
+      "step": 1,
+      "unit": "px",
+      "label": "Avatar radius",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "avatar_gap",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Gap after avatar",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size",
+      "min": 8,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Eyebrow size",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Headline size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "text_gap",
+      "min": 0,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Gap between lines",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "button_size",
+      "min": 32,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Button size",
+      "default": 52
+    },
+    {
+      "type": "range",
+      "id": "button_gap",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Gap between buttons",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "min": 12,
+      "max": 44,
+      "step": 1,
+      "unit": "px",
+      "label": "Handset size",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Accessibility"
+    },
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Region label",
+      "default": "New flavour announcement"
+    },
+    {
+      "type": "text",
+      "id": "decline_label",
+      "label": "Decline button label",
+      "default": "Dismiss"
+    },
+    {
+      "type": "text",
+      "id": "accept_label",
+      "label": "Accept button label",
+      "default": "See the new flavour"
+    }
+  ],
+  "presets": [
+    {
+      "name": "PM Flavour drop"
+    }
+  ]
+}
+{% endschema %}

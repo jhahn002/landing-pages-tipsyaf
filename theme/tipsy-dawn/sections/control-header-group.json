@@ -1,0 +1,194 @@
+{
+  "type": "header",
+  "name": "Control header",
+  "sections": {
+    "701_banner_announcement_wmtGE3": {
+      "type": "701-banner-announcement",
+      "blocks": {
+        "announcement_CCaEby": {
+          "type": "announcement",
+          "settings": {
+            "text": "🎉 ZERO CAFFEINE",
+            "link_url": "",
+            "text_color": "#ffffff",
+            "font_size": 14,
+            "icon_size": 20
+          }
+        },
+        "announcement_G3zLqP": {
+          "type": "announcement",
+          "disabled": true,
+          "settings": {
+            "text": "⚡ ZERO CBD",
+            "link_url": "",
+            "text_color": "#ffffff",
+            "font_size": 14,
+            "icon_size": 20
+          }
+        },
+        "announcement_8d7GEN": {
+          "type": "announcement",
+          "settings": {
+            "text": "💎 ZERO KAVA",
+            "link_url": "",
+            "text_color": "#ffffff",
+            "font_size": 14,
+            "icon_size": 20
+          }
+        },
+        "announcement_hCkUAM": {
+          "type": "announcement",
+          "settings": {
+            "text": "🎉 ZERO KRAT__",
+            "link_url": "",
+            "text_color": "#ffffff",
+            "font_size": 14,
+            "icon_size": 20
+          }
+        },
+        "announcement_mYQLCL": {
+          "type": "announcement",
+          "settings": {
+            "text": "💎 ZERO INFUSED SKUNKY GREENS",
+            "link_url": "",
+            "text_color": "#ffffff",
+            "font_size": 14,
+            "icon_size": 20
+          }
+        }
+      },
+      "block_order": [
+        "announcement_CCaEby",
+        "announcement_G3zLqP",
+        "announcement_8d7GEN",
+        "announcement_hCkUAM",
+        "announcement_mYQLCL"
+      ],
+      "name": "701 banner announcement",
+      "settings": {
+        "auto_scroll": true,
+        "scroll_speed": 45,
+        "dismissible": false,
+        "separator": "",
+        "aria_label": "Announcement banner",
+        "background_color": "#000000",
+        "text_color": "#ffffff",
+        "font_size": 13,
+        "icon_size": 20,
+        "padding_top": 8,
+        "padding_bottom": 6
+      }
+    },
+    "702_navigation_bar_jty7rR": {
+      "type": "702-navigation-bar",
+      "blocks": {
+        "nav_item_xM9Utc": {
+          "type": "nav_item",
+          "disabled": true,
+          "settings": {
+            "label": "Science",
+            "link": "",
+            "dropdown_enabled": false,
+            "dropdown_items": "",
+            "dropdown_urls": ""
+          }
+        },
+        "nav_item_DPw73w": {
+          "type": "nav_item",
+          "name": "Pineapple Martini Drop",
+          "disabled": true,
+          "settings": {
+            "label": "New Flavor Drop",
+            "link": "shopify://pages/pineapple-martini",
+            "dropdown_enabled": false,
+            "dropdown_items": "",
+            "dropdown_urls": ""
+          }
+        },
+        "nav_item_jpVPc9": {
+          "type": "nav_item",
+          "settings": {
+            "label": "Contact Us",
+            "link": "shopify://pages/contact",
+            "dropdown_enabled": false,
+            "dropdown_items": "",
+            "dropdown_urls": ""
+          }
+        },
+        "nav_item_xngzcp": {
+          "type": "nav_item",
+          "disabled": true,
+          "settings": {
+            "label": "Shop",
+            "link": "",
+            "dropdown_enabled": true,
+            "dropdown_items": "All Products, Best Sellers, New Arrivals",
+            "dropdown_urls": "/collections/all, /collections/best-sellers, /collections/new"
+          }
+        },
+        "nav_item_tbpwKq": {
+          "type": "nav_item",
+          "disabled": true,
+          "settings": {
+            "label": "Bundle",
+            "link": "",
+            "dropdown_enabled": false,
+            "dropdown_items": "Starter Pack, Family Pack, Party Pack",
+            "dropdown_urls": "/collections/starter, /collections/family, /collections/party"
+          }
+        },
+        "nav_item_fGQCQz": {
+          "type": "nav_item",
+          "disabled": true,
+          "settings": {
+            "label": "Subscribe & Save",
+            "link": "",
+            "dropdown_enabled": false,
+            "dropdown_items": "How It Works, Manage Subscription, FAQ",
+            "dropdown_urls": "/pages/subscribe, /account, /pages/faq"
+          }
+        }
+      },
+      "block_order": [
+        "nav_item_xM9Utc",
+        "nav_item_DPw73w",
+        "nav_item_jpVPc9",
+        "nav_item_xngzcp",
+        "nav_item_tbpwKq",
+        "nav_item_fGQCQz"
+      ],
+      "name": "702 Navigation Bar",
+      "settings": {
+        "logo": "shopify://shop_images/TIPSY_AF_Logo_Header.png",
+        "logo_alt": "",
+        "logo_text": "TIPSY AF",
+        "nav_gap": 45,
+        "show_cart": true,
+        "cart_icon": "shopify://shop_images/Bag.png",
+        "hamburger_alignment": "flex-start",
+        "hamburger_line_height": 3,
+        "hamburger_line_spacing": 3,
+        "hamburger_line_1_width": 20,
+        "hamburger_line_1_align": "flex-start",
+        "hamburger_line_2_width": 25,
+        "hamburger_line_2_align": "center",
+        "hamburger_line_3_width": 20,
+        "hamburger_line_3_align": "flex-end",
+        "hamburger_border_radius": 10,
+        "bg_color": "#ffffff",
+        "text_color": "#000000",
+        "border_color": "#e3e3e3",
+        "container_padding": 20,
+        "drawer_width": 360,
+        "nav_aria_label": "Main navigation",
+        "cart_aria_label": "View cart",
+        "menu_aria_label": "Open menu",
+        "close_aria_label": "Close menu"
+      }
+    }
+  },
+  "order": [
+    "701_banner_announcement_wmtGE3",
+    "702_navigation_bar_jty7rR"
+  ]
+}

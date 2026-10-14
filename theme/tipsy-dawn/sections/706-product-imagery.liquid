@@ -1,0 +1,346 @@
+{% comment %}
+==============================================
+SECTION: 706 Product Imagery
+Performance Mode: strict
+Purpose: Hero section with product imagery, headline, description, and subscription offer card
+==============================================
+{% endcomment %}
+
+{%- liquid
+  assign bg_image = section.settings.background_image
+  assign bg_image_mobile = section.settings.background_image_mobile
+  assign heading = section.settings.heading
+  assign description = section.settings.description
+  assign bg_color = section.settings.background_color
+  assign text_color = section.settings.text_color
+  assign heading_color = section.settings.heading_color
+  assign skeleton_enabled = section.settings.skeleton_enabled
+  assign min_height_desktop = section.settings.min_height_desktop
+  assign min_height_mobile = section.settings.min_height_mobile
+  assign text_content_max_width = section.settings.text_content_max_width
+  assign heading_font_size_mobile = section.settings.heading_font_size_mobile
+  assign heading_font_size_desktop = section.settings.heading_font_size_desktop
+  assign heading_line_height = section.settings.heading_line_height
+  assign description_font_size_mobile = section.settings.description_font_size_mobile
+  assign description_font_size_desktop = section.settings.description_font_size_desktop
+  assign description_line_height = section.settings.description_line_height
+-%}
+
+<section class="section-706-product-imagery" data-section-id="{{ section.id }}">
+  <div class="s706-hero-wrapper">
+    {%- if bg_image != blank or bg_image_mobile != blank -%}
+      <div class="s706-background">
+        {%- if bg_image_mobile != blank -%}
+          <picture>
+            <source media="(max-width: 767px)" srcset="{{ bg_image_mobile | image_url: width: 768 }}">
+            {%- if bg_image != blank -%}
+              <img 
+                src="{{ bg_image | image_url: width: 1920 }}" 
+                srcset="{{ bg_image | image_url: width: 768 }} 768w, {{ bg_image | image_url: width: 1440 }} 1440w, {{ bg_image | image_url: width: 1920 }} 1920w"
+                sizes="100vw"
+                alt="{{ bg_image.alt | escape }}"
+                loading="lazy"
+                decoding="async"
+                width="{{ bg_image.width }}"
+                height="{{ bg_image.height }}"
+                class="s706-bg-image"
+                {%- if skeleton_enabled %}data-skeleton="true"{% endif %}
+              >
+            {%- endif -%}
+          </picture>
+        {%- elsif bg_image != blank -%}
+          <img 
+            src="{{ bg_image | image_url: width: 1920 }}" 
+            srcset="{{ bg_image | image_url: width: 768 }} 768w, {{ bg_image | image_url: width: 1440 }} 1440w, {{ bg_image | image_url: width: 1920 }} 1920w"
+            sizes="100vw"
+            alt="{{ bg_image.alt | escape }}"
+            loading="lazy"
+            decoding="async"
+            width="{{ bg_image.width }}"
+            height="{{ bg_image.height }}"
+            class="s706-bg-image"
+            {%- if skeleton_enabled %}data-skeleton="true"{% endif %}
+          >
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="s706-content">
+      <div class="s706-text-content">
+        {%- if heading != blank -%}
+          <h1 class="s706-heading">{{ heading }}</h1>
+        {%- endif -%}
+
+        {%- if description != blank -%}
+          <p class="s706-description">{{ description }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.section-706-product-imagery {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.s706-hero-wrapper {
+  position: relative;
+  min-height: {{ min_height_mobile }}px;
+  display: flex;
+  flex-direction: column;
+  background-color: {{ bg_color }};
+  color: {{ text_color }};
+}
+
+.s706-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.s706-bg-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.s706-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 32px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.s706-text-content {
+  text-align: center;
+  max-width: {{ text_content_max_width }}px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.s706-heading {
+  font-size: {{ heading_font_size_mobile }}px;
+  font-weight: 900;
+  line-height: {{ heading_line_height }}%;
+  margin: 0 0 16px 0;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  color: {{ heading_color }};
+}
+
+.s706-description {
+  font-size: {{ description_font_size_mobile }}px;
+  line-height: {{ description_line_height }}%;
+  margin: 0;
+  opacity: 0.95;
+}
+
+/* Desktop styles */
+@media (min-width: 768px) {
+  .s706-hero-wrapper {
+    min-height: {{ min_height_desktop }}px;
+  }
+
+  .s706-content {
+    padding: 64px 40px;
+  }
+
+  .s706-heading {
+    font-size: {{ heading_font_size_desktop }}px;
+    margin-bottom: 24px;
+  }
+
+  .s706-description {
+    font-size: {{ description_font_size_desktop }}px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .s706-content {
+    padding: 80px 60px;
+  }
+}
+</style>
+
+{% schema %}
+{
+  "name": "706-product-imagery",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero content"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image (Desktop)"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image_mobile",
+      "label": "Background image (Mobile)",
+      "info": "Optional. If not set, desktop image will be used."
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "ZERO HANGOVER. ZERO RECOVERY. BETTER SLEEP."
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "You can still unwind and stay social without paying for it tomorrow. TIPSY takes the edge off while helping you sleep deeper and wake up refreshed."
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#1a2844"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#ffffff",
+      "info": "Separate color control for main heading"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "text_content_max_width",
+      "label": "Text content max width",
+      "min": 400,
+      "max": 1440,
+      "step": 20,
+      "default": 960,
+      "unit": "px",
+      "info": "Maximum width for heading and description text"
+    },
+    {
+      "type": "range",
+      "id": "min_height_desktop",
+      "label": "Min height (Desktop)",
+      "min": 400,
+      "max": 1000,
+      "step": 50,
+      "default": 700,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "min_height_mobile",
+      "label": "Min height (Mobile)",
+      "min": 400,
+      "max": 800,
+      "step": 50,
+      "default": 600,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size_mobile",
+      "label": "Heading size (Mobile)",
+      "min": 20,
+      "max": 80,
+      "step": 1,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size_desktop",
+      "label": "Heading size (Desktop)",
+      "min": 30,
+      "max": 120,
+      "step": 1,
+      "default": 64,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "heading_line_height",
+      "label": "Heading line height",
+      "min": 75,
+      "max": 200,
+      "step": 5,
+      "default": 110,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "description_font_size_mobile",
+      "label": "Description size (Mobile)",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "description_font_size_desktop",
+      "label": "Description size (Desktop)",
+      "min": 14,
+      "max": 40,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "description_line_height",
+      "label": "Description line height",
+      "min": 75,
+      "max": 200,
+      "step": 5,
+      "default": 150,
+      "unit": "%"
+    },
+    {
+      "type": "header",
+      "content": "Performance"
+    },
+    {
+      "type": "checkbox",
+      "id": "skeleton_enabled",
+      "label": "Enable skeleton loader",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "706 Product Imagery",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

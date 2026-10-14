@@ -1,0 +1,4809 @@
+{% comment %}
+  Section: 703 - Hero Banner Mobile
+  Purpose: Mobile product detail hero with carousel, sticky images, subscription options
+  Performance Mode: Relaxed
+  CLEAN REWRITE - Fixed sticky scroll behavior
+{% endcomment %}
+
+<link rel="preload" href="https://cdn.shopify.com/s/files/1/0647/7696/2256/files/LeagueGothic-Regular.woff2?v=1764966695" as="font" type="font/woff2" crossorigin>
+
+<style>
+  /* League Gothic Font - multiple weight declarations for compatibility */
+  @font-face {
+    font-family: 'League Gothic';
+    src: url('https://cdn.shopify.com/s/files/1/0647/7696/2256/files/LeagueGothic-Regular.woff2?v=1764966695') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  /* Force parent containers to allow sticky */
+  .shopify-section,
+  .page-width,
+  main {
+    overflow: visible !important;
+  }
+
+  @font-face {
+    font-family: 'Coolvetica Heavy Compressed';
+    src: url('https://cdn.shopify.com/s/files/1/0647/7696/2256/files/Coolvetica_Hv_Comp.woff2?v=1758909708') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  /* === ROOT SECTION === */
+  .section-703-hero-banner-mobile {
+    --s703-bg-color: {{ section.settings.background_color }};
+    --s703-text-color: {{ section.settings.text_color }};
+    --s703-accent-color: {{ section.settings.accent_color }};
+    --s703-heading-line-height: {{ section.settings.heading_line_height }}%;
+    --s703-icon-stroke-color: {{ section.settings.icon_stroke_color }};
+    --s703-icon-stroke-width: {{ section.settings.icon_stroke_width }}px;
+    --s703-benefits-bg: {{ section.settings.benefits_bg_color }};
+    --s703-quote-line-height: {{ section.settings.quote_line_height }};
+    
+    position: relative;
+    background-color: var(--s703-bg-color);
+    color: var(--s703-text-color);
+  }
+
+  /* === MOBILE LAYOUT (DEFAULT) === */
+  .s703-container {
+    width: 100%;
+  }
+
+  /* Mobile-only: Reorder content so carousel appears after description */
+  @media (max-width: 640px) {
+    .s703-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+
+    /* Position elements in grid */
+    .s703-testimonial {
+      grid-row: 1;
+    }
+
+    .s703-heading {
+      grid-row: 2;
+    }
+
+    .s703-description {
+      grid-row: 3;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Carousel appears after description */
+    .s703-left-column {
+      grid-row: 4;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Right column contains everything else */
+    .s703-right-column {
+      display: contents;
+    }
+
+    .s703-icon-badges {
+      grid-row: 5;
+    }
+
+    .s703-info-buttons {
+      grid-row: 6;
+    }
+
+    .s703-purchase-options {
+      grid-row: 7;
+    }
+
+    .s703-delivery-info {
+      grid-row: 8;
+    }
+
+    .s703-guarantee {
+      grid-row: 9;
+    }
+
+    .s703-accordion-section {
+      grid-row: auto;
+    }
+  }
+
+  /* === DESKTOP LAYOUT === */
+  @media (min-width: 768px) {
+    .s703-container {
+      display: flex;
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      align-items: flex-start;
+    }
+    
+    .s703-left-column {
+      flex: 0 0 50%;
+      position: sticky;
+      top: 2rem;
+      align-self: flex-start;
+    }
+    
+    .s703-right-column {
+      flex: 0 0 50%;
+      width: 100%;
+      max-width: 525px;
+    }
+    
+    .s703-flavors-section {
+      margin: 0;
+    }
+  }
+
+  /* Reduced Motion Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .s703-skeleton,
+    .s703-stock-dot {
+      animation: none;
+    }
+  }
+
+  /* === CAROUSEL === */
+  .s703-carousel-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: transparent;
+    border-radius: {{ section.settings.carousel_border_radius }}px;
+    padding-top: {{ section.settings.carousel_top_padding }}px;
+  }
+
+  .s703-carousel {
+    display: flex;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .s703-carousel-slide {
+    min-width: 100%;
+    position: relative;
+    aspect-ratio: 3/4;
+  }
+
+  .s703-carousel-slide img,
+  .s703-carousel-slide video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: {{ section.settings.carousel_border_radius }}px;
+  }
+
+  /* Carousel Navigation */
+  .s703-carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: all 0.2s ease;
+    opacity: 0.6;
+  }
+
+  .s703-carousel-nav:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.5);
+  }
+
+  .s703-carousel-nav-prev { left: 1rem; }
+  .s703-carousel-nav-next { right: 1rem; }
+
+  .s703-carousel-nav svg {
+    width: 16px;
+    height: 16px;
+    stroke: white;
+    stroke-width: 2;
+    fill: none;
+  }
+
+  .s703-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: {{ section.settings.badge_bg_color }};
+    color: {{ section.settings.badge_text_color }};
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 2;
+  }
+
+  .s703-badge-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .s703-carousel-dots {
+    position: absolute;
+    bottom: {{ section.settings.carousel_dots_bottom }}px;
+    left: 1rem;
+    display: flex;
+    gap: 0.25rem;
+    z-index: 2;
+    background: rgba(40, 40, 39, 0.75);
+    padding: 0.25rem 0.5rem;
+    border-radius: 100px;
+  }
+
+  .s703-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .s703-dot.active {
+    background: rgba(0, 0, 0, 1);
+  }
+
+  /* === STATIC MEDIA === */
+  .s703-fixed-media {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: {{ section.settings.static_gap }}px;
+    margin-top: {{ section.settings.static_gap }}px;
+  }
+
+  .s703-fixed-media-item {
+    height: {{ section.settings.static_image_height }}px;
+    overflow: hidden;
+    border-radius: {{ section.settings.static_border_radius }}px;
+  }
+
+  .s703-fixed-media-item.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .s703-fixed-media-item img,
+  .s703-fixed-media-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (max-width: 767px) {
+    .s703-fixed-media {
+      {% unless section.settings.show_static_on_mobile %}
+        display: none;
+      {% endunless %}
+    }
+  }
+
+  /* === RIGHT COLUMN CONTENT === */
+  .s703-right-column {
+    padding: 2rem 1rem;
+    width: 100%;
+    max-width: 525px;
+    margin: 0 auto;
+  }
+
+  /* Testimonial */
+  .s703-testimonial {
+    margin-bottom: {{ section.settings.testimonial_bottom_spacing }}px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .s703-stars {
+    display: flex;
+    gap: {{ section.settings.star_spacing }}px;
+    color:#FB5820;
+    font-size: {{ section.settings.star_size }}px;
+    flex-shrink: 0;
+  }
+
+  .s703-quote {
+    font-size: {{ section.settings.testimonial_font_size }}px;
+    font-style: italic;
+    color: var(--s703-text-color);
+    margin: 0;
+    line-height: var(--s703-quote-line-height);
+  }
+
+  /* Heading */
+  .s703-heading {
+    font-family: 'Coolvetica Heavy Compressed', 'Impact', sans-serif;
+    font-size: {{ section.settings.heading_font_size }}px;
+    font-weight: 900;
+    line-height: var(--s703-heading-line-height);
+    text-transform: uppercase;
+    margin: {{ section.settings.heading_top_spacing }}px 0 1rem 0;
+    letter-spacing: calc({{ section.settings.heading_letter_spacing }} / 100 * 1em);
+  }
+
+  /* Description */
+  .s703-description {
+    font-size: {{ section.settings.description_font_size }}px;
+    line-height: {{ section.settings.description_line_height }};
+    margin-bottom: 1.5rem;
+  }
+
+  /* === ICON BADGES === */
+  .s703-icon-badges {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .s703-icon-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  .s703-icon-circle {
+    width: {{ section.settings.icon_circle_size }}px;
+    height: {{ section.settings.icon_circle_size }}px;
+    border-radius: 50%;
+    border: var(--s703-icon-stroke-width) solid var(--s703-icon-stroke-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: {{ section.settings.icon_padding }}px;
+  }
+
+  .s703-icon-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .s703-icon-label {
+    font-size: {{ section.settings.features_font_size }}px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  /* === INFO BUTTONS === */
+  .s703-info-buttons {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: {{ section.settings.info_buttons_bottom_spacing }}px;
+  }
+
+  .s703-info-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid currentColor;
+    background: transparent;
+    border-radius: 0.25rem;
+    font-size: {{ section.settings.info_button_font_size }}px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .s703-info-btn:hover {
+    background: var(--s703-accent-color);
+    color: white;
+    border-color: var(--s703-accent-color);
+  }
+
+  .s703-info-btn-icon {
+    font-size: 1.25em;
+    line-height: 1;
+  }
+
+  /* === PURCHASE OPTIONS MODULE === */
+  .s703-purchase-options {
+    margin-top: {{ section.settings.subscription_wrapper_top_spacing }}px;
+    margin-bottom: 1.5rem;
+  }
+
+  /* === TRIAL OFFER BOX === */
+  .s703-trial-wrapper {
+    border: 4px solid {{ section.settings.trial_header_bg | default: '#2A2552' }};
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    background: #ffffff;
+  }
+
+  .s703-trial-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: {{ section.settings.trial_header_bg | default: '#2A2552' }};
+    border-radius: 16px 16px 0 0;
+  }
+
+  .s703-trial-label {
+    font-family: 'League Gothic', 'Impact', sans-serif !important;
+    font-size: 14px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: {{ section.settings.trial_header_bg | default: '#2A2552' }};
+    background: #ffffff;
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .s703-trial-badge {
+    font-family: 'League Gothic', 'Impact', sans-serif !important;
+    font-size: 14px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #ffffff;
+    line-height: 1;
+  }
+
+  .s703-trial-content {
+    padding: 12px 16px 16px 16px;
+  }
+
+  .s703-trial-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 4px;
+  }
+
+  .s703-trial-title-left {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .s703-trial-badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .s703-trial-title {
+    font-family: 'League Gothic', 'Impact', sans-serif !important;
+    font-size: {{ section.settings.trial_title_font_size }}px !important;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #000000;
+    margin: 0;
+    line-height: 1;
+  }
+
+  .s703-trial-price {
+    font-family: 'League Gothic', 'Impact', sans-serif !important;
+    font-size: {{ section.settings.trial_price_font_size }}px !important;
+    font-weight: 400;
+    color: #000000;
+    line-height: 1;
+  }
+
+  /* Per-flavour panel copy. Every flavour's text is rendered and the chosen
+     one revealed, so switching flavour needs no fetch and works offline. */
+  .s703-panel-flavor { display: none; }
+  .s703-panel-flavor.is-active { display: block; }
+  .s703-flavor-selector.in-panel { margin: 0 0 14px; }
+
+  /* The picker belongs to whichever option is chosen, so the flavour reads as
+     part of that purchase rather than a separate control sitting below both. */
+  .s703-option-wrapper .s703-flavor-selector.in-option { display: none; }
+  .s703-option-wrapper.selected .s703-flavor-selector.in-option {
+    display: block;
+    /* auto, not the base rule's 100% - that is 100% of the option's content box
+       and the side margins then push it past the edge. */
+    width: auto;
+    margin: 10px 12px 12px;
+  }
+
+  /* ===== FLAVOR SELECTOR (ported from 703a-hero-banner) ===== */
+  .s703-flavor-selector {
+    width: 100%;
+    position: relative;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  .s703-flavor-selector.in-trial {
+    margin-bottom: 12px;
+  }
+  .s703-flavor-selected {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    border: 1.5px solid #E0E0E0;
+    border-radius: 12px;
+    background: #FFFFFF;
+    cursor: pointer;
+    user-select: none;
+    transition: border-color 0.15s;
+  }
+  .s703-flavor-selected:hover { border-color: #BBBBBB; }
+  .s703-flavor-swatch {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    background-size: cover;
+    background-position: center;
+  }
+  .s703-flavor-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+  .s703-flavor-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1A1A2E;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+  }
+  .s703-flavor-desc {
+    font-size: 12px;
+    font-weight: 400;
+    color: #777777;
+    line-height: 1.3;
+  }
+  .s703-flavor-chevron {
+    font-size: 13px;
+    font-weight: 700;
+    color: #888888;
+    flex-shrink: 0;
+    line-height: 1;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .s703-flavor-dropdown {
+    position: relative;
+    margin-top: 6px;
+    background: #FFFFFF;
+    border: 1.5px solid #E0E0E0;
+    border-radius: 12px;
+    overflow: hidden;
+    z-index: 200;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+  }
+  .s703-flavor-option {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: background-color 0.12s;
+    border-bottom: 1px solid #F5F5F5;
+  }
+  .s703-flavor-option:last-of-type { border-bottom: none; }
+  .s703-flavor-option:hover { background-color: #F7F7F7; }
+  .s703-flavor-option.is-active { background-color: #F3F3F3; }
+  .s703-flavor-option-swatch {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    background-size: cover;
+    background-position: center;
+  }
+  .s703-flavor-option-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .s703-flavor-option-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1A1A2E;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+  }
+  .s703-flavor-option-desc {
+    font-size: 12px;
+    font-weight: 400;
+    color: #777777;
+    line-height: 1.3;
+  }
+  .s703-flavor-footer {
+    padding: 13px 16px;
+    text-align: center;
+    background-color: #F5F5F5;
+    border-top: 1px solid #EEEEEE;
+    font-size: 11px;
+    font-weight: 700;
+    color: #888888;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .s703-flavor-footer a { color: #555555; text-decoration: none; }
+  .s703-flavor-footer a:hover { color: #1A1A2E; }
+
+  .s703-trial-description {
+    font-size: 13px;
+    line-height: 1.4;
+    color: #333333;
+    margin-bottom: 12px;
+  }
+
+  .s703-trial-cta {
+    width: 100%;
+    background: {{ section.settings.trial_cta_bg_color }};
+    color: {{ section.settings.trial_cta_text_color }};
+    border: none;
+    padding: 14px 24px;
+    font-family: 'League Gothic', 'Impact', sans-serif !important;
+    font-size: {{ section.settings.trial_cta_font_size }}px !important;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+
+  .s703-trial-cta:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  .s703-trial-upgrade-note {
+    font-size: 12px;
+    color: #666666;
+    text-align: center;
+    margin-bottom: 8px;
+    line-height: 1.4;
+    font-style: italic;
+  }
+
+  /* === TRIAL TIMELINE === */
+  .s703-trial-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+    background: #f5f5f5;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #D2D2D2;
+  }
+
+  .s703-timeline-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .s703-timeline-item:last-child {
+    border-bottom: none;
+  }
+
+  .s703-timeline-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .s703-timeline-icon img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+  }
+
+  .s703-timeline-icon svg {
+    width: 20px;
+    height: 20px;
+    stroke: #000000;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .s703-timeline-text {
+    flex: 1;
+    padding-top: 2px;
+  }
+
+  .s703-timeline-day {
+    font-size: 14px;
+    font-weight: 700;
+    color: #000000;
+    line-height: 1.3;
+  }
+
+  .s703-timeline-day span {
+    font-weight: 400;
+  }
+
+  .s703-timeline-desc {
+    font-size: 13px;
+    color:rgb(54, 54, 54);
+    line-height: 1.4;
+  }
+
+  /* === RADIO OPTION BOXES === */
+  .s703-option-wrapper {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    background: #ffffff;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .s703-option-wrapper:hover {
+    border-color: #999999;
+  }
+
+  .s703-option-wrapper.selected {
+    border-color: #000000;
+    border-width: 2px;
+  }
+
+  .s703-option-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  /* Radio Button */
+  .s703-radio-outer {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    border: 2px solid #cccccc;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  .s703-option-wrapper.selected .s703-radio-outer {
+    border-color: #000000;
+  }
+
+  .s703-radio-inner {
+    width: 12px;
+    height: 12px;
+    min-width: 12px;
+    min-height: 12px;
+    background-color: #000000;
+    border-radius: 50%;
+    display: block;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.15s ease;
+  }
+
+  .s703-option-wrapper.selected .s703-radio-inner {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+    display: block !important;
+  }
+
+  .s703-option-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .s703-option-title-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .s703-option-title {
+    font-family: 'League Gothic', 'Impact', sans-serif !important;
+    font-size: {{ section.settings.option_title_font_size }}px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #000000;
+    margin: 0;
+    line-height: 1;
+  }
+
+  .s703-option-pack-count {
+    font-family: 'League Gothic', 'Impact', sans-serif !important;
+    font-size: 14px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666666;
+    line-height: 1;
+  }
+
+  .s703-option-badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .s703-option-badge {
+    background: {{ section.settings.option_badge_bg_color }};
+    color: {{ section.settings.option_badge_text_color }};
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    line-height: 1;
+    letter-spacing: 0.5px;
+  }
+
+  .s703-option-badge.autoship-badge-2 {
+    background: #E0D4F7;
+  }
+
+  .s703-option-pricing {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    margin-left: auto;
+  }
+
+  .s703-option-price-main {
+    font-family: 'League Gothic', 'Impact', sans-serif !important;
+    font-size: {{ section.settings.option_price_font_size }}px;
+    font-weight: 400;
+    color: #000000;
+    line-height: 1;
+  }
+
+  .s703-option-price-per {
+    font-size: 13px;
+    font-weight: 400;
+    color: #666666;
+    line-height: 1;
+  }
+
+  /* === QUANTITY SELECTOR === */
+  .s703-quantity-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .s703-pack-selector {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .s703-pack-qty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 12px;
+    background: #ffffff;
+    min-width: 50px;
+  }
+
+  .s703-pack-number {
+    font-family: 'League Gothic', 'Impact', sans-serif !important;
+    font-size: 24px;
+    font-weight: 400;
+    color: #000000;
+    line-height: 1;
+  }
+
+  .s703-pack-label {
+    font-family: 'League Gothic', 'Impact', sans-serif !important;
+    font-size: 10px;
+    font-weight: 400;
+    text-transform: uppercase;
+    color: #666666;
+    line-height: 1;
+  }
+
+  .s703-pack-controls {
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid #e0e0e0;
+  }
+
+  .s703-pack-btn {
+    width: 28px;
+    height: 28px;
+    background: #ffffff;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .s703-pack-btn:first-child {
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .s703-pack-btn:hover {
+    background: #f5f5f5;
+  }
+
+  .s703-pack-btn svg {
+    width: 12px;
+    height: 12px;
+    stroke: #000000;
+    stroke-width: 2;
+    fill: none;
+  }
+
+  /* Main CTA Button */
+  .s703-main-cta {
+    flex: 1;
+    background: {{ section.settings.main_cta_bg_color }};
+    color: {{ section.settings.main_cta_text_color }};
+    border: none;
+    padding: 16px 32px;
+    font-family: 'League Gothic', 'Impact', sans-serif !important;
+    font-size: {{ section.settings.main_cta_font_size }}px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    line-height: 1;
+  }
+
+  .s703-main-cta:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  .s703-main-cta svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+  }
+
+  /* Legacy support - keep benefits section */
+  .s703-subscription-benefits {
+    background: var(--s703-benefits-bg);
+    padding: 1rem 1rem 15px 1rem;
+    display: none;
+  }
+
+  .s703-subscription-benefits.active {
+    display: block;
+  }
+
+  .s703-benefits-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .s703-benefit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .s703-benefit-icon {
+    width: 20px;
+    height: 20px;
+    background: {{ section.settings.subscription_bg_start }};
+    border-radius: 50%;
+    color: white;
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .s703-benefit-icon svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .s703-benefit-text {
+    flex: 1;
+  }
+
+  /* === FLAVORS SECTION === */
+  .s703-flavors-section {
+    background: var(--s703-benefits-bg);
+    padding: 0 1rem 0 1rem;
+    margin: 0 -1rem 0 -1rem;
+    display: none;
+  }
+
+  .s703-flavors-section.active {
+    display: block;
+  }
+
+  .s703-flavor-item {
+    background: white;
+    border-radius: {{ section.settings.flavor_item_border_radius }}px;
+    border: 1px solid #E0E0E0;
+    padding: {{ section.settings.flavor_item_padding_top }}px 15px {{ section.settings.flavor_item_padding_bottom }}px 15px;
+    margin-bottom: {{ section.settings.flavor_item_spacing }}px;
+    display: grid;
+    grid-template-columns: {{ section.settings.flavor_image_size }}px 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 0 19px;
+    align-items: center;
+    min-height: {{ section.settings.flavor_image_size }}px;
+  }
+
+  .s703-flavor-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .s703-flavor-image {
+    grid-row: 1 / 3;
+    grid-column: 1 / 2;
+    width: {{ section.settings.flavor_image_size }}px;
+    height: {{ section.settings.flavor_image_size }}px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+
+  .s703-flavor-info {
+    grid-row: 1 / 2;
+    grid-column: 2 / 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+  }
+
+  .s703-flavor-name {
+    font-family: 'Coolvetica Heavy Compressed', 'Impact', sans-serif;
+    font-size: {{ section.settings.flavor_name_font_size }}px;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin: 0;
+    letter-spacing: 0;
+    line-height: 1.1;
+  }
+
+  .s703-flavor-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .s703-flavor-stars {
+    display: flex;
+    gap: 1px;
+    color: #FB5820;
+    font-size: {{ section.settings.flavor_star_size }}px;
+    line-height: 1;
+  }
+
+  .s703-flavor-rating-number {
+    color: #000;
+    font-weight: 400;
+    font-size: {{ section.settings.flavor_rating_font_size }}px;
+    line-height: 1;
+  }
+
+  .s703-flavor-pack-price {
+    grid-row: 2 / 3;
+    grid-column: 2 / 3;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: {{ section.settings.flavor_pack_price_font_size }}px;
+    color: #000;
+  }
+
+  .s703-flavor-separator {
+    color: #000;
+  }
+
+  /* Flavor Controls */
+  .s703-flavor-controls {
+    grid-row: 1 / 3;
+    grid-column: 3 / 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    width: 95px;
+    min-width: 95px;
+    max-width: 95px;
+    align-self: center;
+  }
+
+  .s703-flavor-add-btn {
+    width: 95px;
+    height: 31px;
+    background: {{ section.settings.subscription_bg_start }};
+    color: white;
+    border: none;
+    border-radius: 100px;
+    font-size: {{ section.settings.add_button_font_size }}px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .s703-flavor-add-btn:hover {
+    background: {{ section.settings.subscription_bg_end }};
+  }
+
+  .s703-flavor-add-btn.hidden {
+    opacity: 0;
+    transform: scale(0.9);
+    pointer-events: none;
+    position: absolute;
+  }
+
+  .s703-flavor-quantity {
+    display: none;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    width: 95px;
+    height: 31px;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .s703-flavor-quantity.active {
+    display: flex;
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .s703-qty-btn {
+    width: 31px;
+    height: 31px;
+    background: {{ section.settings.subscription_bg_start }};
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .s703-qty-btn:hover {
+    background: {{ section.settings.subscription_bg_end }};
+    transform: scale(1.05);
+  }
+
+  .s703-qty-btn:active {
+    transform: scale(0.95);
+  }
+
+  .s703-qty-display {
+    text-align: center;
+    font-weight: 700;
+    font-size: {{ section.settings.qty_display_font_size }}px;
+    color: #000;
+    line-height: {{ section.settings.qty_display_line_height }};
+    flex: 1;
+  }
+
+  /* === CTA BUTTON === */
+  .s703-cta {
+    width: 100%;
+    background: var(--s703-cta-bg);
+    color: var(--s703-cta-text);
+    border: none;
+    padding: {{ section.settings.cta_padding_y }}px {{ section.settings.cta_padding_x }}px;
+    font-size: {{ section.settings.cta_font_size }}px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: {{ section.settings.cta_bottom_spacing }}px;
+  }
+
+  .s703-cta:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  .s703-cta:active {
+    transform: translateY(0);
+  }
+
+  /* === DELIVERY INFO === */
+  .s703-delivery-info {
+    background: {{ section.settings.delivery_bg_color }};
+    border: 1px solid {{ section.settings.delivery_border_color }};
+    border-radius: {{ section.settings.delivery_border_radius }}px;
+    padding: {{ section.settings.delivery_padding_y }}px {{ section.settings.delivery_padding_x }}px;
+    margin-bottom: {{ section.settings.delivery_bottom_spacing }}px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .s703-stock-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .s703-stock-dot {
+    width: {{ section.settings.stock_dot_size }}px;
+    height: {{ section.settings.stock_dot_size }}px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: s703-pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes s703-pulse-dot {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(1.1);
+    }
+  }
+
+  .s703-stock-text {
+    font-size: {{ section.settings.stock_text_size }}px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .s703-delivery-text {
+    font-size: {{ section.settings.delivery_text_size }}px;
+    line-height: 1.4;
+    color: {{ section.settings.delivery_text_color }};
+  }
+
+  .s703-delivery-highlight {
+    font-weight: 700;
+    color: {{ section.settings.delivery_highlight_color }};
+  }
+
+  .s703-delivery-countdown {
+    font-weight: 700;
+    color: {{ section.settings.delivery_countdown_color }};
+  }
+
+  /* === GUARANTEE === */
+  .s703-guarantee {
+    background: {{ section.settings.guarantee_bg_color }};
+    border: {{ section.settings.guarantee_border_width }}px {{ section.settings.guarantee_border_style }} {{ section.settings.guarantee_border_color }};
+    border-radius: {{ section.settings.guarantee_border_radius }}px;
+    padding: {{ section.settings.guarantee_padding }}px;
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .s703-guarantee-icon {
+    width: {{ section.settings.guarantee_icon_size }}px;
+    height: {{ section.settings.guarantee_icon_size }}px;
+    flex-shrink: 0;
+  }
+
+  .s703-guarantee-content {
+    flex: 1;
+  }
+
+  .s703-guarantee-header {
+    font-size: {{ section.settings.guarantee_header_size }}px;
+    font-weight: 400;
+    margin: 0 0 0.25rem 0;
+    text-transform: uppercase;
+    color: {{ section.settings.guarantee_header_color }};
+    letter-spacing: 0.5px;
+  }
+
+  .s703-guarantee-title {
+    font-size: {{ section.settings.guarantee_title_size }}px;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+
+  .s703-guarantee-text {
+    font-size: {{ section.settings.guarantee_text_size }}px;
+    margin: 0;
+    line-height: 1.5;
+    color: {{ section.settings.guarantee_text_color }};
+  }
+
+  /* === ACCORDION/FAQ === */
+  .s703-accordion-section {
+    border-top: 1px solid {{ section.settings.accordion_border_color }};
+    margin-bottom: 0;
+  }
+
+  .s703-accordion-section:last-of-type {
+    border-bottom: 1px solid {{ section.settings.accordion_border_color }};
+  }
+
+  .s703-accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: {{ section.settings.accordion_header_padding_y }}px {{ section.settings.accordion_header_padding_x }}px;
+    background: transparent;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s ease;
+  }
+
+  .s703-accordion-header:hover {
+    background: {{ section.settings.accordion_hover_bg }};
+  }
+
+  .s703-accordion-title {
+    font-size: {{ section.settings.accordion_title_size }}px;
+    font-weight: {{ section.settings.accordion_title_weight }};
+    text-transform: {{ section.settings.accordion_title_transform }};
+    letter-spacing: {{ section.settings.accordion_title_spacing }}px;
+    margin: 0;
+    color: {{ section.settings.accordion_title_color }};
+  }
+
+  .s703-accordion-icon {
+    width: {{ section.settings.accordion_icon_size }}px;
+    height: {{ section.settings.accordion_icon_size }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+    color: {{ section.settings.accordion_icon_color }};
+  }
+
+  .s703-accordion-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .s703-accordion-header.active .s703-accordion-icon {
+    transform: rotate(180deg);
+  }
+
+  .s703-accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    padding: 0 {{ section.settings.accordion_header_padding_x }}px;
+  }
+
+  .s703-accordion-content.active {
+    max-height: 2000px;
+    padding: 0 {{ section.settings.accordion_header_padding_x }}px {{ section.settings.accordion_content_padding_bottom }}px {{ section.settings.accordion_header_padding_x }}px;
+  }
+
+  .s703-accordion-content-inner {
+    font-size: {{ section.settings.accordion_content_size }}px;
+    line-height: {{ section.settings.accordion_content_line_height }};
+    color: {{ section.settings.accordion_content_color }};
+  }
+
+  .s703-accordion-content-inner ul,
+  .s703-accordion-content-inner ol {
+    padding-left: 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .s703-accordion-content-inner li {
+    margin-bottom: 0.75rem;
+  }
+
+  .s703-accordion-content-inner p {
+    margin-bottom: 1rem;
+  }
+
+  .s703-accordion-content-inner p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* === SLIDE-OUT PANELS === */
+  .s703-panel-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .s703-panel-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* A centred dialog, matching the product page. <dialog> brings its own
+     backdrop, focus trap and Esc handling, so the separate overlay div and the
+     body-scroll locking the sheet needed are gone. */
+  .s703-panel {
+    width: min(430px, calc(100vw - 32px));
+    max-height: min(80vh, 720px);
+    padding: 0;
+    border: 0;
+    border-radius: 14px;
+    background: white;
+    overflow: hidden;
+  }
+
+  .s703-panel::backdrop {
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(2px);
+  }
+
+  .s703-panel-inner {
+    display: flex;
+    flex-direction: column;
+    max-height: inherit;
+  }
+
+  .s703-panel-header {
+    position: sticky;
+    top: 0;
+    background: white;
+    padding: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+  }
+
+  .s703-panel-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .s703-panel-close {
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #757575;
+  }
+
+  .s703-panel-body-scroll {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .s703-panel-content {
+    padding: 1.5rem;
+    font-size: {{ section.settings.panel_content_font_size }}px;
+    line-height: 1.6;
+  }
+
+  .s703-panel-content h1,
+  .s703-panel-content h2,
+  .s703-panel-content h3,
+  .s703-panel-content h4 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+  }
+
+  .s703-panel-content h1 { font-size: 2em; }
+  .s703-panel-content h2 { font-size: 1.5em; }
+  .s703-panel-content h3 { font-size: 1.25em; }
+  .s703-panel-content h4 { font-size: 1.1em; }
+
+  .s703-panel-content p {
+    margin-bottom: 1rem;
+  }
+
+  .s703-panel-content ul,
+  .s703-panel-content ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  .s703-panel-content li {
+    margin-bottom: 0.5rem;
+  }
+
+  .s703-panel-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+  }
+
+  .s703-panel-content th,
+  .s703-panel-content td {
+    border: 1px solid #e0e0e0;
+    padding: 0.75rem;
+    text-align: left;
+  }
+
+  .s703-panel-content th {
+    background: #f5f5f5;
+    font-weight: 700;
+  }
+
+  .s703-panel-content a {
+    color: var(--s703-accent-color);
+    text-decoration: underline;
+  }
+
+  /* === SKELETON LOADERS === */
+  @keyframes s703-pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  .s703-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: s703-pulse 2s ease-in-out infinite;
+    border-radius: 0.25rem;
+  }
+
+  .s703-skeleton-carousel {
+    width: 100%;
+    aspect-ratio: 3/4;
+    border-radius: {{ section.settings.carousel_border_radius }}px;
+  }
+
+  /* === UTILITY CLASSES === */
+  .s703-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+</style>
+<div class="section-703-hero-banner-mobile" 
+     role="main" 
+     aria-label="{{ section.settings.heading | escape }}"
+     style="--s703-cta-bg: {{ section.settings.cta_bg_color }}; --s703-cta-text: {{ section.settings.cta_text_color }};">
+  
+  <div class="s703-container">
+    
+    <!-- ==================== LEFT COLUMN: CAROUSEL & STATIC MEDIA ==================== -->
+    <div class="s703-left-column">
+      
+      {% if section.settings.skeleton_enabled %}
+        <div class="s703-skeleton s703-skeleton-carousel" aria-hidden="true"></div>
+      {% endif %}
+      
+      <div class="s703-carousel-wrapper" {% if section.settings.skeleton_enabled %}style="display: none;"{% endif %}>
+        
+        {% if section.settings.badge_text != blank %}
+          <div class="s703-badge">
+            {% if section.settings.badge_icon %}
+              <img src="{{ section.settings.badge_icon | image_url: width: 32 }}" 
+                   alt="" 
+                   class="s703-badge-icon" 
+                   width="16" 
+                   height="16"
+                   loading="lazy"
+                   decoding="async">
+            {% endif %}
+            <span>{{ section.settings.badge_text }}</span>
+          </div>
+        {% endif %}
+        
+        <div class="s703-carousel" id="s703Carousel" role="region" aria-label="Product images carousel">
+          {% for block in section.blocks %}
+            {% if block.type == 'carousel_slide' %}
+              <div class="s703-carousel-slide" data-slide-index="{{ forloop.index0 }}">
+                {% if block.settings.media_type == 'video' and block.settings.video_url != blank %}
+                  <video 
+                    src="{{ block.settings.video_url }}" 
+                    {% if block.settings.autoplay %}autoplay muted loop playsinline{% endif %}
+                    loading="lazy"
+                    aria-label="Product video {{ forloop.index }}">
+                  </video>
+                {% elsif block.settings.image %}
+                  <img 
+                    src="{{ block.settings.image | image_url: width: 800 }}" 
+                    alt="{{ block.settings.image.alt | default: section.settings.heading | escape }}"
+                    width="800"
+                    height="1067"
+                    loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                    decoding="async"
+                    {% if forloop.first %}fetchpriority="high"{% endif %}>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+        
+        {% assign carousel_count = section.blocks | where: 'type', 'carousel_slide' | size %}
+        {% if carousel_count > 1 %}
+          <button class="s703-carousel-nav s703-carousel-nav-prev" 
+                  aria-label="Previous image"
+                  onclick="s703PrevSlide()">
+            <svg viewBox="0 0 24 24">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          
+          <button class="s703-carousel-nav s703-carousel-nav-next" 
+                  aria-label="Next image"
+                  onclick="s703NextSlide()">
+            <svg viewBox="0 0 24 24">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+          
+          <div class="s703-carousel-dots" role="tablist" aria-label="Carousel navigation">
+            {% for i in (1..carousel_count) %}
+              <button class="s703-dot {% if forloop.first %}active{% endif %}" 
+                      data-slide="{{ forloop.index0 }}"
+                      role="tab"
+                      aria-label="Go to image {{ forloop.index }}"
+                      aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                      onclick="s703GoToSlide({{ forloop.index0 }})">
+              </button>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+      
+      {% assign fixed_media = section.blocks | where: 'type', 'fixed_media' %}
+      {% if fixed_media.size > 0 %}
+        <div class="s703-fixed-media">
+          {% for block in fixed_media %}
+            <div class="s703-fixed-media-item {% if block.settings.full_width %}full-width{% endif %}">
+              {% if block.settings.media_type == 'video' and block.settings.video_url != blank %}
+                <video 
+                  src="{{ block.settings.video_url }}" 
+                  {% if block.settings.autoplay %}autoplay muted loop playsinline{% endif %}
+                  loading="lazy"
+                  aria-label="Additional product video">
+                </video>
+              {% elsif block.settings.image %}
+                <img 
+                  src="{{ block.settings.image | image_url: width: 500 }}" 
+                  alt="{{ block.settings.image.alt | default: 'Product image' | escape }}"
+                  width="500"
+                  height="{{ section.settings.static_image_height }}"
+                  loading="lazy"
+                  decoding="async">
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+    
+    <!-- ==================== RIGHT COLUMN: PRODUCT DETAILS ==================== -->
+    <div class="s703-right-column">
+      
+      <!-- Testimonial -->
+      {% if section.settings.show_testimonial %}
+        <div class="s703-testimonial">
+          <div class="s703-stars" aria-label="5 star rating">
+            <span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span>
+          </div>
+          {% if section.settings.testimonial_quote != blank %}
+            <p class="s703-quote">"{{ section.settings.testimonial_quote }}"</p>
+          {% endif %}
+        </div>
+      {% endif %}
+      
+      <!-- Heading -->
+      {% if section.settings.heading != blank %}
+        <h1 class="s703-heading">{{ section.settings.heading }}</h1>
+      {% endif %}
+      
+      <!-- Description -->
+      {% if section.settings.description != blank %}
+        <div class="s703-description">
+          {{ section.settings.description }}
+        </div>
+      {% endif %}
+      
+      <!-- Icon Badges -->
+      {% assign icon_badges = section.blocks | where: 'type', 'icon_badge' %}
+      {% if icon_badges.size > 0 %}
+        <div class="s703-icon-badges" role="list">
+          {% for block in icon_badges %}
+            <div class="s703-icon-badge" role="listitem">
+              <div class="s703-icon-circle">
+                {% if block.settings.icon %}
+                  <img 
+                    src="{{ block.settings.icon | image_url: width: 60 }}" 
+                    alt="{{ block.settings.label | escape }}"
+                    width="60"
+                    height="60"
+                    loading="lazy"
+                    decoding="async">
+                {% endif %}
+              </div>
+              <span class="s703-icon-label">{{ block.settings.label }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      
+      <!-- Info Buttons -->
+      <div class="s703-info-buttons">
+        {% if section.settings.show_ingredients %}
+          <button class="s703-info-btn" 
+                  onclick="s703OpenPanel('ingredients')"
+                  aria-label="View ingredients information">
+            {{ section.settings.ingredients_label | default: "Ingredients" }}
+            <span class="s703-info-btn-icon">+</span>
+          </button>
+        {% endif %}
+        
+        {% if section.settings.show_nutrition %}
+          <button class="s703-info-btn" 
+                  onclick="s703OpenPanel('nutrition')"
+                  aria-label="View nutrition facts">
+            {{ section.settings.nutrition_label | default: "Nutrition Facts" }}
+            <span class="s703-info-btn-icon">+</span>
+          </button>
+        {% endif %}
+      </div>
+      
+      <!-- ==================== PURCHASE OPTIONS ==================== -->
+      <div class="s703-purchase-options">
+        
+        <!-- ========== TRIAL OFFER BOX ========== -->
+        {% if section.settings.show_trial_offer %}
+        <div class="s703-trial-wrapper" id="s703TrialWrapper">
+          <div class="s703-trial-header">
+            <h3 class="s703-trial-label">{{ section.settings.trial_header_label }}</h3>
+            <span class="s703-trial-badge">{{ section.settings.trial_header_badge }}</span>
+          </div>
+          
+          <div class="s703-trial-content">
+            <div class="s703-trial-title-row">
+              <div class="s703-trial-title-left">
+                <h2 class="s703-trial-title">{{ section.settings.trial_title }}</h2>
+                <div class="s703-trial-badges">
+                  {% if section.settings.trial_badge_1 != blank %}
+                    <span class="s703-option-badge">{{ section.settings.trial_badge_1 }}</span>
+                  {% endif %}
+                  {% if section.settings.trial_badge_2 != blank %}
+                    <span class="s703-option-badge">{{ section.settings.trial_badge_2 }}</span>
+                  {% endif %}
+                </div>
+              </div>
+              <span class="s703-trial-price">${{ section.settings.trial_price }}</span>
+            </div>
+            
+            <p class="s703-trial-description">{{ section.settings.trial_description }}</p>
+
+            {%- comment -%}
+              Flavour selector. Ported from 703a-hero-banner, which carries the
+              same control but is disabled on the home page. Renders only when
+              flavour blocks exist, so with none configured this section behaves
+              exactly as it did before.
+            {%- endcomment -%}
+            {%- assign flavor_blocks = section.blocks | where: 'type', 'flavor' -%}
+            {%- assign first_flavor = flavor_blocks | first -%}
+            {%- if flavor_blocks.size > 0 -%}
+              {%- render 's703-flavor-picker', role: 'trial', extra_class: ' in-trial', blocks: flavor_blocks, first: first_flavor, footer: section.settings.single_flavor_footer, variety_label: section.settings.variety_pack_label, variety_url: section.settings.variety_pack_url -%}
+            {%- endif -%}
+
+            
+            <button class="s703-trial-cta" 
+                    onclick="s703AddTrialToCart()"
+                    aria-label="{{ section.settings.trial_cta_text }}">
+              {{ section.settings.trial_cta_text }}
+            </button>
+            
+            <p class="s703-trial-upgrade-note">{{ section.settings.trial_upgrade_note }}</p>
+            
+            <!-- Timeline -->
+            <div class="s703-trial-timeline">
+              <!-- Day 1 / TODAY -->
+              <div class="s703-timeline-item">
+                <div class="s703-timeline-icon">
+                  {% if section.settings.timeline_icon_1 %}
+                    <img src="{{ section.settings.timeline_icon_1 | image_url: width: 48 }}" 
+                         alt="" 
+                         loading="lazy">
+                  {% else %}
+                    <svg viewBox="0 0 24 24">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  {% endif %}
+                </div>
+                <div class="s703-timeline-text">
+                  <div class="s703-timeline-day">{{ section.settings.timeline_day_1 }} <span>{{ section.settings.timeline_day_1_label }}</span></div>
+                  <div class="s703-timeline-desc">{{ section.settings.timeline_desc_1 }}</div>
+                </div>
+              </div>
+              
+              <!-- Day 24 -->
+              <div class="s703-timeline-item">
+                <div class="s703-timeline-icon">
+                  {% if section.settings.timeline_icon_2 %}
+                    <img src="{{ section.settings.timeline_icon_2 | image_url: width: 48 }}" 
+                         alt="" 
+                         loading="lazy">
+                  {% else %}
+                    <svg viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                  {% endif %}
+                </div>
+                <div class="s703-timeline-text">
+                  <div class="s703-timeline-day">{{ section.settings.timeline_day_2 }} <span>{{ section.settings.timeline_day_2_label }}</span></div>
+                  <div class="s703-timeline-desc">{{ section.settings.timeline_desc_2 }}</div>
+                </div>
+              </div>
+              
+              <!-- Day 28 -->
+              <div class="s703-timeline-item">
+                <div class="s703-timeline-icon">
+                  {% if section.settings.timeline_icon_3 %}
+                    <img src="{{ section.settings.timeline_icon_3 | image_url: width: 48 }}" 
+                         alt="" 
+                         loading="lazy">
+                  {% else %}
+                    <svg viewBox="0 0 24 24">
+                      <path d="M21 2v6h-6"></path>
+                      <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+                      <path d="M3 22v-6h6"></path>
+                      <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+                    </svg>
+                  {% endif %}
+                </div>
+                <div class="s703-timeline-text">
+                  <div class="s703-timeline-day">{{ section.settings.timeline_day_3 }} <span>{{ section.settings.timeline_day_3_label }}</span></div>
+                  <div class="s703-timeline-desc">{{ section.settings.timeline_desc_3 }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        
+        <!-- ========== AUTO-SHIP OPTION ========== -->
+        <div class="s703-option-wrapper selected" id="s703AutoshipOption" onclick="s703SelectOption('autoship')">
+          <div class="s703-option-header">
+            <div class="s703-radio-outer">
+              <div class="s703-radio-inner"></div>
+            </div>
+            <div class="s703-option-content">
+              <div class="s703-option-title-row">
+                <h3 class="s703-option-title">{{ section.settings.autoship_title }}</h3>
+                <span class="s703-option-pack-count" id="s703AutoshipPackCount">{{ section.settings.cans_per_case }} PACK</span>
+              </div>
+              <div class="s703-option-badges">
+                {% if section.settings.autoship_badge_1 != blank %}
+                  <span class="s703-option-badge">{{ section.settings.autoship_badge_1 }}</span>
+                {% endif %}
+                {% if section.settings.autoship_badge_2 != blank %}
+                  <span class="s703-option-badge autoship-badge-2">{{ section.settings.autoship_badge_2 }}</span>
+                {% endif %}
+              </div>
+            </div>
+            <div class="s703-option-pricing">
+              <span class="s703-option-price-main" id="s703AutoshipPrice">${{ section.settings.autoship_price }}</span>
+              <span class="s703-option-price-per">${{ section.settings.autoship_price_per_can }}/can</span>
+            </div>
+          </div>
+            {%- if flavor_blocks.size > 0 -%}
+              {%- render 's703-flavor-picker', role: 'autoship', extra_class: ' in-option', blocks: flavor_blocks, first: first_flavor, footer: section.settings.single_flavor_footer, variety_label: section.settings.variety_pack_label, variety_url: section.settings.variety_pack_url -%}
+            {%- endif -%}
+        </div>
+        
+        <!-- ========== ONE-TIME OPTION ========== -->
+        <div class="s703-option-wrapper" id="s703OnetimeOption" onclick="s703SelectOption('onetime')">
+          <div class="s703-option-header">
+            <div class="s703-radio-outer">
+              <div class="s703-radio-inner"></div>
+            </div>
+            <div class="s703-option-content">
+              <div class="s703-option-title-row">
+                <h3 class="s703-option-title">{{ section.settings.onetime_title }}</h3>
+                <span class="s703-option-pack-count" id="s703OnetimePackCount">{{ section.settings.cans_per_case }} PACK</span>
+              </div>
+            </div>
+            <div class="s703-option-pricing">
+              <span class="s703-option-price-main" id="s703OnetimePrice">${{ section.settings.onetime_price }}</span>
+              <span class="s703-option-price-per">${{ section.settings.onetime_price_per_can }}/can</span>
+            </div>
+          </div>
+            {%- if flavor_blocks.size > 0 -%}
+              {%- render 's703-flavor-picker', role: 'onetime', extra_class: ' in-option', blocks: flavor_blocks, first: first_flavor, footer: section.settings.single_flavor_footer, variety_label: section.settings.variety_pack_label, variety_url: section.settings.variety_pack_url -%}
+            {%- endif -%}
+        </div>
+        
+
+        <!-- ========== QUANTITY & CTA ROW ========== -->
+        <div class="s703-quantity-row">
+          <div class="s703-pack-selector">
+            <div class="s703-pack-qty">
+              <span class="s703-pack-number" id="s703PackNumber">{{ section.settings.cans_per_case }}</span>
+              <span class="s703-pack-label">{{ section.settings.pack_label }}</span>
+            </div>
+            <div class="s703-pack-controls">
+              <button class="s703-pack-btn" onclick="s703IncreaseQty()" aria-label="Increase quantity">
+                <svg viewBox="0 0 24 24">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+              <button class="s703-pack-btn" onclick="s703DecreaseQty()" aria-label="Decrease quantity">
+                <svg viewBox="0 0 24 24">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <button class="s703-main-cta" 
+                  id="s703MainCta"
+                  onclick="s703AddToCart()"
+                  aria-label="{{ section.settings.main_cta_text }}">
+            {{ section.settings.main_cta_text }}
+            <svg viewBox="0 0 24 24">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+        
+      </div>
+      <!-- ==================== DELIVERY INFO ==================== -->
+      <div class="s703-delivery-info" id="s703DeliveryInfo">
+        <div class="s703-stock-indicator">
+          <div class="s703-stock-dot" id="s703StockDot"></div>
+          <span class="s703-stock-text" id="s703StockText">In Stock</span>
+        </div>
+        <div class="s703-delivery-text" id="s703DeliveryText">
+          Get it between <span class="s703-delivery-highlight">Aug 12th - 15th</span> if ordered within <span class="s703-delivery-countdown">2 hrs 19 mins</span>
+        </div>
+      </div>
+      
+      <!-- ==================== GUARANTEE ==================== -->
+      {% if section.settings.guarantee_title != blank %}
+        <div class="s703-guarantee">
+          {% if section.settings.guarantee_icon %}
+            <img 
+              src="{{ section.settings.guarantee_icon | image_url: width: 96 }}" 
+              alt=""
+              class="s703-guarantee-icon"
+              width="{{ section.settings.guarantee_icon_size }}"
+              height="{{ section.settings.guarantee_icon_size }}"
+              loading="lazy"
+              decoding="async">
+          {% endif %}
+          <div class="s703-guarantee-content">
+            <p class="s703-guarantee-header">{{ section.settings.guarantee_header }}</p>
+            <h3 class="s703-guarantee-title">{{ section.settings.guarantee_title }}</h3>
+            <p class="s703-guarantee-text">{{ section.settings.guarantee_text }}</p>
+          </div>
+        </div>
+      {% endif %}
+      
+      <!-- ==================== FAQ ITEMS ==================== -->
+      {% assign faq_items = section.blocks | where: 'type', 'faq_item' %}
+      {% for block in faq_items %}
+        <div class="s703-accordion-section">
+          <button class="s703-accordion-header {% if block.settings.default_open %}active{% endif %}" 
+                  onclick="s703ToggleAccordion(this)"
+                  aria-expanded="{% if block.settings.default_open %}true{% else %}false{% endif %}">
+            <h3 class="s703-accordion-title">{{ block.settings.question }}</h3>
+            <div class="s703-accordion-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </button>
+          <div class="s703-accordion-content {% if block.settings.default_open %}active{% endif %}">
+            <div class="s703-accordion-content-inner">
+              {{ block.settings.answer }}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+      
+    </div>
+  </div>
+  
+  <!-- ==================== SLIDE-OUT PANELS ==================== -->
+  
+  <dialog class="s703-panel" id="s703IngredientsPanel" aria-labelledby="s703IngredientsPanelTitle">
+    <div class="s703-panel-inner">
+    <div class="s703-panel-header">
+      <h2 class="s703-panel-title" id="s703IngredientsPanelTitle">{{ section.settings.ingredients_label | default: "Ingredients" }}</h2>
+      <button class="s703-panel-close" onclick="s703ClosePanel()" aria-label="Close panel">&times;</button>
+    </div>
+    <div class="s703-panel-body-scroll">
+    {%- if flavor_blocks.size > 0 -%}
+      {%- render 's703-flavor-picker', role: 'ingredients', extra_class: ' in-panel', blocks: flavor_blocks, first: first_flavor, footer: section.settings.single_flavor_footer, variety_label: section.settings.variety_pack_label, variety_url: section.settings.variety_pack_url -%}
+    {%- endif -%}
+    <div class="s703-panel-content">
+      {%- if flavor_blocks.size > 0 -%}
+        {%- for block in flavor_blocks -%}
+          <div class="s703-panel-flavor{% if forloop.first %} is-active{% endif %}"
+               data-panel-flavor="{{ block.settings.flavor_name | escape }}">
+            {%- if block.settings.ingredients_content != blank -%}
+              {{ block.settings.ingredients_content }}
+            {%- else -%}
+              {{ section.settings.ingredients_content }}
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        {{ section.settings.ingredients_content }}
+      {%- endif -%}
+    </div>
+    </div>
+    </div>
+  </dialog>
+  
+  <dialog class="s703-panel" id="s703NutritionPanel" aria-labelledby="s703NutritionPanelTitle">
+    <div class="s703-panel-inner">
+    <div class="s703-panel-header">
+      <h2 class="s703-panel-title" id="s703NutritionPanelTitle">{{ section.settings.nutrition_label | default: "Nutrition Facts" }}</h2>
+      <button class="s703-panel-close" onclick="s703ClosePanel()" aria-label="Close panel">&times;</button>
+    </div>
+    <div class="s703-panel-body-scroll">
+    {%- if flavor_blocks.size > 0 -%}
+      {%- render 's703-flavor-picker', role: 'nutrition', extra_class: ' in-panel', blocks: flavor_blocks, first: first_flavor, footer: section.settings.single_flavor_footer, variety_label: section.settings.variety_pack_label, variety_url: section.settings.variety_pack_url -%}
+    {%- endif -%}
+    <div class="s703-panel-content">
+      {%- if flavor_blocks.size > 0 -%}
+        {%- for block in flavor_blocks -%}
+          <div class="s703-panel-flavor{% if forloop.first %} is-active{% endif %}"
+               data-panel-flavor="{{ block.settings.flavor_name | escape }}">
+            {%- if block.settings.nutrition_content != blank -%}
+              {{ block.settings.nutrition_content }}
+            {%- else -%}
+              {{ section.settings.nutrition_content }}
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        {{ section.settings.nutrition_content }}
+      {%- endif -%}
+    </div>
+    </div>
+    </div>
+  </dialog>
+</div>
+
+<script>
+(function() {
+  'use strict';
+  
+  // ==================== CONFIGURATION ====================
+  const config = {
+    cansPerCase: {{ section.settings.cans_per_case }},
+    regularPricePerCan: parseFloat('{{ section.settings.regular_price_per_can }}'),
+    subscriptionPricePerCan: parseFloat('{{ section.settings.subscription_price_per_can }}'),
+    minOrderQty: {{ section.settings.min_order_qty }},
+    
+    inventoryHigh: {{ section.settings.inventory_high }},
+    inventoryMedium: {{ section.settings.inventory_medium }},
+    inventoryLow: {{ section.settings.inventory_low }},
+    
+    nonShippingDays: {{ section.settings.non_shipping_days | json }},
+    cutoffHour: {{ section.settings.cutoff_hour }},
+    cutoffMinute: {{ section.settings.cutoff_minute }},
+    timeZone: '{{ section.settings.time_zone }}',
+    minTransitDays: {{ section.settings.min_transit_days }},
+    maxTransitDays: {{ section.settings.max_transit_days }},
+    
+    stockHighText: '{{ section.settings.stock_high_text }}',
+    stockMediumText: '{{ section.settings.stock_medium_text }}',
+    stockLowText: '{{ section.settings.stock_low_text }}',
+    stockOutText: '{{ section.settings.stock_out_text }}',
+    stockHighColor: '{{ section.settings.stock_high_color }}',
+    stockMediumColor: '{{ section.settings.stock_medium_color }}',
+    stockLowColor: '{{ section.settings.stock_low_color }}',
+    stockOutColor: '{{ section.settings.stock_out_color }}'
+  };
+  
+  // ==================== INVENTORY DISPLAY ====================
+  function getTotalInventory() {
+    let total = 0;
+    {% for block in section.blocks %}
+      {% if block.type == 'flavor' and block.settings.product != blank %}
+        {% assign product = block.settings.product %}
+        {% assign variant = product.selected_or_first_available_variant %}
+        {% if block.settings.variant != blank %}
+          {% assign variant = product.variants | where: 'id', block.settings.variant | first %}
+        {% endif %}
+        total += {{ variant.inventory_quantity | default: 0 }};
+      {% endif %}
+    {% endfor %}
+    return total;
+  }
+  
+  function updateInventoryDisplay() {
+    const inventory = getTotalInventory();
+    const stockDot = document.getElementById('s703StockDot');
+    const stockText = document.getElementById('s703StockText');
+    
+    if (!stockDot || !stockText) return;
+    
+    let text = config.stockHighText;
+    let color = config.stockHighColor;
+    
+    if (inventory === 0) {
+      text = config.stockOutText;
+      color = config.stockOutColor;
+    } else if (inventory <= config.inventoryLow) {
+      text = config.stockLowText;
+      color = config.stockLowColor;
+    } else if (inventory <= config.inventoryMedium) {
+      text = config.stockMediumText;
+      color = config.stockMediumColor;
+    }
+    
+    stockDot.style.backgroundColor = color;
+    stockText.textContent = text;
+    stockText.style.color = color;
+  }
+  
+  // ==================== DELIVERY CALCULATION ====================
+  function calculateDeliveryDates() {
+    const now = new Date();
+    const pstTime = new Date(now.toLocaleString('en-US', { timeZone: config.timeZone }));
+    
+    const cutoffToday = new Date(pstTime);
+    cutoffToday.setHours(config.cutoffHour, config.cutoffMinute, 0, 0);
+    
+    let shipDate = new Date(pstTime);
+    if (pstTime >= cutoffToday) {
+      shipDate.setDate(shipDate.getDate() + 1);
+    }
+    
+    while (config.nonShippingDays.includes(shipDate.getDay())) {
+      shipDate.setDate(shipDate.getDate() + 1);
+    }
+    
+    const minArrival = new Date(shipDate);
+    minArrival.setDate(minArrival.getDate() + config.minTransitDays);
+    
+    const maxArrival = new Date(shipDate);
+    maxArrival.setDate(maxArrival.getDate() + config.maxTransitDays);
+    
+    const timeUntilCutoff = cutoffToday - pstTime;
+    const hoursLeft = Math.floor(timeUntilCutoff / (1000 * 60 * 60));
+    const minutesLeft = Math.floor((timeUntilCutoff % (1000 * 60 * 60)) / (1000 * 60));
+    
+    return {
+      minArrival: minArrival,
+      maxArrival: maxArrival,
+      hoursLeft: Math.max(0, hoursLeft),
+      minutesLeft: Math.max(0, minutesLeft),
+      pastCutoff: pstTime >= cutoffToday
+    };
+  }
+  
+  function formatDate(date) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = months[date.getMonth()];
+    const day = date.getDate();
+    const suffix = day === 1 || day === 21 || day === 31 ? 'st' : 
+                   day === 2 || day === 22 ? 'nd' : 
+                   day === 3 || day === 23 ? 'rd' : 'th';
+    return `${month} ${day}${suffix}`;
+  }
+  
+  function updateDeliveryText() {
+    const deliveryText = document.getElementById('s703DeliveryText');
+    if (!deliveryText) return;
+    
+    const delivery = calculateDeliveryDates();
+    const minDate = formatDate(delivery.minArrival);
+    const maxDate = formatDate(delivery.maxArrival);
+    
+    if (delivery.pastCutoff || (delivery.hoursLeft === 0 && delivery.minutesLeft === 0)) {
+      deliveryText.innerHTML = `Get it between <span class="s703-delivery-highlight">${minDate} - ${maxDate}</span>`;
+    } else {
+      deliveryText.innerHTML = `Get it between <span class="s703-delivery-highlight">${minDate} - ${maxDate}</span> if ordered within <span class="s703-delivery-countdown">${delivery.hoursLeft} hrs ${delivery.minutesLeft} mins</span>`;
+    }
+  }
+  
+  // Initialize
+  updateInventoryDisplay();
+  updateDeliveryText();
+  setInterval(updateDeliveryText, 60000);
+  
+  // ==================== CAROUSEL ====================
+  let currentSlide = 0;
+  const carousel = document.getElementById('s703Carousel');
+  const dots = document.querySelectorAll('.s703-dot');
+  const totalSlides = dots.length;
+  
+  window.s703GoToSlide = function(index) {
+    currentSlide = index;
+    updateCarousel();
+  };
+  
+  window.s703NextSlide = function() {
+    currentSlide = (currentSlide + 1) % totalSlides;
+    updateCarousel();
+  };
+  
+  window.s703PrevSlide = function() {
+    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+    updateCarousel();
+  };
+  
+  function updateCarousel() {
+    if (carousel) {
+      carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+      dots.forEach((dot, index) => {
+        if (index === currentSlide) {
+          dot.classList.add('active');
+          dot.setAttribute('aria-selected', 'true');
+        } else {
+          dot.classList.remove('active');
+          dot.setAttribute('aria-selected', 'false');
+        }
+      });
+    }
+  }
+
+  // ==================== TOUCH DRAG FUNCTIONALITY ====================
+  if (carousel) {
+    let touchStartX = 0;
+    let touchEndX = 0;
+    let isDragging = false;
+    let startTransform = 0;
+
+    const carouselWrapper = carousel.closest('.s703-carousel-wrapper');
+
+    function handleTouchStart(e) {
+      touchStartX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+      isDragging = true;
+      startTransform = currentSlide * 100;
+      carousel.style.transition = 'none';
+    }
+
+    function handleTouchMove(e) {
+      if (!isDragging) return;
+
+      touchEndX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+      const diff = touchStartX - touchEndX;
+      const carouselWidth = carousel.offsetWidth;
+      const percentageMoved = (diff / carouselWidth) * 100;
+
+      // Calculate new position with boundaries
+      let newTransform = startTransform + percentageMoved;
+      const maxTransform = (totalSlides - 1) * 100;
+
+      // Allow slight overscroll for better UX
+      if (newTransform < -10) newTransform = -10;
+      if (newTransform > maxTransform + 10) newTransform = maxTransform + 10;
+
+      carousel.style.transform = `translateX(-${newTransform}%)`;
+    }
+
+    function handleTouchEnd(e) {
+      if (!isDragging) return;
+      isDragging = false;
+
+      carousel.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+
+      const diff = touchStartX - touchEndX;
+      const threshold = 50; // Minimum swipe distance in pixels
+
+      if (Math.abs(diff) > threshold) {
+        if (diff > 0) {
+          // Swiped left - go to next slide
+          window.s703NextSlide();
+        } else {
+          // Swiped right - go to previous slide
+          window.s703PrevSlide();
+        }
+      } else {
+        // Snap back to current slide
+        updateCarousel();
+      }
+    }
+
+    // Add touch event listeners
+    carouselWrapper.addEventListener('touchstart', handleTouchStart, { passive: true });
+    carouselWrapper.addEventListener('touchmove', handleTouchMove, { passive: true });
+    carouselWrapper.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+    // Add mouse event listeners for desktop testing
+    carouselWrapper.addEventListener('mousedown', handleTouchStart);
+    carouselWrapper.addEventListener('mousemove', handleTouchMove);
+    carouselWrapper.addEventListener('mouseup', handleTouchEnd);
+    carouselWrapper.addEventListener('mouseleave', handleTouchEnd);
+  }
+  
+  // Remove skeleton on image load
+  {% if section.settings.skeleton_enabled %}
+    const carouselWrapper = document.querySelector('.s703-carousel-wrapper');
+    const skeleton = document.querySelector('.s703-skeleton-carousel');
+    const firstImage = document.querySelector('.s703-carousel-slide img');
+    
+    if (firstImage && skeleton && carouselWrapper) {
+      firstImage.addEventListener('load', function() {
+        skeleton.style.display = 'none';
+        carouselWrapper.style.display = 'block';
+      });
+      
+      if (firstImage.complete) {
+        skeleton.style.display = 'none';
+        carouselWrapper.style.display = 'block';
+      }
+    }
+  {% endif %}
+  
+  // ==================== PURCHASE OPTION SELECTION ====================
+  let selectedOption = 'autoship'; // 'autoship' or 'onetime'
+  let packQuantity = config.cansPerCase;
+  
+  window.s703SelectOption = function(option) {
+    selectedOption = option;
+    const autoshipOption = document.getElementById('s703AutoshipOption');
+    const onetimeOption = document.getElementById('s703OnetimeOption');
+    
+    if (option === 'autoship') {
+      if (autoshipOption) autoshipOption.classList.add('selected');
+      if (onetimeOption) onetimeOption.classList.remove('selected');
+    } else {
+      if (autoshipOption) autoshipOption.classList.remove('selected');
+      if (onetimeOption) onetimeOption.classList.add('selected');
+    }
+    
+    updatePricing();
+  };
+  
+  // Initialize radio button state on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    const autoshipOption = document.getElementById('s703AutoshipOption');
+    if (autoshipOption) {
+      autoshipOption.classList.add('selected');
+    }
+    // Initialize pack counts
+    updatePackDisplay();
+  });
+  
+  // Quantity controls
+  window.s703IncreaseQty = function() {
+    packQuantity += config.cansPerCase;
+    updatePackDisplay();
+    updatePricing();
+  };
+  
+  window.s703DecreaseQty = function() {
+    if (packQuantity > config.cansPerCase) {
+      packQuantity -= config.cansPerCase;
+      updatePackDisplay();
+      updatePricing();
+    }
+  };
+  
+  function updatePackDisplay() {
+    const packNumber = document.getElementById('s703PackNumber');
+    if (packNumber) {
+      packNumber.textContent = packQuantity;
+    }
+    
+    // Update pack counts in option wrappers
+    const autoshipPackCount = document.getElementById('s703AutoshipPackCount');
+    const onetimePackCount = document.getElementById('s703OnetimePackCount');
+    
+    if (autoshipPackCount) {
+      autoshipPackCount.textContent = packQuantity + ' PACK';
+    }
+    if (onetimePackCount) {
+      onetimePackCount.textContent = packQuantity + ' PACK';
+    }
+  }
+  
+  // ==================== FLAVOR SELECTION ====================
+  // Seeded from the first flavor block. With no blocks configured these stay
+  // empty and both add-to-cart paths fall back to the section's own products,
+  // exactly as before the selector existed.
+  {% assign fb = section.blocks | where: 'type', 'flavor' %}
+  {% assign ff = fb | first %}
+  var s703Flavor = {
+    trial:    '{{ ff.settings.trial_variant_id }}',
+    autoship: '{{ ff.settings.autoship_variant_id }}',
+    onetime:  '{{ ff.settings.onetime_variant_id }}'
+  };
+
+  function s703SetupFlavor(role) {
+    var wrap = document.getElementById('s703-flavor-wrap-' + role);
+    if (!wrap) return;
+    var trigger  = document.getElementById('s703-flavor-trigger-' + role);
+    var dropdown = document.getElementById('s703-flavor-dropdown-' + role);
+    if (!trigger || !dropdown) return;
+    var chevron = document.getElementById('s703-flavor-chevron-' + role);
+    var isOpen = false;
+
+    function close() {
+      isOpen = false;
+      dropdown.style.display = 'none';
+      dropdown.setAttribute('aria-hidden', 'true');
+      if (chevron) chevron.textContent = 'More \u25BE';
+    }
+    function open() {
+      isOpen = true;
+      dropdown.style.display = 'block';
+      dropdown.setAttribute('aria-hidden', 'false');
+      if (chevron) chevron.textContent = 'Less \u25B4';
+    }
+    close();
+
+    trigger.addEventListener('click', function (e) {
+      e.stopPropagation();
+      isOpen ? close() : open();
+    });
+
+    dropdown.querySelectorAll('.s703-flavor-option').forEach(function (option) {
+      option.addEventListener('click', function (e) {
+        e.stopPropagation();
+        s703ApplyFlavor({
+          trial:    option.getAttribute('data-trial-id'),
+          autoship: option.getAttribute('data-autoship-id'),
+          onetime:  option.getAttribute('data-onetime-id'),
+          color:    option.getAttribute('data-swatch-color'),
+          image:    option.getAttribute('data-swatch-image'),
+          name:     option.getAttribute('data-name'),
+          desc:     option.getAttribute('data-desc')
+        });
+        close();
+      });
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!wrap.contains(e.target)) close();
+    });
+  }
+
+  // Both pickers show the same flavour, so a choice in either updates both.
+  function s703ApplyFlavor(f) {
+    if (f.trial)    s703Flavor.trial = f.trial;
+    if (f.autoship) s703Flavor.autoship = f.autoship;
+    if (f.onetime)  s703Flavor.onetime = f.onetime;
+
+    document.querySelectorAll('.s703-panel-flavor').forEach(function (el) {
+      el.classList.toggle('is-active', el.getAttribute('data-panel-flavor') === f.name);
+    });
+
+    ['trial', 'autoship', 'onetime', 'ingredients', 'nutrition'].forEach(function (role) {
+      var swatch = document.getElementById('s703-flavor-swatch-' + role);
+      var nameEl = document.getElementById('s703-flavor-name-' + role);
+      var descEl = document.getElementById('s703-flavor-desc-' + role);
+      if (swatch) {
+        swatch.style.backgroundColor = f.color || '';
+        swatch.style.backgroundImage = f.image ? 'url(' + f.image + ')' : '';
+      }
+      if (nameEl) nameEl.textContent = f.name;
+      if (descEl) descEl.textContent = f.desc;
+
+      var dd = document.getElementById('s703-flavor-dropdown-' + role);
+      if (!dd) return;
+      dd.querySelectorAll('.s703-flavor-option').forEach(function (o) {
+        o.classList.toggle('is-active', o.getAttribute('data-name') === f.name);
+      });
+    });
+  }
+
+  s703SetupFlavor('trial');
+  s703SetupFlavor('autoship');
+  s703SetupFlavor('onetime');
+  s703SetupFlavor('ingredients');
+  s703SetupFlavor('nutrition');
+
+
+  // ==================== AFTER ADD TO CART ====================
+  // 'drawer' keeps people on the page, which is the point of a hero buy box.
+  // Falls back to the cart page when the theme is not running a drawer, so the
+  // click always lands somewhere rather than appearing to do nothing.
+  function s703AfterAdd() {
+    var mode = '{{ section.settings.after_add | default: 'drawer' }}';
+    if (mode === 'checkout') { window.location.href = '/checkout'; return; }
+    if (mode === 'cart') { window.location.href = '/cart'; return; }
+
+    var drawer = document.querySelector('cart-drawer');
+    if (!drawer || typeof drawer.renderContents !== 'function') {
+      window.location.href = '/cart';
+      return;
+    }
+    fetch('/?sections=cart-drawer,cart-icon-bubble')
+      .then(function (r) { return r.json(); })
+      .then(function (sections) {
+        drawer.classList.remove('is-empty');
+        drawer.renderContents({ sections: sections });
+      })
+      .catch(function () { window.location.href = '/cart'; });
+  }
+
+  // Trial add to cart function
+  window.s703AddTrialToCart = function() {
+    const trialProductId = '{{ section.settings.trial_product.id | default: "" }}';
+    const trialVariantId = '{{ section.settings.trial_variant_id | default: "" }}';
+    const trialSellingPlanId = '{{ section.settings.trial_selling_plan_id | default: "" }}';
+    
+    if (!trialProductId) {
+      console.error('Trial product not configured');
+      return;
+    }
+    
+    // Get first available variant if not specified
+    let variantId = s703Flavor.trial || trialVariantId;
+    if (!variantId) {
+      {% if section.settings.trial_product %}
+        variantId = '{{ section.settings.trial_product.selected_or_first_available_variant.id }}';
+      {% endif %}
+    }
+    
+    const formData = {
+      'items': [{
+        'id': parseInt(variantId),
+        'quantity': 1
+      }]
+    };
+    
+    // Add selling plan if configured
+    if (trialSellingPlanId) {
+      formData.items[0].selling_plan = parseInt(trialSellingPlanId);
+    }
+    
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Trial added to cart:', data);
+      s703AfterAdd();
+    })
+    .catch(error => {
+      console.error('Error adding trial to cart:', error);
+    });
+  };
+  
+  // Legacy compatibility - keep old function names working
+  window.s703SelectSubscription = function() {
+    s703SelectOption('autoship');
+  };
+  
+  window.s703SelectOnetime = function() {
+    s703SelectOption('onetime');
+  };
+  
+  // ==================== FLAVOR SELECTION ====================
+  const flavorQuantities = {};
+  
+  window.s703AddFlavor = function(index) {
+    if (!flavorQuantities[index]) {
+      flavorQuantities[index] = config.cansPerCase;
+    }
+    
+    const addBtn = document.querySelector(`.s703-flavor-add-btn[data-flavor-index="${index}"]`);
+    const qtyDiv = document.querySelector(`.s703-flavor-quantity[data-flavor-index="${index}"]`);
+    
+    if (addBtn && qtyDiv) {
+      addBtn.classList.add('hidden');
+      setTimeout(() => {
+        qtyDiv.classList.add('active');
+        updateFlavorDisplay(index);
+        updatePricing();
+      }, 100);
+    }
+  };
+  
+  window.s703IncreaseFlavor = function(index) {
+    if (!flavorQuantities[index]) {
+      flavorQuantities[index] = config.cansPerCase;
+    } else {
+      flavorQuantities[index] += config.cansPerCase;
+    }
+    updateFlavorDisplay(index);
+    updatePricing();
+  };
+  
+  window.s703DecreaseFlavor = function(index) {
+    if (flavorQuantities[index] && flavorQuantities[index] > config.cansPerCase) {
+      flavorQuantities[index] -= config.cansPerCase;
+      updateFlavorDisplay(index);
+      updatePricing();
+    } else {
+      delete flavorQuantities[index];
+      const addBtn = document.querySelector(`.s703-flavor-add-btn[data-flavor-index="${index}"]`);
+      const qtyDiv = document.querySelector(`.s703-flavor-quantity[data-flavor-index="${index}"]`);
+      
+      if (addBtn && qtyDiv) {
+        qtyDiv.classList.remove('active');
+        setTimeout(() => {
+          addBtn.classList.remove('hidden');
+          updatePricing();
+        }, 100);
+      }
+    }
+  };
+  
+  function updateFlavorDisplay(index) {
+    const qtyDisplay = document.querySelector(`.s703-flavor-quantity[data-flavor-index="${index}"] .s703-qty-display`);
+    const packText = document.querySelector(`.s703-flavor-item[data-flavor-index="${index}"] .s703-flavor-pack`);
+    
+    if (flavorQuantities[index]) {
+      const cans = flavorQuantities[index];
+      
+      if (qtyDisplay) {
+        qtyDisplay.innerHTML = cans + '<br>PACK';
+      }
+      
+      if (packText) {
+        packText.textContent = cans + ' Pack';
+      }
+    }
+  }
+  
+  function updatePricing() {
+    // Calculate prices based on pack quantity
+    const autoshipPricePerCan = parseFloat('{{ section.settings.autoship_price_per_can | default: "3.99" }}');
+    const onetimePricePerCan = parseFloat('{{ section.settings.onetime_price_per_can | default: "5.00" }}');
+    
+    const autoshipTotal = packQuantity * autoshipPricePerCan;
+    const onetimeTotal = packQuantity * onetimePricePerCan;
+    
+    // Update autoship price display
+    const autoshipPrice = document.getElementById('s703AutoshipPrice');
+    if (autoshipPrice) {
+      autoshipPrice.textContent = '$' + autoshipTotal.toFixed(2);
+    }
+    
+    // Update onetime price display
+    const onetimePrice = document.getElementById('s703OnetimePrice');
+    if (onetimePrice) {
+      onetimePrice.textContent = '$' + onetimeTotal.toFixed(2);
+    }
+  }
+  
+  updatePricing();
+  
+  // ==================== ADD TO CART ====================
+  window.s703AddToCart = function() {
+    const items = [];
+    let variantId;
+    let sellingPlanId;
+    
+    // Determine which product to use based on selected option
+    if (selectedOption === 'autoship') {
+      {% if section.settings.autoship_product %}
+        variantId = '{{ section.settings.autoship_product.selected_or_first_available_variant.id }}';
+      {% endif %}
+      if (s703Flavor.autoship) variantId = s703Flavor.autoship;
+      sellingPlanId = '{{ section.settings.loop_selling_plan_id | strip }}';
+    } else {
+      {% if section.settings.onetime_product %}
+        variantId = '{{ section.settings.onetime_product.selected_or_first_available_variant.id }}';
+      {% endif %}
+      if (s703Flavor.onetime) variantId = s703Flavor.onetime;
+    }
+    
+    if (!variantId) {
+      console.error('Product not configured');
+      alert('Product not configured. Please contact support.');
+      return;
+    }
+    
+    const itemData = {
+      id: parseInt(variantId),
+      quantity: Math.max(1, Math.round(packQuantity / config.cansPerCase)) // Convert cans to packs, minimum 1
+    };
+    
+    // Add selling plan for autoship only if valid
+    if (selectedOption === 'autoship' && sellingPlanId && sellingPlanId.trim() !== '' && !isNaN(parseInt(sellingPlanId))) {
+      itemData.selling_plan = parseInt(sellingPlanId);
+    }
+    
+    console.log('Adding to cart:', itemData);
+    items.push(itemData);
+    
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ items: items })
+    })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(err => { throw new Error(err.description || 'Failed to add to cart'); });
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Added to cart:', data);
+      
+      // Check if there was an error in the response
+      if (data.status === 422 || data.description) {
+        throw new Error(data.description || 'Error adding to cart');
+      }
+      
+      const note = selectedOption === 'autoship' 
+        ? `Subscription Order: ${packQuantity} cans`
+        : `One-Time Order: ${packQuantity} cans`;
+      
+      return fetch('/cart/update.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ note: note })
+      });
+    })
+    .then(response => response.json())
+    .then(data => {
+      s703AfterAdd();
+    })
+    .catch(error => {
+      console.error('Error adding to cart:', error);
+      alert('Error: ' + error.message);
+    });
+  };
+  
+  // ==================== PANELS ====================
+  window.s703OpenPanel = function(type) {
+    let panel;
+    
+    if (type === 'ingredients') {
+      panel = document.getElementById('s703IngredientsPanel');
+    } else if (type === 'nutrition') {
+      panel = document.getElementById('s703NutritionPanel');
+    }
+    
+    if (panel) {
+      if (typeof panel.showModal === 'function') {
+        panel.showModal();
+      } else {
+        panel.setAttribute('open', '');
+      }
+    }
+  };
+  
+  document.querySelectorAll('.s703-panel').forEach(function (dlg) {
+    // The dialog itself is the event target only when the press landed on the
+    // backdrop rather than inside .s703-panel-inner.
+    dlg.addEventListener('click', function (e) { if (e.target === dlg) s703ClosePanel(); });
+  });
+
+  window.s703ClosePanel = function() {
+    document.querySelectorAll('.s703-panel').forEach(panel => {
+      if (panel.close) { panel.close(); } else { panel.removeAttribute('open'); }
+    });
+  };
+  
+  // Keyboard navigation
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      s703ClosePanel();
+    }
+  });
+  
+  const subToggle = document.getElementById('s703SubToggle');
+  if (subToggle) {
+    subToggle.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        s703SelectSubscription();
+      }
+    });
+  }
+  
+  const onetimeToggle = document.getElementById('s703OnetimeToggle');
+  if (onetimeToggle) {
+    onetimeToggle.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        s703SelectOnetime();
+      }
+    });
+  }
+  
+  // ==================== ACCORDION ====================
+  window.s703ToggleAccordion = function(button) {
+    const content = button.nextElementSibling;
+    const isActive = button.classList.contains('active');
+    
+    if (isActive) {
+      button.classList.remove('active');
+      button.setAttribute('aria-expanded', 'false');
+      content.classList.remove('active');
+    } else {
+      button.classList.add('active');
+      button.setAttribute('aria-expanded', 'true');
+      content.classList.add('active');
+    }
+  };
+  
+})();
+</script>
+{% schema %}
+{
+  "name": "703-hero-banner-mobile",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Color Scheme"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "default": "#d32f2f"
+    },
+    {
+      "type": "header",
+      "content": "Carousel Settings"
+    },
+    {
+      "type": "range",
+      "id": "carousel_border_radius",
+      "label": "Carousel Border Radius",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "carousel_top_padding",
+      "label": "Carousel Top Padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 20,
+      "unit": "px",
+      "info": "Space from section above"
+    },
+    {
+      "type": "range",
+      "id": "carousel_dots_bottom",
+      "label": "Dots Position from Bottom",
+      "min": 8,
+      "max": 50,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge Text",
+      "default": "BEST SELLER"
+    },
+    {
+      "type": "image_picker",
+      "id": "badge_icon",
+      "label": "Badge Icon"
+    },
+    {
+      "type": "color",
+      "id": "badge_bg_color",
+      "label": "Badge Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Badge Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Static Images"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_static_on_mobile",
+      "label": "Show Static Images on Mobile",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "static_image_height",
+      "label": "Static Image Height",
+      "min": 100,
+      "max": 400,
+      "step": 10,
+      "default": 200,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "static_gap",
+      "label": "Gap Between Static Images",
+      "min": 4,
+      "max": 32,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "static_border_radius",
+      "label": "Static Image Border Radius",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Testimonial"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_testimonial",
+      "label": "Show Testimonial",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "testimonial_quote",
+      "label": "Testimonial Quote",
+      "default": "One can in and never felt H."
+    },
+    {
+      "type": "range",
+      "id": "testimonial_font_size",
+      "label": "Testimonial Font Size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "quote_line_height",
+      "label": "Quote Line Height",
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1,
+      "default": 1.4
+    },
+    {
+      "type": "range",
+      "id": "star_size",
+      "label": "Star Size",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "star_spacing",
+      "label": "Star Spacing",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "default": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "testimonial_bottom_spacing",
+      "label": "Space Below Testimonial",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "default": 15,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Product Heading",
+      "default": "THE MOOD BOOSTING STRESS MELTING ZERO PROOF COCKTAIL"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "label": "Heading Font Size",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "heading_line_height",
+      "label": "Heading Line Height",
+      "min": 80,
+      "max": 150,
+      "step": 5,
+      "default": 95,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "heading_letter_spacing",
+      "label": "Heading Letter Spacing",
+      "min": -5,
+      "max": 10,
+      "step": 0.5,
+      "default": 0,
+      "unit": "em"
+    },
+    {
+      "type": "range",
+      "id": "heading_top_spacing",
+      "label": "Space Above Heading",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "default": 15,
+      "unit": "px",
+      "info": "Space between testimonial and heading"
+    },
+    {
+      "type": "header",
+      "content": "Description"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Product Description",
+      "default": "<p>Experience the perfect blend of flavor and relaxation.</p>"
+    },
+    {
+      "type": "range",
+      "id": "description_font_size",
+      "label": "Description Font Size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "description_line_height",
+      "label": "Description Line Height",
+      "min": 1.2,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.6
+    },
+    {
+      "type": "header",
+      "content": "Icon Badges / Features"
+    },
+    {
+      "type": "color",
+      "id": "icon_stroke_color",
+      "label": "Icon Circle Stroke Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "icon_stroke_width",
+      "label": "Icon Circle Stroke Width",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_circle_size",
+      "label": "Icon Circle Size",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_padding",
+      "label": "Icon Padding",
+      "min": 5,
+      "max": 20,
+      "step": 1,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "features_font_size",
+      "label": "Features Font Size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Info Buttons"
+    },
+    {
+      "type": "range",
+      "id": "info_button_font_size",
+      "label": "Info Button Font Size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "info_buttons_bottom_spacing",
+      "label": "Space Below Info Buttons",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "default": 30,
+      "unit": "px",
+      "info": "Gap between buttons and subscription section"
+    },
+    {
+      "type": "range",
+      "id": "subscription_wrapper_top_spacing",
+      "label": "Space Above Subscription Box",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "default": 40,
+      "unit": "px",
+      "info": "Total space from info buttons to subscription box"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_ingredients",
+      "label": "Show Ingredients Button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "ingredients_label",
+      "label": "Ingredients Button Label",
+      "default": "Ingredients"
+    },
+    {
+      "type": "richtext",
+      "id": "ingredients_content",
+      "label": "Ingredients Content",
+      "info": "Supports rich text, tables, and formatting"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_nutrition",
+      "label": "Show Nutrition Facts Button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "nutrition_label",
+      "label": "Nutrition Facts Button Label",
+      "default": "Nutrition Facts"
+    },
+    {
+      "type": "richtext",
+      "id": "nutrition_content",
+      "label": "Nutrition Facts Content",
+      "info": "Supports rich text, tables, and formatting"
+    },
+    {
+      "type": "range",
+      "id": "panel_content_font_size",
+      "label": "Panel Content Font Size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Pricing Configuration"
+    },
+    {
+      "type": "text",
+      "id": "regular_price_per_can",
+      "label": "Regular Price Per Can",
+      "default": "6.00",
+      "info": "Normal price per can (e.g., 6.00)"
+    },
+    {
+      "type": "text",
+      "id": "subscription_price_per_can",
+      "label": "Subscription Price Per Can",
+      "default": "3.99",
+      "info": "Discounted price per can for subscriptions"
+    },
+    {
+      "type": "range",
+      "id": "cans_per_case",
+      "label": "Cans Per Case",
+      "min": 6,
+      "max": 24,
+      "step": 6,
+      "default": 12,
+      "info": "Quantity increments (1 case = 12 cans)"
+    },
+    {
+      "type": "range",
+      "id": "min_order_qty",
+      "label": "Minimum Order Quantity (Cans)",
+      "min": 6,
+      "max": 48,
+      "step": 6,
+      "default": 12,
+      "info": "Minimum number of cans required"
+    },
+    {
+      "type": "header",
+      "content": "=== TRIAL OFFER ==="
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trial_offer",
+      "label": "Show Trial Offer Section",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "trial_header_bg",
+      "label": "Trial Header Background",
+      "default": "#2A2552"
+    },
+    {
+      "type": "text",
+      "id": "trial_header_label",
+      "label": "Trial Header Label",
+      "default": "Starter Pack"
+    },
+    {
+      "type": "text",
+      "id": "trial_header_badge",
+      "label": "Trial Header Badge Text",
+      "default": "New Customers Only"
+    },
+    {
+      "type": "text",
+      "id": "trial_title",
+      "label": "Trial Title",
+      "default": "6 PACK TRIAL"
+    },
+    {
+      "type": "text",
+      "id": "trial_badge_1",
+      "label": "Trial Badge 1",
+      "default": "20% SAVINGS"
+    },
+    {
+      "type": "text",
+      "id": "trial_badge_2",
+      "label": "Trial Badge 2",
+      "default": "FREE SHIPPING"
+    },
+    {
+      "type": "range",
+      "id": "trial_title_font_size",
+      "label": "Trial Title Font Size",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "default": 36,
+      "unit": "px"
+    },
+    {
+      "type": "text",
+      "id": "trial_price",
+      "label": "Trial Price",
+      "default": "24.99"
+    },
+    {
+      "type": "range",
+      "id": "trial_price_font_size",
+      "label": "Trial Price Font Size",
+      "min": 20,
+      "max": 40,
+      "step": 2,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "textarea",
+      "id": "trial_description",
+      "label": "Trial Description",
+      "default": "Try 6 cans now. Get a full 12-pack in a month locked into our best price."
+    },
+    {
+      "type": "text",
+      "id": "trial_cta_text",
+      "label": "Trial CTA Button Text",
+      "default": "START YOUR 1 MONTH TRIAL 6 PACK"
+    },
+    {
+      "type": "color",
+      "id": "trial_cta_bg_color",
+      "label": "Trial CTA Background",
+      "default": "#EF4444"
+    },
+    {
+      "type": "color",
+      "id": "trial_cta_text_color",
+      "label": "Trial CTA Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "trial_cta_font_size",
+      "label": "Trial CTA Font Size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "default": 15,
+      "unit": "px"
+    },
+    {
+      "type": "text",
+      "id": "trial_upgrade_note",
+      "label": "Trial Upgrade Note",
+      "default": "Trial upgrades to a 12-pack ($47.88/mo + Free Ship)"
+    },
+    {
+      "type": "product",
+      "id": "trial_product",
+      "label": "Trial Product"
+    },
+    {
+      "type": "text",
+      "id": "trial_variant_id",
+      "label": "Trial Variant ID (optional)"
+    },
+    {
+      "type": "header",
+      "content": "Flavor selector"
+    },
+    {
+      "type": "text",
+      "id": "single_flavor_footer",
+      "label": "Footer when only one flavor",
+      "default": "More flavors coming soon"
+    },
+    {
+      "type": "text",
+      "id": "variety_pack_label",
+      "label": "Footer when several flavors",
+      "default": "Mix and match in your account any time"
+    },
+    {
+      "type": "url",
+      "id": "variety_pack_url",
+      "label": "Footer link (optional)"
+    },
+    {
+      "type": "header",
+      "content": "After adding to cart"
+    },
+    {
+      "type": "select",
+      "id": "after_add",
+      "label": "What happens next",
+      "options": [
+        { "value": "drawer", "label": "Open the slide-out cart" },
+        { "value": "cart", "label": "Go to the cart page" },
+        { "value": "checkout", "label": "Go to checkout" }
+      ],
+      "default": "drawer",
+      "info": "The slide-out cart needs Theme settings > Cart > Cart type set to Drawer. Without it this falls back to the cart page."
+    },
+    {
+      "type": "text",
+      "id": "trial_selling_plan_id",
+      "label": "Trial Loop Selling Plan ID"
+    },
+    {
+      "type": "header",
+      "content": "Trial Timeline"
+    },
+    {
+      "type": "text",
+      "id": "timeline_day_1",
+      "label": "Day 1 Label",
+      "default": "TODAY"
+    },
+    {
+      "type": "text",
+      "id": "timeline_day_1_label",
+      "label": "Day 1 Sublabel",
+      "default": "Start Your 6 Pack Trial"
+    },
+    {
+      "type": "text",
+      "id": "timeline_desc_1",
+      "label": "Day 1 Description",
+      "default": "See what the hype is all about"
+    },
+    {
+      "type": "image_picker",
+      "id": "timeline_icon_1",
+      "label": "Day 1 Icon (optional)"
+    },
+    {
+      "type": "text",
+      "id": "timeline_day_2",
+      "label": "Day 2 Label",
+      "default": "DAY 24"
+    },
+    {
+      "type": "text",
+      "id": "timeline_day_2_label",
+      "label": "Day 2 Sublabel",
+      "default": "Trial Reminder"
+    },
+    {
+      "type": "text",
+      "id": "timeline_desc_2",
+      "label": "Day 2 Description",
+      "default": "Reminder that your trail is ending soon"
+    },
+    {
+      "type": "image_picker",
+      "id": "timeline_icon_2",
+      "label": "Day 2 Icon (optional)"
+    },
+    {
+      "type": "text",
+      "id": "timeline_day_3",
+      "label": "Day 3 Label",
+      "default": "DAY 28"
+    },
+    {
+      "type": "text",
+      "id": "timeline_day_3_label",
+      "label": "Day 3 Sublabel",
+      "default": "Trial Ends"
+    },
+    {
+      "type": "text",
+      "id": "timeline_desc_3",
+      "label": "Day 3 Description",
+      "default": "Auto renews, cancel anytime"
+    },
+    {
+      "type": "image_picker",
+      "id": "timeline_icon_3",
+      "label": "Day 3 Icon (optional)"
+    },
+    {
+      "type": "header",
+      "content": "=== AUTO-SHIP OPTION ==="
+    },
+    {
+      "type": "text",
+      "id": "autoship_title",
+      "label": "Auto-Ship Title",
+      "default": "AUTO SHIP"
+    },
+    {
+      "type": "text",
+      "id": "autoship_badge_1",
+      "label": "Auto-Ship Badge 1",
+      "default": "20% SAVINGS"
+    },
+    {
+      "type": "text",
+      "id": "autoship_badge_2",
+      "label": "Auto-Ship Badge 2",
+      "default": "FREE SHIPPING"
+    },
+    {
+      "type": "text",
+      "id": "autoship_price",
+      "label": "Auto-Ship Price",
+      "default": "47.88"
+    },
+    {
+      "type": "text",
+      "id": "autoship_price_per_can",
+      "label": "Auto-Ship Price Per Can",
+      "default": "3.99"
+    },
+    {
+      "type": "text",
+      "id": "loop_selling_plan_id",
+      "label": "Loop Selling Plan ID"
+    },
+    {
+      "type": "product",
+      "id": "autoship_product",
+      "label": "Auto-Ship Product"
+    },
+    {
+      "type": "header",
+      "content": "=== ONE-TIME OPTION ==="
+    },
+    {
+      "type": "text",
+      "id": "onetime_title",
+      "label": "One-Time Title",
+      "default": "ONE TIME"
+    },
+    {
+      "type": "text",
+      "id": "onetime_price",
+      "label": "One-Time Price",
+      "default": "60.00"
+    },
+    {
+      "type": "text",
+      "id": "onetime_price_per_can",
+      "label": "One-Time Price Per Can",
+      "default": "5.00"
+    },
+    {
+      "type": "product",
+      "id": "onetime_product",
+      "label": "One-Time Product"
+    },
+    {
+      "type": "header",
+      "content": "Purchase Options Styling"
+    },
+    {
+      "type": "range",
+      "id": "option_title_font_size",
+      "label": "Option Title Font Size",
+      "min": 16,
+      "max": 28,
+      "step": 1,
+      "default": 22,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "option_price_font_size",
+      "label": "Option Price Font Size",
+      "min": 18,
+      "max": 32,
+      "step": 1,
+      "default": 26,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "option_badge_bg_color",
+      "label": "Badge Background Color",
+      "default": "#FEF08A"
+    },
+    {
+      "type": "color",
+      "id": "option_badge_text_color",
+      "label": "Badge Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Main CTA Button"
+    },
+    {
+      "type": "text",
+      "id": "main_cta_text",
+      "label": "Main CTA Text",
+      "default": "GET TIPSY"
+    },
+    {
+      "type": "range",
+      "id": "main_cta_font_size",
+      "label": "Main CTA Font Size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "main_cta_bg_color",
+      "label": "Main CTA Background",
+      "default": "#d32f2f"
+    },
+    {
+      "type": "color",
+      "id": "main_cta_text_color",
+      "label": "Main CTA Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "pack_label",
+      "label": "Pack Label",
+      "default": "PACK"
+    },
+    {
+      "type": "range",
+      "id": "subscription_border_radius",
+      "label": "Box Border Radius",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "subscription_bg_start",
+      "label": "Accent Color",
+      "default": "#2a2552"
+    },
+    {
+      "type": "color",
+      "id": "subscription_bg_end",
+      "label": "Accent Color End",
+      "default": "#1e2442"
+    },
+    {
+      "type": "color",
+      "id": "benefits_bg_color",
+      "label": "Benefits Background",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "header",
+      "content": "Flavor Section Styling"
+    },
+    {
+      "type": "range",
+      "id": "flavor_image_size",
+      "label": "Flavor Image Size",
+      "min": 40,
+      "max": 100,
+      "step": 2,
+      "default": 64,
+      "unit": "px",
+      "info": "1:1 aspect ratio square image"
+    },
+    {
+      "type": "range",
+      "id": "flavor_item_border_radius",
+      "label": "Flavor Item Border Radius",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "default": 6,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "flavor_item_padding_top",
+      "label": "Flavor Item Top Padding",
+      "min": 5,
+      "max": 30,
+      "step": 1,
+      "default": 13,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "flavor_item_padding_bottom",
+      "label": "Flavor Item Bottom Padding",
+      "min": 5,
+      "max": 30,
+      "step": 1,
+      "default": 13,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "flavor_name_font_size",
+      "label": "Flavor Name Font Size",
+      "min": 16,
+      "max": 32,
+      "step": 1,
+      "default": 22,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "flavor_star_size",
+      "label": "Star Size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "flavor_rating_font_size",
+      "label": "Rating Number Font Size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "flavor_pack_price_font_size",
+      "label": "Pack & Price Font Size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "flavor_item_spacing",
+      "label": "Space Between Flavor Items",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "flavor_section_bottom_padding",
+      "label": "Flavor Section Bottom Padding",
+      "min": 5,
+      "max": 40,
+      "step": 5,
+      "default": 15,
+      "unit": "px",
+      "info": "Space below flavors to box edge"
+    },
+    {
+      "type": "range",
+      "id": "add_button_font_size",
+      "label": "Add+ Button Font Size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "qty_display_font_size",
+      "label": "Quantity Display Font Size",
+      "min": 8,
+      "max": 16,
+      "step": 1,
+      "default": 11,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "qty_display_line_height",
+      "label": "Quantity Display Line Height",
+      "min": 1,
+      "max": 1.6,
+      "step": 0.1,
+      "default": 1.2
+    },
+    {
+      "type": "header",
+      "content": "CTA Button"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button Text",
+      "default": "CUSTOMIZE AND SAVE"
+    },
+    {
+      "type": "range",
+      "id": "cta_font_size",
+      "label": "Button Font Size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "cta_padding_x",
+      "label": "Button Horizontal Padding",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "cta_padding_y",
+      "label": "Button Vertical Padding",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "cta_bottom_spacing",
+      "label": "Space Below CTA Button",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg_color",
+      "label": "Button Background",
+      "default": "#d32f2f"
+    },
+    {
+      "type": "color",
+      "id": "cta_text_color",
+      "label": "Button Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "checkbox",
+      "id": "redirect_to_cart",
+      "label": "Go to Cart Instead of Checkout",
+      "default": false,
+      "info": "Check to review cart before checkout"
+    },
+    {
+      "type": "header",
+      "content": "Delivery Info Design"
+    },
+    {
+      "type": "color",
+      "id": "delivery_bg_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "delivery_border_color",
+      "label": "Border Color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "range",
+      "id": "delivery_border_radius",
+      "label": "Border Radius",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "delivery_padding_x",
+      "label": "Horizontal Padding",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "delivery_padding_y",
+      "label": "Vertical Padding",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "delivery_bottom_spacing",
+      "label": "Space Below Delivery Info",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "stock_dot_size",
+      "label": "Stock Dot Size",
+      "min": 6,
+      "max": 20,
+      "step": 2,
+      "default": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "stock_text_size",
+      "label": "Stock Text Size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "delivery_text_size",
+      "label": "Delivery Text Size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "delivery_text_color",
+      "label": "Delivery Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "delivery_highlight_color",
+      "label": "Date Highlight Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "delivery_countdown_color",
+      "label": "Countdown Color",
+      "default": "#4caf50"
+    },
+    {
+      "type": "header",
+      "content": "Inventory Levels & Display"
+    },
+    {
+      "type": "range",
+      "id": "inventory_high",
+      "label": "High Stock Threshold",
+      "min": 100,
+      "max": 500,
+      "step": 10,
+      "default": 250
+    },
+    {
+      "type": "text",
+      "id": "stock_high_text",
+      "label": "High Stock Text",
+      "default": "In Stock"
+    },
+    {
+      "type": "color",
+      "id": "stock_high_color",
+      "label": "High Stock Color",
+      "default": "#4caf50"
+    },
+    {
+      "type": "range",
+      "id": "inventory_medium",
+      "label": "Medium Stock Threshold",
+      "min": 50,
+      "max": 250,
+      "step": 10,
+      "default": 150
+    },
+    {
+      "type": "text",
+      "id": "stock_medium_text",
+      "label": "Medium Stock Text",
+      "default": "Limited Inventory"
+    },
+    {
+      "type": "color",
+      "id": "stock_medium_color",
+      "label": "Medium Stock Color",
+      "default": "#ff9800"
+    },
+    {
+      "type": "range",
+      "id": "inventory_low",
+      "label": "Low Stock Threshold",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "default": 50
+    },
+    {
+      "type": "text",
+      "id": "stock_low_text",
+      "label": "Low Stock Text",
+      "default": "Almost Gone"
+    },
+    {
+      "type": "color",
+      "id": "stock_low_color",
+      "label": "Low Stock Color",
+      "default": "#f44336"
+    },
+    {
+      "type": "text",
+      "id": "stock_out_text",
+      "label": "Out of Stock Text",
+      "default": "Sold Out"
+    },
+    {
+      "type": "color",
+      "id": "stock_out_color",
+      "label": "Out of Stock Color",
+      "default": "#9e9e9e"
+    },
+    {
+      "type": "header",
+      "content": "Delivery Date Calculation"
+    },
+    {
+      "type": "text",
+      "id": "non_shipping_days",
+      "label": "Non-Shipping Days",
+      "default": "[0, 6]",
+      "info": "Day numbers (0=Sunday, 6=Saturday)"
+    },
+    {
+      "type": "range",
+      "id": "cutoff_hour",
+      "label": "Order Cutoff Hour (24h)",
+      "min": 0,
+      "max": 23,
+      "step": 1,
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "cutoff_minute",
+      "label": "Order Cutoff Minute",
+      "min": 0,
+      "max": 59,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "time_zone",
+      "label": "Cutoff Time Zone",
+      "options": [
+        {
+          "value": "America/Los_Angeles",
+          "label": "Pacific (PST/PDT)"
+        },
+        {
+          "value": "America/Denver",
+          "label": "Mountain (MST/MDT)"
+        },
+        {
+          "value": "America/Chicago",
+          "label": "Central (CST/CDT)"
+        },
+        {
+          "value": "America/New_York",
+          "label": "Eastern (EST/EDT)"
+        }
+      ],
+      "default": "America/Los_Angeles"
+    },
+    {
+      "type": "range",
+      "id": "min_transit_days",
+      "label": "Minimum Transit Days",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "max_transit_days",
+      "label": "Maximum Transit Days",
+      "min": 1,
+      "max": 14,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Guarantee Section"
+    },
+    {
+      "type": "color",
+      "id": "guarantee_bg_color",
+      "label": "Background Color",
+      "default": "#fffef0"
+    },
+    {
+      "type": "range",
+      "id": "guarantee_border_width",
+      "label": "Border Width",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "default": 2,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "guarantee_border_style",
+      "label": "Border Style",
+      "options": [
+        {
+          "value": "solid",
+          "label": "Solid"
+        },
+        {
+          "value": "dashed",
+          "label": "Dashed"
+        },
+        {
+          "value": "dotted",
+          "label": "Dotted"
+        }
+      ],
+      "default": "dashed"
+    },
+    {
+      "type": "color",
+      "id": "guarantee_border_color",
+      "label": "Border Color",
+      "default": "#daa520"
+    },
+    {
+      "type": "range",
+      "id": "guarantee_border_radius",
+      "label": "Border Radius",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "guarantee_padding",
+      "label": "Padding",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "guarantee_icon_size",
+      "label": "Icon Size",
+      "min": 32,
+      "max": 80,
+      "step": 4,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "image_picker",
+      "id": "guarantee_icon",
+      "label": "Guarantee Icon"
+    },
+    {
+      "type": "text",
+      "id": "guarantee_header",
+      "label": "Guarantee Header",
+      "default": "YOUR ORDER IS PROTECTED BY OUR"
+    },
+    {
+      "type": "range",
+      "id": "guarantee_header_size",
+      "label": "Header Font Size",
+      "min": 8,
+      "max": 16,
+      "step": 1,
+      "default": 10,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "guarantee_header_color",
+      "label": "Header Color",
+      "default": "#daa520"
+    },
+    {
+      "type": "text",
+      "id": "guarantee_title",
+      "label": "Guarantee Title",
+      "default": "100 DAY HAPPINESS GUARANTEE"
+    },
+    {
+      "type": "range",
+      "id": "guarantee_title_size",
+      "label": "Title Font Size",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "textarea",
+      "id": "guarantee_text",
+      "label": "Guarantee Text",
+      "default": "If for any reason you don't like our Zero-Proof Cocktails, you can return it and receive a full refund."
+    },
+    {
+      "type": "range",
+      "id": "guarantee_text_size",
+      "label": "Text Font Size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "guarantee_text_color",
+      "label": "Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Accordion Styling"
+    },
+    {
+      "type": "color",
+      "id": "accordion_border_color",
+      "label": "Border Color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "accordion_hover_bg",
+      "label": "Hover Background",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "range",
+      "id": "accordion_header_padding_x",
+      "label": "Header Horizontal Padding",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "accordion_header_padding_y",
+      "label": "Header Vertical Padding",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "accordion_content_padding_bottom",
+      "label": "Content Bottom Padding",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "accordion_title_size",
+      "label": "Title Font Size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "accordion_title_weight",
+      "label": "Title Font Weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi-Bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "select",
+      "id": "accordion_title_transform",
+      "label": "Title Text Transform",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        },
+        {
+          "value": "capitalize",
+          "label": "Capitalize"
+        }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "accordion_title_spacing",
+      "label": "Title Letter Spacing",
+      "min": 0,
+      "max": 3,
+      "step": 0.1,
+      "default": 0.5,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "accordion_title_color",
+      "label": "Title Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "accordion_icon_size",
+      "label": "Icon Size",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "accordion_icon_color",
+      "label": "Icon Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "accordion_content_size",
+      "label": "Content Font Size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "accordion_content_line_height",
+      "label": "Content Line Height",
+      "min": 1.2,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.6
+    },
+    {
+      "type": "color",
+      "id": "accordion_content_color",
+      "label": "Content Color",
+      "default": "#333333"
+    },
+    {
+      "type": "header",
+      "content": "Performance"
+    },
+    {
+      "type": "checkbox",
+      "id": "skeleton_enabled",
+      "label": "Enable Skeleton Loader",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "carousel_slide",
+      "name": "Carousel Slide",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "select",
+          "id": "media_type",
+          "label": "Media Type",
+          "options": [
+            {
+              "value": "image",
+              "label": "Image"
+            },
+            {
+              "value": "video",
+              "label": "Video"
+            }
+          ],
+          "default": "image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "video_url",
+          "label": "Video URL"
+        },
+        {
+          "type": "checkbox",
+          "id": "autoplay",
+          "label": "Autoplay Video",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "fixed_media",
+      "name": "Fixed Media",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "select",
+          "id": "media_type",
+          "label": "Media Type",
+          "options": [
+            {
+              "value": "image",
+              "label": "Image"
+            },
+            {
+              "value": "video",
+              "label": "Video"
+            }
+          ],
+          "default": "image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "video_url",
+          "label": "Video URL"
+        },
+        {
+          "type": "checkbox",
+          "id": "autoplay",
+          "label": "Autoplay Video",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "full_width",
+          "label": "Full Width",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "icon_badge",
+      "name": "Icon Badge",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Feature"
+        }
+      ]
+    },
+    {
+      "type": "subscription_benefit",
+      "name": "Subscription Benefit",
+      "limit": 10,
+      "settings": [
+        {
+          "type": "text",
+          "id": "benefit_text",
+          "label": "Benefit Text",
+          "default": "FREE SHIPPING on first order"
+        }
+      ]
+    },
+    {
+      "type": "flavor",
+      "name": "Flavor/Product",
+      "limit": 10,
+      "settings": [
+        {
+          "type": "text",
+          "id": "flavor_name",
+          "label": "Flavor name",
+          "default": "Pineapple Martini"
+        },
+        {
+          "type": "text",
+          "id": "flavor_desc",
+          "label": "Flavor description"
+        },
+        {
+          "type": "color",
+          "id": "swatch_color",
+          "label": "Swatch color",
+          "default": "#ffe748"
+        },
+        {
+          "type": "image_picker",
+          "id": "swatch_image",
+          "label": "Swatch image (overrides color)"
+        },
+        {
+          "type": "richtext",
+          "id": "ingredients_content",
+          "label": "Ingredients for this flavor",
+          "info": "Falls back to the section's Ingredients panel when empty."
+        },
+        {
+          "type": "richtext",
+          "id": "nutrition_content",
+          "label": "Nutrition facts for this flavor",
+          "info": "Falls back to the section's Nutrition panel when empty."
+        },
+        {
+          "type": "text",
+          "id": "trial_variant_id",
+          "label": "Trial (6 pack) Variant ID"
+        },
+        {
+          "type": "text",
+          "id": "autoship_variant_id",
+          "label": "Auto-Ship (12 pack subscription) Variant ID"
+        },
+        {
+          "type": "text",
+          "id": "onetime_variant_id",
+          "label": "One-Time (12 pack) Variant ID"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "text",
+          "id": "variant_title",
+          "label": "Variant Title or SKU (Optional)"
+        },
+        {
+          "type": "image_picker",
+          "id": "flavor_image",
+          "label": "Product Image (Optional)"
+        },
+        {
+          "type": "text",
+          "id": "rating",
+          "label": "Rating",
+          "default": "4.8"
+        }
+      ]
+    },
+    {
+      "type": "faq_item",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "How does this product work?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer"
+        },
+        {
+          "type": "checkbox",
+          "id": "default_open",
+          "label": "Open by Default",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "703 Hero Banner Mobile",
+      "blocks": [
+        {
+          "type": "carousel_slide"
+        },
+        {
+          "type": "carousel_slide"
+        },
+        {
+          "type": "fixed_media"
+        },
+        {
+          "type": "fixed_media"
+        },
+        {
+          "type": "icon_badge"
+        },
+        {
+          "type": "icon_badge"
+        },
+        {
+          "type": "icon_badge"
+        },
+        {
+          "type": "icon_badge"
+        },
+        {
+          "type": "subscription_benefit"
+        },
+        {
+          "type": "subscription_benefit"
+        },
+        {
+          "type": "subscription_benefit"
+        },
+        {
+          "type": "subscription_benefit"
+        },
+        {
+          "type": "flavor"
+        },
+        {
+          "type": "faq_item"
+        },
+        {
+          "type": "faq_item"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

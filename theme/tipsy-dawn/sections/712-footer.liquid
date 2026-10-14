@@ -1,0 +1,1119 @@
+{% liquid
+  assign current_year = 'now' | date: '%Y'
+  assign accent_color = section.settings.accent_color | default: '#C6F952'
+  assign text_color = section.settings.text_color | default: '#000000'
+  assign bg_color = section.settings.bg_color | default: '#FFFFFF'
+  assign border_color = section.settings.border_color | default: '#E2E2E2'
+  assign input_border = section.settings.input_border_color | default: '#E2E2E2'
+  assign placeholder_color = section.settings.placeholder_color | default: '#A9A9A9'
+%}
+
+<style>
+  .section-712-footer {
+    --s712-accent: {{ accent_color }};
+    --s712-text: {{ text_color }};
+    --s712-bg: {{ bg_color }};
+    --s712-border: {{ border_color }};
+    --s712-input-border: {{ input_border }};
+    --s712-placeholder: {{ placeholder_color }};
+    
+    background-color: var(--s712-bg);
+    color: var(--s712-text);
+    padding: {{ section.settings.padding_top }}px {{ section.settings.padding_horizontal }}px {{ section.settings.padding_bottom }}px;
+  }
+
+  .section-712-footer__container {
+    max-width: {{ section.settings.container_width }}px;
+    margin: 0 auto;
+  }
+
+  /* Desktop Layout */
+  .section-712-footer__desktop {
+    display: none;
+  }
+
+  .section-712-footer__columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.8fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 25px;
+  }
+
+  .section-712-footer__column {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .section-712-footer__column-title {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.5;
+    margin: 0 0 7px 0;
+  }
+
+  .section-712-footer__link {
+    color: var(--s712-text);
+    text-decoration: none;
+    font-size: 16px;
+    line-height: 1.5;
+    transition: opacity 0.2s ease;
+  }
+
+  .section-712-footer__link:hover {
+    opacity: 0.7;
+  }
+
+  .section-712-footer__link:focus-visible {
+    outline: 2px solid var(--s712-accent);
+    outline-offset: 2px;
+  }
+
+  /* Newsletter Section */
+  .section-712-footer__newsletter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-712-footer__logo {
+    max-width: {{ section.settings.logo_width }}px;
+    height: auto;
+  }
+
+  .section-712-footer__benefits {
+    display: flex;
+    gap: 23px;
+    margin-bottom: 3px;
+    flex-wrap: nowrap;
+    justify-content: center;
+  }
+
+  .section-712-footer__benefit {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .section-712-footer__checkmark {
+    width: 16px;
+    height: 16px;
+    background-color: var(--s712-accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .section-712-footer__checkmark svg {
+    width: 8px;
+    height: 7px;
+    stroke: var(--s712-text);
+    stroke-width: 1.5;
+    fill: none;
+  }
+
+  .section-712-footer__form-wrapper {
+    background-color: var(--s712-text);
+    border-radius: 15px;
+    padding: 6px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .section-712-footer__form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .section-712-footer__input {
+    background-color: var(--s712-bg);
+    border: 1px solid var(--s712-input-border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    font-size: 14px;
+    color: var(--s712-text);
+    width: 100%;
+  }
+
+  .section-712-footer__input::placeholder {
+    color: var(--s712-placeholder);
+  }
+
+  .section-712-footer__input:focus {
+    outline: 2px solid var(--s712-accent);
+    outline-offset: -1px;
+  }
+
+  .section-712-footer__submit {
+    background-color: var(--s712-accent);
+    border: 1px solid var(--s712-text);
+    border-radius: 10px;
+    padding: 18px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--s712-text);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: opacity 0.2s ease;
+  }
+
+  .section-712-footer__submit:hover {
+    opacity: 0.9;
+  }
+
+  .section-712-footer__submit:focus-visible {
+    outline: 2px solid var(--s712-text);
+    outline-offset: 2px;
+  }
+
+  .section-712-footer__submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Social Icons */
+  .section-712-footer__social {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  .section-712-footer__social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: var(--s712-text);
+    transition: opacity 0.2s ease;
+  }
+
+  .section-712-footer__social-link:hover {
+    opacity: 0.7;
+  }
+
+  .section-712-footer__social-link:focus-visible {
+    outline: 2px solid var(--s712-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  .section-712-footer__social-link svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+  }
+
+  /* Copyright */
+  .section-712-footer__copyright {
+    text-align: center;
+    font-size: 10px;
+    line-height: 1;
+  }
+
+  /* Mobile Layout */
+  .section-712-footer__mobile {
+    display: block;
+  }
+
+  .section-712-footer__accordion {
+    border-bottom: 1px solid var(--s712-border);
+  }
+
+  .section-712-footer__accordion-button {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 17px 20px;
+    background: none;
+    border: none;
+    border-top: 1px solid var(--s712-border);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--s712-text);
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .section-712-footer__accordion-button:focus-visible {
+    outline: 2px solid var(--s712-accent);
+    outline-offset: -2px;
+  }
+
+  .section-712-footer__accordion-icon {
+    width: 40px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+  }
+
+  .section-712-footer__accordion-icon svg {
+    width: 20px;
+    height: 10px;
+    stroke: var(--s712-text);
+    stroke-width: 1.5;
+    fill: none;
+  }
+
+  .section-712-footer__accordion.is-open .section-712-footer__accordion-icon {
+    transform: rotate(180deg);
+  }
+
+  .section-712-footer__accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .section-712-footer__accordion.is-open .section-712-footer__accordion-content {
+    max-height: 500px;
+  }
+
+  .section-712-footer__accordion-links {
+    padding: 0 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* Skeleton Loader */
+  {% if section.settings.skeleton_enabled %}
+  .section-712-footer__skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: s712-pulse 1.5s ease-in-out infinite;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section-712-footer__skeleton {
+      animation: none;
+    }
+  }
+
+  @keyframes s712-pulse {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  .section-712-footer__skeleton--logo {
+    width: 80px;
+    height: 29px;
+    margin: 0 auto 8px;
+  }
+
+  .section-712-footer__skeleton--form {
+    width: 100%;
+    height: 110px;
+    border-radius: 15px;
+  }
+
+  .section-712-footer__skeleton--text {
+    height: 16px;
+    margin-bottom: 8px;
+  }
+
+  .section-712-footer [data-loaded="true"] .section-712-footer__skeleton {
+    display: none;
+  }
+  {% endif %}
+
+  /* Responsive Breakpoints */
+  @media (min-width: 768px) {
+    .section-712-footer__mobile {
+      display: none;
+    }
+
+    .section-712-footer__desktop {
+      display: block;
+    }
+  }
+
+  @media (max-width: 1200px) {
+    .section-712-footer__columns {
+      grid-template-columns: 1fr 1fr 1.5fr 1fr 1fr;
+      gap: 30px;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .section-712-footer__columns {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+    }
+
+    .section-712-footer__newsletter {
+      grid-column: 1 / -1;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+  }
+</style>
+
+<footer class="section-712-footer" role="contentinfo" aria-label="Site footer">
+  <div class="section-712-footer__container">
+    
+    {%- comment -%} Desktop Layout {%- endcomment -%}
+    <div class="section-712-footer__desktop">
+      <div class="section-712-footer__columns">
+        
+        {%- comment -%} Column 1 {%- endcomment -%}
+        {%- if section.blocks.size > 0 -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'column' and forloop.index <= 2 -%}
+              <nav class="section-712-footer__column" {{ block.shopify_attributes }}>
+                <h2 class="section-712-footer__column-title">{{ block.settings.title }}</h2>
+                {%- for i in (1..6) -%}
+                  {%- assign link_text = 'link_' | append: i | append: '_text' -%}
+                  {%- assign link_url = 'link_' | append: i | append: '_url' -%}
+                  {%- if block.settings[link_text] != blank -%}
+                    <a href="{{ block.settings[link_url] }}" class="section-712-footer__link">
+                      {{ block.settings[link_text] }}
+                    </a>
+                  {%- endif -%}
+                {%- endfor -%}
+              </nav>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+
+        {%- comment -%} Newsletter Section {%- endcomment -%}
+        <div class="section-712-footer__newsletter">
+          {%- if section.settings.logo != blank -%}
+            {% if section.settings.skeleton_enabled %}
+              <div class="section-712-footer__skeleton section-712-footer__skeleton--logo" aria-hidden="true"></div>
+            {% endif %}
+            <img 
+              src="{{ section.settings.logo | image_url: width: 200 }}"
+              alt="{{ section.settings.logo.alt | default: shop.name }}"
+              class="section-712-footer__logo"
+              width="{{ section.settings.logo_width }}"
+              height="auto"
+              loading="lazy"
+              decoding="async"
+              onload="this.parentElement.setAttribute('data-loaded', 'true')"
+            >
+          {%- endif -%}
+
+          {%- if section.settings.show_benefits -%}
+            <div class="section-712-footer__benefits">
+              <div class="section-712-footer__benefit">
+                <span class="section-712-footer__checkmark" aria-hidden="true">
+                  <svg viewBox="0 0 8 7"><polyline points="1,3.5 3,5.5 7,1.5"></polyline></svg>
+                </span>
+                <span>{{ section.settings.benefit_1 }}</span>
+              </div>
+              <div class="section-712-footer__benefit">
+                <span class="section-712-footer__checkmark" aria-hidden="true">
+                  <svg viewBox="0 0 8 7"><polyline points="1,3.5 3,5.5 7,1.5"></polyline></svg>
+                </span>
+                <span>{{ section.settings.benefit_2 }}</span>
+              </div>
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.show_newsletter -%}
+            {% if section.settings.skeleton_enabled %}
+              <div class="section-712-footer__skeleton section-712-footer__skeleton--form" aria-hidden="true"></div>
+            {% endif %}
+            <div class="section-712-footer__form-wrapper" data-loaded="true">
+              <form 
+                class="section-712-footer__form s712-klaviyo-form"
+                data-list-id="{{ section.settings.klaviyo_list_id }}"
+                aria-label="Newsletter signup"
+              >
+                <input 
+                  type="email" 
+                  name="email" 
+                  class="section-712-footer__input"
+                  placeholder="{{ section.settings.input_placeholder }}"
+                  required
+                  aria-label="Email address"
+                >
+                <button 
+                  type="submit" 
+                  class="section-712-footer__submit"
+                >
+                  {{ section.settings.submit_text }}
+                </button>
+              </form>
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.show_social -%}
+            <div class="section-712-footer__social">
+              {%- if section.settings.social_facebook != blank -%}
+                <a href="{{ section.settings.social_facebook }}" class="section-712-footer__social-link" aria-label="Facebook" target="_blank" rel="noopener">
+                  <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                </a>
+              {%- endif -%}
+              {%- if section.settings.social_instagram != blank -%}
+                <a href="{{ section.settings.social_instagram }}" class="section-712-footer__social-link" aria-label="Instagram" target="_blank" rel="noopener">
+                  <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                </a>
+              {%- endif -%}
+              {%- if section.settings.social_twitter != blank -%}
+                <a href="{{ section.settings.social_twitter }}" class="section-712-footer__social-link" aria-label="Twitter" target="_blank" rel="noopener">
+                  <svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+                </a>
+              {%- endif -%}
+              {%- if section.settings.social_tiktok != blank -%}
+                <a href="{{ section.settings.social_tiktok }}" class="section-712-footer__social-link" aria-label="TikTok" target="_blank" rel="noopener">
+                  <svg viewBox="0 0 24 24"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+                </a>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        </div>
+
+        {%- comment -%} Columns 4 & 5 {%- endcomment -%}
+        {%- if section.blocks.size > 0 -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'column' and forloop.index > 2 -%}
+              <nav class="section-712-footer__column" {{ block.shopify_attributes }}>
+                <h2 class="section-712-footer__column-title">{{ block.settings.title }}</h2>
+                {%- for i in (1..6) -%}
+                  {%- assign link_text = 'link_' | append: i | append: '_text' -%}
+                  {%- assign link_url = 'link_' | append: i | append: '_url' -%}
+                  {%- if block.settings[link_text] != blank -%}
+                    <a href="{{ block.settings[link_url] }}" class="section-712-footer__link">
+                      {{ block.settings[link_text] }}
+                    </a>
+                  {%- endif -%}
+                {%- endfor -%}
+              </nav>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+
+      </div>
+
+      <p class="section-712-footer__copyright">
+        {{ section.settings.copyright_text | replace: '[year]', current_year }}
+      </p>
+    </div>
+
+    {%- comment -%} Mobile Layout {%- endcomment -%}
+    <div class="section-712-footer__mobile">
+      
+      {%- comment -%} Newsletter Section {%- endcomment -%}
+      <div class="section-712-footer__newsletter">
+        {%- if section.settings.logo != blank -%}
+          {% if section.settings.skeleton_enabled %}
+            <div class="section-712-footer__skeleton section-712-footer__skeleton--logo" aria-hidden="true"></div>
+          {% endif %}
+          <img 
+            src="{{ section.settings.logo | image_url: width: 200 }}"
+            alt="{{ section.settings.logo.alt | default: shop.name }}"
+            class="section-712-footer__logo"
+            width="{{ section.settings.logo_width }}"
+            height="auto"
+            loading="lazy"
+            decoding="async"
+            onload="this.parentElement.setAttribute('data-loaded', 'true')"
+          >
+        {%- endif -%}
+
+        {%- if section.settings.show_benefits -%}
+          <div class="section-712-footer__benefits">
+            <div class="section-712-footer__benefit">
+              <span class="section-712-footer__checkmark" aria-hidden="true">
+                <svg viewBox="0 0 8 7"><polyline points="1,3.5 3,5.5 7,1.5"></polyline></svg>
+              </span>
+              <span>{{ section.settings.benefit_1 }}</span>
+            </div>
+            <div class="section-712-footer__benefit">
+              <span class="section-712-footer__checkmark" aria-hidden="true">
+                <svg viewBox="0 0 8 7"><polyline points="1,3.5 3,5.5 7,1.5"></polyline></svg>
+              </span>
+              <span>{{ section.settings.benefit_2 }}</span>
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.show_newsletter -%}
+          {% if section.settings.skeleton_enabled %}
+            <div class="section-712-footer__skeleton section-712-footer__skeleton--form" aria-hidden="true"></div>
+          {% endif %}
+          <div class="section-712-footer__form-wrapper" data-loaded="true">
+            <form 
+              class="section-712-footer__form s712-klaviyo-form"
+              data-list-id="{{ section.settings.klaviyo_list_id }}"
+              aria-label="Newsletter signup"
+            >
+              <input 
+                type="email" 
+                name="email" 
+                class="section-712-footer__input"
+                placeholder="{{ section.settings.input_placeholder }}"
+                required
+                aria-label="Email address"
+              >
+              <button 
+                type="submit" 
+                class="section-712-footer__submit"
+              >
+                {{ section.settings.submit_text }}
+              </button>
+            </form>
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.show_social -%}
+          <div class="section-712-footer__social">
+            {%- if section.settings.social_facebook != blank -%}
+              <a href="{{ section.settings.social_facebook }}" class="section-712-footer__social-link" aria-label="Facebook" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+              </a>
+            {%- endif -%}
+            {%- if section.settings.social_instagram != blank -%}
+              <a href="{{ section.settings.social_instagram }}" class="section-712-footer__social-link" aria-label="Instagram" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+              </a>
+            {%- endif -%}
+            {%- if section.settings.social_twitter != blank -%}
+              <a href="{{ section.settings.social_twitter }}" class="section-712-footer__social-link" aria-label="Twitter" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+              </a>
+            {%- endif -%}
+            {%- if section.settings.social_tiktok != blank -%}
+              <a href="{{ section.settings.social_tiktok }}" class="section-712-footer__social-link" aria-label="TikTok" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+              </a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Accordions {%- endcomment -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'column' -%}
+          <div class="section-712-footer__accordion" {{ block.shopify_attributes }}>
+            <button 
+              class="section-712-footer__accordion-button"
+              aria-expanded="false"
+              aria-controls="s712-accordion-{{ block.id }}"
+            >
+              <span>{{ block.settings.title }}</span>
+              <span class="section-712-footer__accordion-icon" aria-hidden="true">
+                <svg viewBox="0 0 20 10"><polyline points="1,1 10,9 19,1"></polyline></svg>
+              </span>
+            </button>
+            <div 
+              class="section-712-footer__accordion-content"
+              id="s712-accordion-{{ block.id }}"
+            >
+              <nav class="section-712-footer__accordion-links">
+                {%- for i in (1..6) -%}
+                  {%- assign link_text = 'link_' | append: i | append: '_text' -%}
+                  {%- assign link_url = 'link_' | append: i | append: '_url' -%}
+                  {%- if block.settings[link_text] != blank -%}
+                    <a href="{{ block.settings[link_url] }}" class="section-712-footer__link">
+                      {{ block.settings[link_text] }}
+                    </a>
+                  {%- endif -%}
+                {%- endfor -%}
+              </nav>
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
+      <p class="section-712-footer__copyright" style="margin-top: 33px;">
+        {{ section.settings.copyright_text | replace: '[year]', current_year }}
+      </p>
+    </div>
+
+  </div>
+</footer>
+
+<script>
+(function() {
+  // Mobile Accordion
+  const accordions = document.querySelectorAll('.section-712-footer__accordion-button');
+  
+  accordions.forEach(button => {
+    button.addEventListener('click', function() {
+      const accordion = this.parentElement;
+      const isOpen = accordion.classList.contains('is-open');
+      
+      // Close all accordions (accordion behavior)
+      document.querySelectorAll('.section-712-footer__accordion').forEach(acc => {
+        acc.classList.remove('is-open');
+        acc.querySelector('.section-712-footer__accordion-button').setAttribute('aria-expanded', 'false');
+      });
+      
+      // Open clicked accordion if it was closed
+      if (!isOpen) {
+        accordion.classList.add('is-open');
+        this.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
+  // Klaviyo Integration - Using the proven method from section 203
+  const forms = document.querySelectorAll('.s712-klaviyo-form');
+  
+  forms.forEach(form => {
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const email = this.querySelector('input[type="email"]').value;
+      const listId = this.getAttribute('data-list-id');
+      const submitBtn = this.querySelector('button[type="submit"]');
+      
+      if (!listId) {
+        console.error('Klaviyo List ID not configured');
+        alert('Newsletter signup is not properly configured. Please add your Klaviyo List ID in the theme settings.');
+        return;
+      }
+      
+      // Disable button
+      submitBtn.disabled = true;
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'SUBSCRIBING...';
+      
+      try {
+        // Method 1: Check if Klaviyo's tracking script is loaded
+        if (typeof _learnq !== 'undefined') {
+          // Identify the user
+          _learnq.push(['identify', {
+            '$email': email
+          }]);
+          
+          // Track a custom event
+          _learnq.push(['track', 'Newsletter Signup', {
+            'List': listId,
+            'Source': 'Footer Form',
+            '$email': email
+          }]);
+          
+          console.log('Submitted to Klaviyo via _learnq');
+        }
+        
+        // Method 2: Submit via AJAX to Klaviyo's form endpoint as backup
+        const formData = new FormData();
+        formData.append('g', listId);
+        formData.append('email', email);
+        
+        await fetch(`https://manage.kmail-lists.com/ajax/subscriptions/subscribe`, {
+          method: 'POST',
+          body: formData,
+          mode: 'no-cors'
+        });
+        
+        console.log('Also submitted via form endpoint');
+        
+        // Success!
+        submitBtn.textContent = '✓ SUBSCRIBED!';
+        this.querySelector('input[type="email"]').value = '';
+        
+        setTimeout(() => {
+          submitBtn.textContent = originalText;
+          submitBtn.disabled = false;
+        }, 3000);
+        
+      } catch (error) {
+        console.error('Klaviyo subscription error:', error);
+        alert('There was an error subscribing. Please try again.');
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "712-footer",
+  "class": "section-712-footer-wrapper",
+  "settings": [
+    {
+      "type": "header",
+      "content": "General Settings"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 1000,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "label": "Container Width",
+      "default": 1450
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Horizontal",
+      "default": 45
+    },
+    {
+      "type": "header",
+      "content": "Logo & Branding"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo Image"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 50,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "Logo Width",
+      "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Newsletter Signup"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_newsletter",
+      "label": "Show Newsletter Signup",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "klaviyo_list_id",
+      "label": "Klaviyo List ID",
+      "default": "UuGmum",
+      "info": "Enter your Klaviyo List ID (e.g., UuGmum)"
+    },
+    {
+      "type": "text",
+      "id": "input_placeholder",
+      "label": "Email Input Placeholder",
+      "default": "Your email"
+    },
+    {
+      "type": "text",
+      "id": "submit_text",
+      "label": "Submit Button Text",
+      "default": "GET SOME SAUCY EMAILS"
+    },
+    {
+      "type": "header",
+      "content": "Benefits"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_benefits",
+      "label": "Show Benefits",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "benefit_1",
+      "label": "Benefit 1",
+      "default": "No spam ever"
+    },
+    {
+      "type": "text",
+      "id": "benefit_2",
+      "label": "Benefit 2",
+      "default": "Best Deals Only"
+    },
+    {
+      "type": "header",
+      "content": "Social Media"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social",
+      "label": "Show Social Icons",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "social_facebook",
+      "label": "Facebook URL"
+    },
+    {
+      "type": "url",
+      "id": "social_instagram",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "url",
+      "id": "social_twitter",
+      "label": "Twitter URL"
+    },
+    {
+      "type": "url",
+      "id": "social_tiktok",
+      "label": "TikTok URL"
+    },
+    {
+      "type": "header",
+      "content": "Copyright"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright Text",
+      "default": "©[year] TIPSY Beverages LLC. All rights reserved.",
+      "info": "Use [year] to insert current year automatically"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "default": "#C6F952"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border Color",
+      "default": "#E2E2E2"
+    },
+    {
+      "type": "color",
+      "id": "input_border_color",
+      "label": "Input Border Color",
+      "default": "#E2E2E2"
+    },
+    {
+      "type": "color",
+      "id": "placeholder_color",
+      "label": "Placeholder Text Color",
+      "default": "#A9A9A9"
+    },
+    {
+      "type": "header",
+      "content": "Performance"
+    },
+    {
+      "type": "checkbox",
+      "id": "skeleton_enabled",
+      "label": "Enable Skeleton Loader",
+      "default": true,
+      "info": "Shows loading placeholders while content loads"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Footer Column",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Column Title",
+          "default": "Quick Links"
+        },
+        {
+          "type": "header",
+          "content": "Link 1"
+        },
+        {
+          "type": "text",
+          "id": "link_1_text",
+          "label": "Link Text"
+        },
+        {
+          "type": "url",
+          "id": "link_1_url",
+          "label": "Link URL"
+        },
+        {
+          "type": "header",
+          "content": "Link 2"
+        },
+        {
+          "type": "text",
+          "id": "link_2_text",
+          "label": "Link Text"
+        },
+        {
+          "type": "url",
+          "id": "link_2_url",
+          "label": "Link URL"
+        },
+        {
+          "type": "header",
+          "content": "Link 3"
+        },
+        {
+          "type": "text",
+          "id": "link_3_text",
+          "label": "Link Text"
+        },
+        {
+          "type": "url",
+          "id": "link_3_url",
+          "label": "Link URL"
+        },
+        {
+          "type": "header",
+          "content": "Link 4"
+        },
+        {
+          "type": "text",
+          "id": "link_4_text",
+          "label": "Link Text"
+        },
+        {
+          "type": "url",
+          "id": "link_4_url",
+          "label": "Link URL"
+        },
+        {
+          "type": "header",
+          "content": "Link 5"
+        },
+        {
+          "type": "text",
+          "id": "link_5_text",
+          "label": "Link Text"
+        },
+        {
+          "type": "url",
+          "id": "link_5_url",
+          "label": "Link URL"
+        },
+        {
+          "type": "header",
+          "content": "Link 6"
+        },
+        {
+          "type": "text",
+          "id": "link_6_text",
+          "label": "Link Text"
+        },
+        {
+          "type": "url",
+          "id": "link_6_url",
+          "label": "Link URL"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "712-footer",
+      "blocks": [
+        {
+          "type": "column",
+          "settings": {
+            "title": "Shop",
+            "link_1_text": "Build your bundle",
+            "link_1_url": "/collections/bundles",
+            "link_2_text": "Coffee Concentrates",
+            "link_2_url": "/collections/concentrates",
+            "link_3_text": "Protein Coffee",
+            "link_3_url": "/collections/protein",
+            "link_4_text": "Accessories",
+            "link_4_url": "/collections/accessories",
+            "link_5_text": "Subscribe & Save",
+            "link_5_url": "/pages/subscribe"
+          }
+        },
+        {
+          "type": "column",
+          "settings": {
+            "title": "Learn More",
+            "link_1_text": "Our Impact",
+            "link_1_url": "/pages/impact",
+            "link_2_text": "Recipes",
+            "link_2_url": "/pages/recipes",
+            "link_3_text": "Blog",
+            "link_3_url": "/blogs/news",
+            "link_4_text": "Become an Affiliate",
+            "link_4_url": "/pages/affiliates",
+            "link_5_text": "Wholesale",
+            "link_5_url": "/pages/wholesale"
+          }
+        },
+        {
+          "type": "column",
+          "settings": {
+            "title": "Help",
+            "link_1_text": "Manage Subscriptions",
+            "link_1_url": "/account",
+            "link_2_text": "Support",
+            "link_2_url": "/pages/contact",
+            "link_3_text": "Reviews",
+            "link_3_url": "/pages/reviews",
+            "link_4_text": "Find a store",
+            "link_4_url": "/pages/store-locator",
+            "link_5_text": "Subscribe & Save",
+            "link_5_url": "/pages/subscribe"
+          }
+        },
+        {
+          "type": "column",
+          "settings": {
+            "title": "Legal",
+            "link_1_text": "Returns & Refunds",
+            "link_1_url": "/policies/refund-policy",
+            "link_2_text": "Terms of Service",
+            "link_2_url": "/policies/terms-of-service",
+            "link_3_text": "Privacy Policy",
+            "link_3_url": "/policies/privacy-policy",
+            "link_4_text": "Do Not Sell or Share My Personal Info",
+            "link_4_url": "/pages/privacy-rights"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

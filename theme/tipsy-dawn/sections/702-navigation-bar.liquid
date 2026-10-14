@@ -1,0 +1,1054 @@
+{%- comment -%}
+  Section: 702 Navigation Bar
+  Purpose: Main site navigation with responsive mobile drawer and dropdown menus
+{%- endcomment -%}
+
+<nav class="section-702-navigation-bar" role="navigation" aria-label="{{ section.settings.nav_aria_label }}">
+  <div class="section-702-navigation-bar__container">
+    
+    {%- comment -%} Logo {%- endcomment -%}
+    <div class="section-702-navigation-bar__logo">
+      {%- if section.settings.logo != blank -%}
+        <a href="{{ routes.root_url }}" class="section-702-navigation-bar__logo-link">
+          <img 
+            src="{{ section.settings.logo | image_url: width: 200 }}"
+            srcset="{{ section.settings.logo | image_url: width: 200 }} 1x, {{ section.settings.logo | image_url: width: 400 }} 2x"
+            alt="{{ section.settings.logo_alt | default: shop.name }}"
+            width="{{ section.settings.logo.width }}"
+            height="{{ section.settings.logo.height }}"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          >
+        </a>
+      {%- else -%}
+        <a href="{{ routes.root_url }}" class="section-702-navigation-bar__logo-text">
+          {{ section.settings.logo_text | default: shop.name }}
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Desktop Navigation Links {%- endcomment -%}
+    <ul class="section-702-navigation-bar__nav-list section-702-navigation-bar__nav-list--desktop">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'nav_item' -%}
+          <li class="section-702-navigation-bar__nav-item">
+            {%- if block.settings.dropdown_enabled -%}
+              <button 
+                class="section-702-navigation-bar__nav-link section-702-navigation-bar__nav-link--dropdown"
+                aria-expanded="false"
+                aria-controls="dropdown-{{ block.id }}"
+              >
+                {{ block.settings.label }}
+                <svg class="section-702-navigation-bar__dropdown-icon" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+                  <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </button>
+              
+              {%- comment -%} Dropdown Menu {%- endcomment -%}
+              <div 
+                class="section-702-navigation-bar__dropdown"
+                id="dropdown-{{ block.id }}"
+                hidden
+              >
+                <ul class="section-702-navigation-bar__dropdown-list">
+                  {%- assign dropdown_items = block.settings.dropdown_items | split: ',' -%}
+                  {%- assign dropdown_urls = block.settings.dropdown_urls | split: ',' -%}
+                  {%- for item in dropdown_items -%}
+                    <li>
+                      <a href="{{ dropdown_urls[forloop.index0] | strip }}" class="section-702-navigation-bar__dropdown-link">
+                        {{ item | strip }}
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            {%- else -%}
+              <a href="{{ block.settings.link }}" class="section-702-navigation-bar__nav-link">
+                {{ block.settings.label }}
+              </a>
+            {%- endif -%}
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+
+    {%- comment -%} Utility Icons (Cart + Hamburger) {%- endcomment -%}
+    <div class="section-702-navigation-bar__utilities">
+      
+      {%- comment -%} Cart Icon {%- endcomment -%}
+      {%- if section.settings.show_cart -%}
+        <a href="{{ routes.cart_url }}" class="section-702-navigation-bar__cart" aria-label="{{ section.settings.cart_aria_label }}">
+          {%- if section.settings.cart_icon != blank -%}
+            <img 
+              src="{{ section.settings.cart_icon | image_url: width: 50 }}"
+              alt="Cart"
+              class="section-702-navigation-bar__cart-icon-img"
+              width="22"
+              height="20"
+            >
+          {%- else -%}
+            <svg class="section-702-navigation-bar__cart-icon" width="22" height="20" viewBox="0 0 22 20" fill="none" aria-hidden="true">
+              <path d="M0 0.5C0 0.223858 0.223858 0 0.5 0H3.5C3.73206 0 3.93586 0.164915 3.98615 0.390899L5.5 7M5.5 7L7.01385 13.609C7.06414 13.8351 7.26794 14 7.5 14H18.5C18.7321 14 18.9359 13.8351 18.9862 13.609L21.4862 2.609C21.5534 2.3063 21.3285 2 21.0184 2H5.5ZM5.5 7H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="8.5" cy="18" r="1.5" stroke="currentColor" stroke-width="2"/>
+              <circle cx="17.5" cy="18" r="1.5" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          {%- endif -%}
+          {%- if cart.item_count > 0 -%}
+            <span class="section-702-navigation-bar__cart-count">{{ cart.item_count }}</span>
+          {%- endif -%}
+        </a>
+      {%- endif -%}
+
+      {%- comment -%} Hamburger Menu Toggle {%- endcomment -%}
+      <button 
+        class="section-702-navigation-bar__hamburger"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="{{ section.settings.menu_aria_label }}"
+      >
+        <span class="section-702-navigation-bar__hamburger-line section-702-navigation-bar__hamburger-line--top"></span>
+        <span class="section-702-navigation-bar__hamburger-line section-702-navigation-bar__hamburger-line--middle"></span>
+        <span class="section-702-navigation-bar__hamburger-line section-702-navigation-bar__hamburger-line--bottom"></span>
+      </button>
+    </div>
+
+  </div>
+
+  {%- comment -%} Mobile Drawer Menu {%- endcomment -%}
+  <div class="section-702-navigation-bar__drawer" id="mobile-menu" hidden>
+    <div class="section-702-navigation-bar__drawer-overlay"></div>
+    <div class="section-702-navigation-bar__drawer-content">
+      
+      {%- comment -%} Close Button {%- endcomment -%}
+      <button 
+        class="section-702-navigation-bar__drawer-close"
+        aria-label="{{ section.settings.close_aria_label }}"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      {%- comment -%} Mobile Navigation Links {%- endcomment -%}
+      <ul class="section-702-navigation-bar__drawer-list">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'nav_item' -%}
+            <li class="section-702-navigation-bar__drawer-item">
+              {%- if block.settings.dropdown_enabled -%}
+                <button 
+                  class="section-702-navigation-bar__drawer-link section-702-navigation-bar__drawer-link--parent"
+                  aria-expanded="false"
+                >
+                  {{ block.settings.label }}
+                  <svg class="section-702-navigation-bar__drawer-icon" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+                    <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </button>
+                
+                {%- comment -%} Mobile Submenu {%- endcomment -%}
+                <ul class="section-702-navigation-bar__drawer-submenu" hidden>
+                  {%- assign dropdown_items = block.settings.dropdown_items | split: ',' -%}
+                  {%- assign dropdown_urls = block.settings.dropdown_urls | split: ',' -%}
+                  {%- for item in dropdown_items -%}
+                    <li>
+                      <a href="{{ dropdown_urls[forloop.index0] | strip }}" class="section-702-navigation-bar__drawer-sublink">
+                        {{ item | strip }}
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- else -%}
+                <a href="{{ block.settings.link }}" class="section-702-navigation-bar__drawer-link">
+                  {{ block.settings.label }}
+                </a>
+              {%- endif -%}
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+
+    </div>
+  </div>
+
+</nav>
+
+<style>
+  .section-702-navigation-bar {
+    --s702-nav-bg: {{ section.settings.bg_color }};
+    --s702-nav-text: {{ section.settings.text_color }};
+    --s702-nav-border: {{ section.settings.border_color }};
+    --s702-nav-height: 53px;
+    --s702-container-padding: {{ section.settings.container_padding }}px;
+    --s702-nav-gap: {{ section.settings.nav_gap }}px;
+    --s702-drawer-width: {{ section.settings.drawer_width }}px;
+    --s702-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --s702-hamburger-line-height: {{ section.settings.hamburger_line_height }}px;
+    --s702-hamburger-line-spacing: {{ section.settings.hamburger_line_spacing }}px;
+    --s702-hamburger-line-1-width: {{ section.settings.hamburger_line_1_width }}px;
+    --s702-hamburger-line-2-width: {{ section.settings.hamburger_line_2_width }}px;
+    --s702-hamburger-line-3-width: {{ section.settings.hamburger_line_3_width }}px;
+    --s702-hamburger-border-radius: {{ section.settings.hamburger_border_radius }}px;
+  }
+
+.section-702-navigation-bar {
+  position: relative;
+  background: var(--s702-nav-bg);
+  border-bottom: 1px solid var(--s702-nav-border);
+  width: 100%;
+  z-index: 1000;
+  overflow: visible !important;
+}
+
+  .section-702-navigation-bar__container {
+    display: flex;
+    align-items: center;
+    height: var(--s702-nav-height);
+    padding: 0 var(--s702-container-padding);
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+
+  .section-702-navigation-bar__logo {
+    flex-shrink: 0;
+  }
+
+  .section-702-navigation-bar__logo-link {
+    display: block;
+    line-height: 0;
+  }
+
+  .section-702-navigation-bar__logo-link img {
+    height: auto;
+    max-height: 29px;
+    width: auto;
+  }
+
+  .section-702-navigation-bar__logo-text {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--s702-nav-text);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+
+  .section-702-navigation-bar__nav-list--desktop {
+    display: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 38px;
+    margin-left: var(--s702-nav-gap);
+  }
+
+  @media (min-width: 768px) {
+    .section-702-navigation-bar__nav-list--desktop {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .section-702-navigation-bar__nav-item {
+    position: relative;
+  }
+
+  .section-702-navigation-bar__nav-link {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--s702-nav-text);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: opacity var(--s702-transition);
+  }
+
+  .section-702-navigation-bar__nav-link:hover,
+  .section-702-navigation-bar__nav-link:focus-visible {
+    opacity: 0.7;
+  }
+
+  .section-702-navigation-bar__nav-link:focus-visible {
+    outline: 2px solid var(--s702-nav-text);
+    outline-offset: 2px;
+  }
+
+  .section-702-navigation-bar__dropdown-icon {
+    transition: transform var(--s702-transition);
+  }
+
+  .section-702-navigation-bar__nav-link--dropdown[aria-expanded="true"] .section-702-navigation-bar__dropdown-icon {
+    transform: rotate(180deg);
+  }
+
+  .section-702-navigation-bar__dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 0;
+    background: var(--s702-nav-bg);
+    border: 1px solid var(--s702-nav-border);
+    min-width: 200px;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity var(--s702-transition), transform var(--s702-transition);
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .section-702-navigation-bar__dropdown:not([hidden]) {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .section-702-navigation-bar__dropdown-list {
+    list-style: none;
+    margin: 0;
+    padding: 8px 0;
+  }
+
+  .section-702-navigation-bar__dropdown-link {
+    display: block;
+    padding: 10px 20px;
+    font-size: 14px;
+    color: var(--s702-nav-text);
+    text-decoration: none;
+    transition: background var(--s702-transition);
+  }
+
+  .section-702-navigation-bar__dropdown-link:hover,
+  .section-702-navigation-bar__dropdown-link:focus-visible {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .section-702-navigation-bar__dropdown-link:focus-visible {
+    outline: 2px solid var(--s702-nav-text);
+    outline-offset: -2px;
+  }
+
+  .section-702-navigation-bar__utilities {
+    display: flex;
+  align-items: center;
+  gap: 23px;
+  margin-left: auto;
+}
+
+  .section-702-navigation-bar__cart {
+    position: relative;
+    display: flex;
+    align-items: center;
+    color: var(--s702-nav-text);
+    text-decoration: none;
+    transition: opacity var(--s702-transition);
+  }
+
+  .section-702-navigation-bar__cart:hover,
+  .section-702-navigation-bar__cart:focus-visible {
+    opacity: 0.7;
+  }
+
+  .section-702-navigation-bar__cart:focus-visible {
+    outline: 2px solid var(--s702-nav-text);
+    outline-offset: 2px;
+  }
+
+  .section-702-navigation-bar__cart-icon-img {
+    display: block;
+    width: auto;
+    height: 20px;
+  }
+
+  .section-702-navigation-bar__cart-count {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: var(--s702-nav-text);
+    color: var(--s702-nav-bg);
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 2px;
+  }
+
+  .section-702-navigation-bar__hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: {{ section.settings.hamburger_alignment }};
+    gap: var(--s702-hamburger-line-spacing);
+    width: var(--s702-hamburger-line-2-width);
+    height: auto;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: opacity var(--s702-transition);
+  }
+
+  .section-702-navigation-bar__hamburger:hover,
+  .section-702-navigation-bar__hamburger:focus-visible {
+    opacity: 0.7;
+  }
+
+  .section-702-navigation-bar__hamburger:focus-visible {
+    outline: 2px solid var(--s702-nav-text);
+    outline-offset: 2px;
+  }
+
+  .section-702-navigation-bar__hamburger-line {
+    display: block;
+    height: var(--s702-hamburger-line-height);
+    background: var(--s702-nav-text);
+    border-radius: var(--s702-hamburger-border-radius);
+    transition: transform var(--s702-transition), opacity var(--s702-transition), width var(--s702-transition);
+  }
+
+  .section-702-navigation-bar__hamburger-line--top {
+    width: var(--s702-hamburger-line-1-width);
+    align-self: {{ section.settings.hamburger_line_1_align }};
+  }
+
+  .section-702-navigation-bar__hamburger-line--middle {
+    width: var(--s702-hamburger-line-2-width);
+    align-self: {{ section.settings.hamburger_line_2_align }};
+  }
+
+  .section-702-navigation-bar__hamburger-line--bottom {
+    width: var(--s702-hamburger-line-3-width);
+    align-self: {{ section.settings.hamburger_line_3_align }};
+  }
+
+  .section-702-navigation-bar__hamburger[aria-expanded="true"] .section-702-navigation-bar__hamburger-line--top {
+    transform: translateY(calc(var(--s702-hamburger-line-height) + var(--s702-hamburger-line-spacing))) rotate(45deg);
+    width: var(--s702-hamburger-line-2-width);
+    align-self: center;
+  }
+
+  .section-702-navigation-bar__hamburger[aria-expanded="true"] .section-702-navigation-bar__hamburger-line--middle {
+    opacity: 0;
+  }
+
+  .section-702-navigation-bar__hamburger[aria-expanded="true"] .section-702-navigation-bar__hamburger-line--bottom {
+    transform: translateY(calc(-1 * (var(--s702-hamburger-line-height) + var(--s702-hamburger-line-spacing)))) rotate(-45deg);
+    width: var(--s702-hamburger-line-2-width);
+    align-self: center;
+  }
+
+.section-702-navigation-bar__drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99999;
+  visibility: hidden;
+}
+
+  .section-702-navigation-bar__drawer:not([hidden]) {
+    visibility: visible;
+  }
+
+  .section-702-navigation-bar__drawer-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity var(--s702-transition);
+  }
+
+  .section-702-navigation-bar__drawer:not([hidden]) .section-702-navigation-bar__drawer-overlay {
+    opacity: 1;
+  }
+
+  .section-702-navigation-bar__drawer-content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: var(--s702-drawer-width);
+    max-width: 100%;
+    height: 100%;
+    background: var(--s702-nav-bg);
+    transform: translateX(100%);
+    transition: transform var(--s702-transition);
+    overflow-y: auto;
+    padding: 60px 30px 30px;
+  }
+
+  .section-702-navigation-bar__drawer:not([hidden]) .section-702-navigation-bar__drawer-content {
+    transform: translateX(0);
+  }
+
+  .section-702-navigation-bar__drawer-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--s702-nav-text);
+    cursor: pointer;
+    transition: opacity var(--s702-transition);
+  }
+
+  .section-702-navigation-bar__drawer-close:hover,
+  .section-702-navigation-bar__drawer-close:focus-visible {
+    opacity: 0.7;
+  }
+
+  .section-702-navigation-bar__drawer-close:focus-visible {
+    outline: 2px solid var(--s702-nav-text);
+    outline-offset: -2px;
+  }
+
+  .section-702-navigation-bar__drawer-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .section-702-navigation-bar__drawer-item {
+    border-bottom: 1px solid var(--s702-nav-border);
+  }
+
+  .section-702-navigation-bar__drawer-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 18px 0;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--s702-nav-text);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: opacity var(--s702-transition);
+  }
+
+  .section-702-navigation-bar__drawer-link:hover,
+  .section-702-navigation-bar__drawer-link:focus-visible {
+    opacity: 0.7;
+  }
+
+  .section-702-navigation-bar__drawer-link:focus-visible {
+    outline: 2px solid var(--s702-nav-text);
+    outline-offset: -2px;
+  }
+
+  .section-702-navigation-bar__drawer-icon {
+    flex-shrink: 0;
+    transition: transform var(--s702-transition);
+  }
+
+  .section-702-navigation-bar__drawer-link--parent[aria-expanded="true"] .section-702-navigation-bar__drawer-icon {
+    transform: rotate(180deg);
+  }
+
+  .section-702-navigation-bar__drawer-submenu {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 16px 20px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--s702-transition);
+  }
+
+  .section-702-navigation-bar__drawer-submenu:not([hidden]) {
+    max-height: 500px;
+  }
+
+  .section-702-navigation-bar__drawer-sublink {
+    display: block;
+    padding: 12px 0;
+    font-size: 16px;
+    color: var(--s702-nav-text);
+    text-decoration: none;
+    transition: opacity var(--s702-transition);
+  }
+
+  .section-702-navigation-bar__drawer-sublink:hover,
+  .section-702-navigation-bar__drawer-sublink:focus-visible {
+    opacity: 0.7;
+  }
+
+  .section-702-navigation-bar__drawer-sublink:focus-visible {
+    outline: 2px solid var(--s702-nav-text);
+    outline-offset: -2px;
+  }
+
+  body:has(.section-702-navigation-bar__drawer:not([hidden])) {
+  overflow: hidden;
+}
+
+.shopify-section:has(.section-702-navigation-bar) {
+  overflow: visible !important;
+  position: relative;
+  z-index: 10000;
+}
+
+  @media (prefers-reduced-motion: reduce) {
+    .section-702-navigation-bar *,
+    .section-702-navigation-bar *::before,
+    .section-702-navigation-bar *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+
+<script>
+  (function() {
+    const nav = document.querySelector('.section-702-navigation-bar');
+    if (!nav) return;
+
+    const hamburger = nav.querySelector('.section-702-navigation-bar__hamburger');
+    const drawer = nav.querySelector('.section-702-navigation-bar__drawer');
+    const drawerOverlay = nav.querySelector('.section-702-navigation-bar__drawer-overlay');
+    const drawerClose = nav.querySelector('.section-702-navigation-bar__drawer-close');
+    const dropdownButtons = nav.querySelectorAll('.section-702-navigation-bar__nav-link--dropdown');
+    const drawerParents = nav.querySelectorAll('.section-702-navigation-bar__drawer-link--parent');
+
+    function toggleDrawer() {
+      const isOpen = drawer.hasAttribute('hidden');
+      if (isOpen) {
+        drawer.removeAttribute('hidden');
+        hamburger.setAttribute('aria-expanded', 'true');
+      } else {
+        drawer.setAttribute('hidden', '');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    hamburger?.addEventListener('click', toggleDrawer);
+    drawerClose?.addEventListener('click', toggleDrawer);
+    drawerOverlay?.addEventListener('click', toggleDrawer);
+
+    dropdownButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const isExpanded = this.getAttribute('aria-expanded') === 'true';
+        const dropdownId = this.getAttribute('aria-controls');
+        const dropdown = document.getElementById(dropdownId);
+
+        dropdownButtons.forEach(btn => {
+          if (btn !== this) {
+            btn.setAttribute('aria-expanded', 'false');
+            const otherDropdown = document.getElementById(btn.getAttribute('aria-controls'));
+            otherDropdown?.setAttribute('hidden', '');
+          }
+        });
+
+        this.setAttribute('aria-expanded', !isExpanded);
+        if (dropdown) {
+          if (isExpanded) {
+            dropdown.setAttribute('hidden', '');
+          } else {
+            dropdown.removeAttribute('hidden');
+          }
+        }
+      });
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.section-702-navigation-bar__nav-item')) {
+        dropdownButtons.forEach(btn => {
+          btn.setAttribute('aria-expanded', 'false');
+          const dropdown = document.getElementById(btn.getAttribute('aria-controls'));
+          dropdown?.setAttribute('hidden', '');
+        });
+      }
+    });
+
+    drawerParents.forEach(button => {
+      button.addEventListener('click', function() {
+        const isExpanded = this.getAttribute('aria-expanded') === 'true';
+        const submenu = this.nextElementSibling;
+
+        this.setAttribute('aria-expanded', !isExpanded);
+        if (submenu) {
+          if (isExpanded) {
+            submenu.setAttribute('hidden', '');
+          } else {
+            submenu.removeAttribute('hidden');
+          }
+        }
+      });
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        if (!drawer.hasAttribute('hidden')) {
+          toggleDrawer();
+        }
+        dropdownButtons.forEach(btn => {
+          btn.setAttribute('aria-expanded', 'false');
+          const dropdown = document.getElementById(btn.getAttribute('aria-controls'));
+          dropdown?.setAttribute('hidden', '');
+        });
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "702 navigation bar",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "text",
+      "id": "logo_alt",
+      "label": "Logo alt text"
+    },
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo text (fallback)",
+      "default": "TIPSY AF"
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "range",
+      "id": "nav_gap",
+      "label": "Gap from logo to nav links",
+      "min": 0,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "default": 85
+    },
+    {
+      "type": "header",
+      "content": "Cart"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cart",
+      "label": "Show cart icon",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "cart_icon",
+      "label": "Custom cart icon",
+      "info": "Upload your own cart icon (optional)"
+    },
+    {
+      "type": "header",
+      "content": "Hamburger Menu"
+    },
+    {
+      "type": "select",
+      "id": "hamburger_alignment",
+      "label": "Overall alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Right"
+        }
+      ],
+      "default": "flex-start"
+    },
+    {
+      "type": "range",
+      "id": "hamburger_line_height",
+      "label": "Line height",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "hamburger_line_spacing",
+      "label": "Line spacing",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "hamburger_line_1_width",
+      "label": "Top line width",
+      "min": 15,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "hamburger_line_1_align",
+      "label": "Top line alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Right"
+        }
+      ],
+      "default": "flex-start"
+    },
+    {
+      "type": "range",
+      "id": "hamburger_line_2_width",
+      "label": "Middle line width",
+      "min": 15,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "select",
+      "id": "hamburger_line_2_align",
+      "label": "Middle line alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "hamburger_line_3_width",
+      "label": "Bottom line width",
+      "min": 15,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "hamburger_line_3_align",
+      "label": "Bottom line alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Right"
+        }
+      ],
+      "default": "flex-end"
+    },
+    {
+      "type": "range",
+      "id": "hamburger_border_radius",
+      "label": "Line border radius",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#E3E3E3"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "container_padding",
+      "label": "Horizontal padding",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "drawer_width",
+      "label": "Mobile drawer width",
+      "min": 250,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "default": 320
+    },
+    {
+      "type": "header",
+      "content": "Accessibility"
+    },
+    {
+      "type": "text",
+      "id": "nav_aria_label",
+      "label": "Navigation aria-label",
+      "default": "Main navigation"
+    },
+    {
+      "type": "text",
+      "id": "cart_aria_label",
+      "label": "Cart aria-label",
+      "default": "View cart"
+    },
+    {
+      "type": "text",
+      "id": "menu_aria_label",
+      "label": "Menu button aria-label",
+      "default": "Open menu"
+    },
+    {
+      "type": "text",
+      "id": "close_aria_label",
+      "label": "Close button aria-label",
+      "default": "Close menu"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "nav_item",
+      "name": "Navigation Link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Link label",
+          "default": "Shop"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link URL"
+        },
+        {
+          "type": "checkbox",
+          "id": "dropdown_enabled",
+          "label": "Enable dropdown",
+          "default": false
+        },
+        {
+          "type": "textarea",
+          "id": "dropdown_items",
+          "label": "Dropdown items (comma-separated)",
+          "placeholder": "Item 1, Item 2, Item 3"
+        },
+        {
+          "type": "textarea",
+          "id": "dropdown_urls",
+          "label": "Dropdown URLs (comma-separated)",
+          "placeholder": "/page1, /page2, /page3"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "702 Navigation Bar",
+      "blocks": [
+        {
+          "type": "nav_item",
+          "settings": {
+            "label": "Shop",
+            "dropdown_enabled": true,
+            "dropdown_items": "All Products, Best Sellers, New Arrivals",
+            "dropdown_urls": "/collections/all, /collections/best-sellers, /collections/new"
+          }
+        },
+        {
+          "type": "nav_item",
+          "settings": {
+            "label": "Bundle",
+            "link": "/collections/bundles"
+          }
+        },
+        {
+          "type": "nav_item",
+          "settings": {
+            "label": "Subscribe & Save",
+            "link": "/pages/subscribe"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

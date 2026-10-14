@@ -1,0 +1,721 @@
+{
+  "layout": "control",
+  "sections": {
+    "703_hero_banner_mobile_jQLeaa": {
+      "type": "703-hero-banner-mobile",
+      "blocks": {
+        "carousel_slide_MbPrwT": {
+          "type": "carousel_slide",
+          "settings": {
+            "media_type": "image",
+            "image": "shopify://shop_images/weavy-Gemini_2.5_Flash_Nano_Banana_-2025-10-01_at_15.07.52.jpg",
+            "video_url": "",
+            "autoplay": true
+          }
+        },
+        "carousel_slide_GQNz9M": {
+          "type": "carousel_slide",
+          "settings": {
+            "media_type": "image",
+            "image": "shopify://shop_images/Asian_Woman_Drinking_TIPSY_AF.png",
+            "video_url": "",
+            "autoplay": true
+          }
+        },
+        "carousel_slide_nXhYCx": {
+          "type": "carousel_slide",
+          "settings": {
+            "media_type": "image",
+            "image": "shopify://shop_images/what_you_will_experience_with_TIPSY_AF.png",
+            "video_url": "",
+            "autoplay": true
+          }
+        },
+        "carousel_slide_Jg66wx": {
+          "type": "carousel_slide",
+          "settings": {
+            "media_type": "video",
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/015da6e08dbc4bd58d966490f7589ee2.mp4",
+            "autoplay": true
+          }
+        },
+        "carousel_slide_rEQe8i": {
+          "type": "carousel_slide",
+          "settings": {
+            "media_type": "image",
+            "image": "shopify://shop_images/Dark_Hair.png",
+            "video_url": "",
+            "autoplay": true
+          }
+        },
+        "fixed_media_iQDK8U": {
+          "type": "fixed_media",
+          "settings": {
+            "media_type": "image",
+            "image": "shopify://shop_images/Wedding_TIPSY_v2.jpg",
+            "video_url": "",
+            "autoplay": false,
+            "full_width": true
+          }
+        },
+        "fixed_media_DzcktT": {
+          "type": "fixed_media",
+          "settings": {
+            "media_type": "image",
+            "image": "shopify://shop_images/TIPSY_AF_Zero_Proof_Cocktail_Mushroom_Science_in_a_Can.jpg",
+            "video_url": "",
+            "autoplay": false,
+            "full_width": false
+          }
+        },
+        "fixed_media_dmGkGV": {
+          "type": "fixed_media",
+          "settings": {
+            "media_type": "image",
+            "image": "shopify://shop_images/weavy-Gemini_2.5_Flash_Nano_Banana_-2025-10-13_at_13.42.14.jpg",
+            "video_url": "",
+            "autoplay": false,
+            "full_width": false
+          }
+        },
+        "icon_badge_qEKU7Q": {
+          "type": "icon_badge",
+          "settings": {
+            "icon": "shopify://shop_images/Cocktail_2036e357-dc40-4191-8d7c-cff6931a22e2.png",
+            "label": "FEEL IT IN MINUTES"
+          }
+        },
+        "icon_badge_P4GhBH": {
+          "type": "icon_badge",
+          "settings": {
+            "icon": "shopify://shop_images/In_Transit.png",
+            "label": "FDA REVIEWED INGREDIENTS"
+          }
+        },
+        "icon_badge_zECcjF": {
+          "type": "icon_badge",
+          "settings": {
+            "icon": "shopify://shop_images/Layers_4911bb7b-f78b-483a-be5c-fc52ec85bd6e.png",
+            "label": "STACKABLE EXPERIENCE"
+          }
+        },
+        "icon_badge_zigRi4": {
+          "type": "icon_badge",
+          "settings": {
+            "icon": "shopify://shop_images/Apple_Health.png",
+            "label": "ZERO RECOVERY"
+          }
+        },
+        "subscription_benefit_tUziFe": {
+          "type": "subscription_benefit",
+          "settings": {
+            "benefit_text": "FREE SHIPPING on all orders"
+          }
+        },
+        "subscription_benefit_MKzjUn": {
+          "type": "subscription_benefit",
+          "settings": {
+            "benefit_text": "NO CONTRACT cancel online"
+          }
+        },
+        "subscription_benefit_VawXAg": {
+          "type": "subscription_benefit",
+          "settings": {
+            "benefit_text": "28% OFF all orders"
+          }
+        },
+        "subscription_benefit_nq4FGi": {
+          "type": "subscription_benefit",
+          "settings": {
+            "benefit_text": "SHIPS every 28 days"
+          }
+        },
+        "flavor_pineapple": {
+          "type": "flavor",
+          "settings": {
+            "flavor_name": "Pineapple Martini",
+            "flavor_desc": "",
+            "swatch_color": "#ffe748",
+            "swatch_image": "shopify://shop_images/Pineapple_Martini_Yellow_Orange_Bg.png",
+            "ingredients_content": "<p><strong>Ingredients:</strong> Carbonated Water, Sugar, Pineapple Juice Concentrate, Natural Flavors, Botanical Extracts, Citric Acid, Proprietary Mushroom Blend (Chaga, Maitake, Shiitake, Reishi, Turkey Tail), Beta Carotene (Color), L-Theanine, GABA, Theobromine, Stevia Leaf Extract.</p>",
+            "nutrition_content": "<p>Pineapple Martini<br/>NUTRITION FACTS<br/>1 Serving Per Container<br/>Serving Size: 1 can (12 fl oz / 355 ml)<br/><br/>Calories -------- 35<br/>Total Fat -------- 0g<br/>Saturated Fat --- 0g<br/>Trans Fat ------- 0g<br/>Cholesterol ---- 0mg<br/>Sodium --------- 0mg<br/>Total Carbs ----- 9g<br/>Dietary Fiber ---- 0g<br/>Total Sugars ----- 9g<br/>Added Sugar ----- 7g<br/>Protein ----------- 0g</p><p>Ingredients: Carbonated Water, Sugar, Pineapple Juice Concentrate, Natural Flavors, Botanical Extracts, Citric Acid, Proprietary Mushroom Blend (Chaga, Maitake, Shiitake, Reishi, Turkey Tail), Beta Carotene (Color), L-Theanine, GABA, Theobromine, Stevia Leaf Extract.</p>",
+            "trial_variant_id": "45108737507536",
+            "autoship_variant_id": "45108737605840",
+            "onetime_variant_id": "45108737540304",
+            "product": "pineapple-martini",
+            "variant_title": "",
+            "rating": "4.8"
+          }
+        },
+        "flavor_QJdGCf": {
+          "type": "flavor",
+          "settings": {
+            "flavor_name": "Blood Orange Margarita",
+            "flavor_desc": "",
+            "swatch_color": "#ff9448",
+            "swatch_image": "shopify://shop_images/Blood_Orange.png",
+            "ingredients_content": "<p><strong>Ingredients: </strong>Filtered Water, Organic Cane Sugar, Orange Juice Concentrate, Natural Flavors, Botanical Extracts, Key Lime Juice Concentrate, Citric Acid, Proprietary Mushroom Blend (Chaga, Miataki, Shiitake, Reishi, Turkey Tail), L-Theanine, GABA, Theobromine, Stevia Extract (Reb M)</p>",
+            "nutrition_content": "<h5>Blood Orange Margarita<br/>NUTRITION FACTS</h5><p>1 Servings Per Container<br/>Serving Size: 12oz (355 ml)<br/><strong>____________________________________________</strong><br/><br/><strong>Calories </strong>-------- 30<strong><br/>Total Fat </strong>--------<strong> </strong>0g<br/><strong>Saturated Fat </strong>---<strong> </strong>0g<br/><strong>Trans Fat </strong>------- 0g<br/><strong>Cholesterol</strong> ---- 0mg<br/><strong>Sodium </strong>--------- 15mg<strong><br/>Total Carbs </strong>----- 8g<strong><br/>Dietary Fiber </strong>---- 0g<strong><br/>Total Sugars </strong>----- 8g<strong><br/>Added Sugar </strong>----- 8g<strong><br/>Protein </strong>----------- 0g<br/><strong>____________________________________________</strong></p><p><strong>Ingredients: </strong>Filtered Water, Organic Cane Sugar, Orange Juice Concentrate, Natural Flavors, Botanical Extracts, Key Lime Juice Concentrate, Citric Acid, Proprietary Mushroom Blend (Chaga, Miataki, Shiitake, Reishi, Turkey Tail), L-Theanine, GABA, Theobromine, Stevia Extract (Reb M)</p>",
+            "trial_variant_id": "44868866212048",
+            "autoship_variant_id": "44868867064016",
+            "onetime_variant_id": "44868867457232",
+            "product": "blood-orange-margarita",
+            "variant_title": "",
+            "flavor_image": "shopify://shop_images/Blood_Orange_Margarita.png",
+            "rating": "4.8"
+          }
+        },
+        "faq_item_w676i9": {
+          "type": "faq_item",
+          "name": "Product Details",
+          "settings": {
+            "question": "Product Details",
+            "answer": "<p></p><ul><li><strong>DEVELOPED BY MUSHROOM VETERANS:</strong> born from the OGs of mushroom innovation. After raising over <span style=\"text-decoration:underline\"><strong>$220 million</strong></span> to bring functional mushroom science to the mainstream, we are back with our latest breakthrough, a feel-good zero proof cocktail powered by years of R&D.<br/><br/></li><li><strong>ZERO-PROOF WITHOUT THE SHORTCUTS</strong>  all the ritual, flavor, and vibe of drinking, minus the booze, bad decisions, or questionably legal ingredients.<br/><br/></li><li><strong>STACKABLE AF </strong>everyone feels it different, try a serving, see how you feel, stack as needed. Enjoy the stress melting, mood boosting wave come over you.<br/><br/></li><li><strong>BUILT-IN OFF-SWITCH</strong> once it’s done, it’s done. Go out, chill, or hit the gym right after.<br/><br/></li><li><strong>ZERO HANGOVER</strong> feel good now <em>and</em> tomorrow morning. No recovery time, no guilt spiral.<br/><br/></li><li><strong>100-DAY HAPPINESS GUARANTEE</strong> if it doesn’t make your night better, send it back. No hard feelings.</li></ul><p></p>",
+            "default_open": true
+          }
+        },
+        "faq_item_dqEfd3": {
+          "type": "faq_item",
+          "name": "Can I drive a car",
+          "settings": {
+            "question": "Can I drive a car",
+            "answer": "<p>No, we do not recommend driving under the influence, while your blood alcohol might be zero, you are still driving under the influence and can still legally be a problem. Once the experience is done, you can drive.</p>",
+            "default_open": false
+          }
+        },
+        "faq_item_6dQK6T": {
+          "type": "faq_item",
+          "name": "Is this legal",
+          "settings": {
+            "question": "Is this legal",
+            "answer": "<p>We do NOT use any illegal ingredients in this product. It is safe to ship to all 50 states and can be consumed by 18+ when they drink responsibly.</p>",
+            "default_open": false
+          }
+        },
+        "faq_item_QiQEk7": {
+          "type": "faq_item",
+          "name": "Why three servings per can",
+          "settings": {
+            "question": "Why three servings",
+            "answer": "<p>Everyone feels TIPSY a little differently. We give you <strong>three servings per can</strong> so you can <strong>find your sweet spot.</strong> Start with one, feel it out, and stack if you want to turn it up.</p><p>Alcohol doesn’t come with a serving size either but people learn what works for them. This is your chance to do the same, minus the hangover.</p>",
+            "default_open": false
+          }
+        }
+      },
+      "block_order": [
+        "carousel_slide_MbPrwT",
+        "carousel_slide_GQNz9M",
+        "carousel_slide_nXhYCx",
+        "carousel_slide_Jg66wx",
+        "carousel_slide_rEQe8i",
+        "fixed_media_iQDK8U",
+        "fixed_media_DzcktT",
+        "fixed_media_dmGkGV",
+        "icon_badge_qEKU7Q",
+        "icon_badge_P4GhBH",
+        "icon_badge_zECcjF",
+        "icon_badge_zigRi4",
+        "subscription_benefit_tUziFe",
+        "subscription_benefit_MKzjUn",
+        "subscription_benefit_VawXAg",
+        "subscription_benefit_nq4FGi",
+        "flavor_pineapple",
+        "flavor_QJdGCf",
+        "faq_item_w676i9",
+        "faq_item_dqEfd3",
+        "faq_item_6dQK6T",
+        "faq_item_QiQEk7"
+      ],
+      "name": "703 Hero Banner Mobile",
+      "settings": {
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "accent_color": "#2d3561",
+        "carousel_border_radius": 6,
+        "carousel_top_padding": 20,
+        "carousel_dots_bottom": 22,
+        "badge_text": "🔥 BEST SELLER",
+        "badge_bg_color": "#1a1a1a",
+        "badge_text_color": "#ffffff",
+        "show_static_on_mobile": false,
+        "static_image_height": 270,
+        "static_gap": 8,
+        "static_border_radius": 6,
+        "show_testimonial": true,
+        "testimonial_quote": "Feels like I am two cocktails deep without any alcohol",
+        "testimonial_font_size": 13,
+        "quote_line_height": 1.4,
+        "star_size": 12,
+        "star_spacing": 1,
+        "testimonial_bottom_spacing": 0,
+        "heading": "THE MOOD BOOSTING STRESS MELTING ZERO PROOF COCKTAIL",
+        "heading_font_size": 74,
+        "heading_line_height": 85,
+        "heading_letter_spacing": 0,
+        "heading_top_spacing": 0,
+        "description": "<p>TIPSY AF is the world’s first zero-proof cocktail powered by functional mushrooms that unlocks that first-drink feeling, lifting your mood, loosening you up, and melting stress without alcohol.</p>",
+        "description_font_size": 16,
+        "description_line_height": 1.6,
+        "icon_stroke_color": "#000000",
+        "icon_stroke_width": 2,
+        "icon_circle_size": 60,
+        "icon_padding": 12,
+        "features_font_size": 12,
+        "info_button_font_size": 14,
+        "info_buttons_bottom_spacing": 15,
+        "subscription_wrapper_top_spacing": 40,
+        "show_ingredients": true,
+        "ingredients_label": "INGREDIENTS",
+        "ingredients_content": "<p><strong>Ingredients: </strong>Filtered Water, Organic Cane Sugar, Orange Juice Concentrate, Natural Flavors, Botanical Extracts, Key Lime Juice Concentrate, Citric Acid, Proprietary Mushroom Blend (Chaga, Maitake, Shiitake, Reishi, Turkey Tail), L-Theanine, GABA, Theobromine, Stevia Extract (Reb M)</p>",
+        "show_nutrition": true,
+        "nutrition_label": "NUTRITION FACTS",
+        "nutrition_content": "<h5>Blood Orange Margarita</h5><h2>NUTRITION FACTS</h2><p>1 Servings Per Container<br/>Serving Size: 12oz (355 ml)<br/><strong>____________________________________________</strong><br/>                <br/><strong>Calories </strong>-------- 30 <strong><br/>Total Fat </strong>--------<strong> </strong>0g <br/><strong>Saturated Fat </strong>---<strong> </strong>0g <br/><strong>Trans Fat </strong>------- 0g <br/><strong>Cholesterol</strong> ---- 0mg<br/><strong>Sodium </strong>--------- 15mg <strong><br/>Total Carbs </strong>----- 8g  <strong><br/>Dietary Fiber </strong>---- 0g<strong><br/>Total Sugars </strong>----- 8g<strong><br/>Added Sugar </strong>----- 8g<strong><br/>Protein </strong>----------- 0g<br/><strong>_____________________________________________</strong></p><p><strong>Ingredients: </strong>Filtered Water, Organic Cane Sugar, Orange Juice Concentrate, Natural Flavors, Botanical Extracts, Key Lime Juice Concentrate, Citric Acid, Proprietary Mushroom Blend (Chaga, Miataki, Shiitake, Reishi, Turkey Tail), L-Theanine, GABA, Theobromine, Stevia Extract (Reb M)<strong><br/></strong></p>",
+        "panel_content_font_size": 14,
+        "regular_price_per_can": "6.00",
+        "subscription_price_per_can": "4.99",
+        "cans_per_case": 12,
+        "min_order_qty": 12,
+        "show_trial_offer": true,
+        "trial_header_bg": "#2a2552",
+        "trial_header_label": "Special Offer",
+        "trial_header_badge": "Starter Pack",
+        "trial_title": "6 PACK TRIAL",
+        "trial_badge_1": "Try NOW & SAve",
+        "trial_badge_2": "",
+        "trial_title_font_size": 32,
+        "trial_price": "29.94",
+        "trial_price_font_size": 32,
+        "trial_description": "Try 6 cans now to see what all the hype is about. Then in a month, get the full 12-pack and lock in our best price.",
+        "trial_cta_text": "START YOUR 1 MONTH TRIAL 6 PACK",
+        "trial_cta_bg_color": "#ef4444",
+        "trial_cta_text_color": "#ffffff",
+        "trial_cta_font_size": 18,
+        "trial_upgrade_note": "Trial upgrades to a 12-pack ($49.80/mo + $2.99 shipping)",
+        "trial_product": "6-pack-trial",
+        "trial_variant_id": "",
+        "single_flavor_footer": "More flavors coming soon",
+        "variety_pack_label": "Mix and match in your account any time",
+        "variety_pack_url": "",
+        "after_add": "drawer",
+        "trial_selling_plan_id": "1777991888",
+        "timeline_day_1": "TODAY",
+        "timeline_day_1_label": "Start Your 6 Pack Trial",
+        "timeline_desc_1": "See what the hype is all about",
+        "timeline_day_2": "DAY 25",
+        "timeline_day_2_label": "Trial Reminder",
+        "timeline_desc_2": "Reminder that your trial is ending soon",
+        "timeline_day_3": "DAY 28",
+        "timeline_day_3_label": "Trial Ends",
+        "timeline_desc_3": "Auto renews & upgrades order, cancel anytime",
+        "autoship_title": "AUTO SHIP",
+        "autoship_badge_1": "17% SAVINGS",
+        "autoship_badge_2": "2.99 shipping",
+        "autoship_price": "49.80",
+        "autoship_price_per_can": "4.15",
+        "loop_selling_plan_id": "1778024656",
+        "autoship_product": "12-pack-auto-ship-save",
+        "onetime_title": "One-time Purchase",
+        "onetime_price": "60.00",
+        "onetime_price_per_can": "5.00",
+        "onetime_product": "12-pack-one-time-order",
+        "option_title_font_size": 23,
+        "option_price_font_size": 26,
+        "option_badge_bg_color": "#fef08a",
+        "option_badge_text_color": "#000000",
+        "main_cta_text": "Add To Cart",
+        "main_cta_font_size": 20,
+        "main_cta_bg_color": "#d32f2f",
+        "main_cta_text_color": "#ffffff",
+        "pack_label": "PACK",
+        "subscription_border_radius": 1,
+        "subscription_bg_start": "#2a2552",
+        "subscription_bg_end": "#1e2442",
+        "benefits_bg_color": "#fefefe",
+        "flavor_image_size": 68,
+        "flavor_item_border_radius": 5,
+        "flavor_item_padding_top": 8,
+        "flavor_item_padding_bottom": 8,
+        "flavor_name_font_size": 16,
+        "flavor_star_size": 10,
+        "flavor_rating_font_size": 12,
+        "flavor_pack_price_font_size": 13,
+        "flavor_item_spacing": 4,
+        "flavor_section_bottom_padding": 15,
+        "add_button_font_size": 14,
+        "qty_display_font_size": 11,
+        "qty_display_line_height": 1.2,
+        "cta_text": "Add to cart",
+        "cta_font_size": 15,
+        "cta_padding_x": 36,
+        "cta_padding_y": 18,
+        "cta_bottom_spacing": 16,
+        "cta_bg_color": "#d32f2f",
+        "cta_text_color": "#ffffff",
+        "redirect_to_cart": false,
+        "delivery_bg_color": "#ffffff",
+        "delivery_border_color": "#e0e0e0",
+        "delivery_border_radius": 8,
+        "delivery_padding_x": 16,
+        "delivery_padding_y": 12,
+        "delivery_bottom_spacing": 16,
+        "stock_dot_size": 10,
+        "stock_text_size": 14,
+        "delivery_text_size": 14,
+        "delivery_text_color": "#000000",
+        "delivery_highlight_color": "#000000",
+        "delivery_countdown_color": "#4caf50",
+        "inventory_high": 250,
+        "stock_high_text": "In Stock",
+        "stock_high_color": "#4caf50",
+        "inventory_medium": 150,
+        "stock_medium_text": "Limited Inventory",
+        "stock_medium_color": "#ff9800",
+        "inventory_low": 50,
+        "stock_low_text": "Almost Gone",
+        "stock_low_color": "#f44336",
+        "stock_out_text": "Sold Out",
+        "stock_out_color": "#9e9e9e",
+        "non_shipping_days": "[0, 6]",
+        "cutoff_hour": 14,
+        "cutoff_minute": 0,
+        "time_zone": "America/Los_Angeles",
+        "min_transit_days": 2,
+        "max_transit_days": 4,
+        "guarantee_bg_color": "#fffef0",
+        "guarantee_border_width": 1,
+        "guarantee_border_style": "dashed",
+        "guarantee_border_color": "#daa520",
+        "guarantee_border_radius": 6,
+        "guarantee_padding": 8,
+        "guarantee_icon_size": 80,
+        "guarantee_icon": "shopify://shop_images/Happiness_Guarntee.png",
+        "guarantee_header": "YOUR ORDER IS PROTECTED BY OUR",
+        "guarantee_header_size": 12,
+        "guarantee_header_color": "#fb5820",
+        "guarantee_title": "100 DAY HAPPINESS GUARANTEE",
+        "guarantee_title_size": 19,
+        "guarantee_text": "If for any reason you don't like our Zero-Proof Cocktails, you can return it and receive a full refund.",
+        "guarantee_text_size": 12,
+        "guarantee_text_color": "#000000",
+        "accordion_border_color": "#e0e0e0",
+        "accordion_hover_bg": "#f5f5f5",
+        "accordion_header_padding_x": 16,
+        "accordion_header_padding_y": 16,
+        "accordion_content_padding_bottom": 16,
+        "accordion_title_size": 14,
+        "accordion_title_weight": "700",
+        "accordion_title_transform": "uppercase",
+        "accordion_title_spacing": 0.5,
+        "accordion_title_color": "#000000",
+        "accordion_icon_size": 20,
+        "accordion_icon_color": "#000000",
+        "accordion_content_size": 14,
+        "accordion_content_line_height": 1.6,
+        "accordion_content_color": "#333333",
+        "skeleton_enabled": true
+      }
+    },
+    "704_features_N36W7D": {
+      "type": "704-features",
+      "name": "704-features",
+      "settings": {
+        "video_mp4": "https://cdn.shopify.com/videos/c/o/v/7d49cb2ed2824c469fa5c5e26c432506.mp4",
+        "video_webm": "",
+        "poster_image": "shopify://shop_images/0001_c7e5edeb-a300-46ab-814c-3d917cfd3251.png",
+        "video_alt_text": "Product feature video",
+        "video_bitrate": "medium",
+        "video_width": 220,
+        "video_height": 490,
+        "headline": "Mushroom Science Meets Happy Hour",
+        "subheadline": "Patent Pending Formula",
+        "description": "Taking over a decade of experience working with mushrooms, we have perfected mushroom science to give you the feel good, stress melting effects of a gentle buzz without the baggage. No trippy ingredients hiding here.",
+        "button_text": "Learn More",
+        "button_link": "",
+        "feature_1_number": "01",
+        "feature_1_title": "Mushrooms work like your body",
+        "feature_1_text": "When you exercise or laugh, your body makes endorphins, natural chemicals that lift your mood. Mushrooms do something similar. Under different conditions, they create their own feel-good compounds.",
+        "feature_2_number": "02",
+        "feature_2_title": "We reverse-engineered the buzz",
+        "feature_2_text": "We studied what actually makes alcohol feel good, the chemistry behind the social, relaxed vibe and created the right conditions for the mushrooms to produce the key actives in enough quantity to synergistically work together with our other ingredients.",
+        "feature_3_number": "03",
+        "feature_3_title": "The result: TIPSY AF.",
+        "feature_3_text": "After years of research and testing, we captured the best part of drinking, the mood, the ease, the vibe powered by mushroom science and other synergistic ingredients.",
+        "heading_size": 74,
+        "heading_line_height": 0.8,
+        "heading_letter_spacing": 0,
+        "subheading_size": 35,
+        "subheading_line_height": 1.2,
+        "body_size": 15,
+        "body_line_height": 1.4,
+        "feature_heading_size": 22,
+        "feature_heading_line_height": 1.2,
+        "feature_body_size": 15,
+        "feature_body_line_height": 1.6,
+        "number_size": 55,
+        "mobile_heading_size": 44,
+        "mobile_subheading_size": 24,
+        "mobile_body_size": 16,
+        "mobile_number_size": 40,
+        "mobile_feature_heading_size": 25,
+        "mobile_feature_body_size": 15,
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "button_bg_color": "#000000",
+        "button_text_color": "#ffffff",
+        "card_bg_color": "#f0f0f0",
+        "card_border_color": "#d3d3d3",
+        "section_padding": 80,
+        "mobile_padding": 0,
+        "skeleton_enabled": true
+      }
+    },
+    "705_scroll_bar_9haXpQ": {
+      "type": "705-scroll-bar",
+      "blocks": {
+        "item_EH47Yb": {
+          "type": "item",
+          "settings": {
+            "icon": "shopify://shop_images/ZERO-THC-CBD.png",
+            "icon_alt": "",
+            "text": "ZERO THC"
+          }
+        },
+        "item_rragYm": {
+          "type": "item",
+          "settings": {
+            "icon": "shopify://shop_images/ZERO-THC-CBD.png",
+            "icon_alt": "no thc",
+            "text": "ZERO CBD"
+          }
+        },
+        "item_qW3WWM": {
+          "type": "item",
+          "settings": {
+            "icon": "shopify://shop_images/Zero-psyc.png",
+            "icon_alt": "",
+            "text": "ZERO PSYCHEDELICS"
+          }
+        },
+        "item_FzGbDx": {
+          "type": "item",
+          "settings": {
+            "icon": "shopify://shop_images/Zero-Kratom.png",
+            "icon_alt": "",
+            "text": "ZERO KRATOM"
+          }
+        },
+        "item_8dzUpU": {
+          "type": "item",
+          "settings": {
+            "icon": "shopify://shop_images/Zero-Kava.png",
+            "icon_alt": "",
+            "text": "ZERO KAVA"
+          }
+        },
+        "item_h7J6ar": {
+          "type": "item",
+          "settings": {
+            "icon": "shopify://shop_images/Zero-alcohol.png",
+            "icon_alt": "",
+            "text": "ZERO ALCOHOL"
+          }
+        },
+        "item_wHJPCW": {
+          "type": "item",
+          "settings": {
+            "icon": "shopify://shop_images/Zero-Caffeine.png",
+            "icon_alt": "",
+            "text": "ZERO CAFFEINE"
+          }
+        },
+        "item_aJ3YPt": {
+          "type": "item",
+          "settings": {
+            "icon": "shopify://shop_images/Zero-artifical-ingredients.png",
+            "icon_alt": "",
+            "text": "ZERO ARTIFICIAL SWEETENERS"
+          }
+        }
+      },
+      "block_order": [
+        "item_EH47Yb",
+        "item_rragYm",
+        "item_qW3WWM",
+        "item_FzGbDx",
+        "item_8dzUpU",
+        "item_h7J6ar",
+        "item_wHJPCW",
+        "item_aJ3YPt"
+      ],
+      "name": "705-scroll-bar",
+      "settings": {
+        "section_label": "Product features",
+        "background_color": "#0d0d0d",
+        "text_color": "#ffffff",
+        "scroll_speed": 65,
+        "pause_on_hover": true,
+        "font_size": 14,
+        "font_size_mobile": 12,
+        "font_weight": "400",
+        "letter_spacing": 0,
+        "text_transform": "uppercase",
+        "icon_size": 24,
+        "icon_size_mobile": 20,
+        "item_spacing": 60,
+        "item_spacing_mobile": 40,
+        "icon_text_gap": 12,
+        "icon_text_gap_mobile": 10,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "padding_top_mobile": 24,
+        "padding_bottom_mobile": 24,
+        "skeleton_enabled": true
+      }
+    },
+    "706_product_imagery_pGWCrK": {
+      "type": "706-product-imagery",
+      "name": "706 Product Imagery",
+      "settings": {
+        "background_image": "shopify://shop_images/TIPSY_wide.jpg",
+        "heading": "ZERO HANGOVER. \nZERO RECOVERY.",
+        "description": "You can still unwind and stay social without paying for it tomorrow. TIPSY takes the edge off while making the morning after a thing of the past.",
+        "background_color": "#1a2844",
+        "text_color": "#ffffff",
+        "heading_color": "#ffffff",
+        "text_content_max_width": 420,
+        "min_height_desktop": 700,
+        "min_height_mobile": 600,
+        "heading_font_size_mobile": 62,
+        "heading_font_size_desktop": 80,
+        "heading_line_height": 80,
+        "description_font_size_mobile": 16,
+        "description_font_size_desktop": 18,
+        "description_line_height": 125,
+        "skeleton_enabled": true
+      }
+    },
+    "707_two_column_images_g6c7jy": {
+      "type": "707-two-column-images",
+      "name": "707 Two Column Images",
+      "settings": {
+        "section_label": "Product imagery",
+        "section_height": 450,
+        "section_height_mobile": 300,
+        "image_left": "shopify://shop_images/weavy-Gemini_2.5_Flash_Nano_Banana_-2025-10-02_at_09.38.40.jpg",
+        "image_left_alt": "",
+        "link_left": "",
+        "link_left_label": "View product",
+        "image_right": "shopify://shop_images/weavy-Gemini_2.5_Flash_Nano_Banana_-2025-10-13_at_13.21.55.jpg",
+        "image_right_alt": "",
+        "link_right": "",
+        "link_right_label": "View product",
+        "enable_overlay": false,
+        "skeleton_enabled": true
+      }
+    },
+    "708_experience_v2_AkCbgB": {
+      "type": "708-experience-v2",
+      "name": "708 Experience",
+      "settings": {
+        "heading": "THE STACKABLE EXPERIENCE THAT DOESN'T DERAIL YOUR DAY",
+        "heading_size": 60,
+        "heading_line_height": 80,
+        "heading_max_width": 500,
+        "description": "Hits in minutes, lasts about an hour, stack to extend the vibe. Zero recovery, feel good, be social, and go about your day. You don't have to choose between happy hour and hitting your goals anymore.",
+        "description_size": 16,
+        "description_line_height": 125,
+        "description_max_width": 500,
+        "mobile_heading_size": 62,
+        "mobile_description_size": 14,
+        "video_file": "shopify://files/videos/TIPSY AF Expeirence Chart.mp4",
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "padding_top": 12,
+        "padding_bottom": 0,
+        "mobile_padding": 0
+      }
+    },
+    "709_founders_DWx8QD": {
+      "type": "709-founders",
+      "name": "709 Founders",
+      "settings": {
+        "media_type": "image",
+        "image": "shopify://shop_images/Josh_Hahn_co-founder_TIPSY_AF.jpg",
+        "media_max_width": 460,
+        "heading": "AFTER ONE TOO MANY HANGOVERS, I KNEW THERE HAD TO BE A BETTER WAY",
+        "heading_size": 64,
+        "mobile_heading_size": 44,
+        "heading_line_height": 80,
+        "heading_max_width": 800,
+        "description": "At one point I was sick of putting up with the hangover so I did what any normal person would do... I reversed engineered the feel good effects of alcohol by using mushrooms",
+        "description_size": 15,
+        "mobile_description_size": 14,
+        "description_line_height": 125,
+        "description_max_width": 670,
+        "button_text": "Behind the buzz",
+        "button_link": "",
+        "button_font_size": 15,
+        "button_padding_vertical": 14,
+        "button_padding_horizontal": 44,
+        "button_background": "#000000",
+        "button_text_color": "#ffffff",
+        "button_hover_background": "#333333",
+        "button_hover_text_color": "#ffffff",
+        "background_color": "#ffffff",
+        "text_color": "#000000",
+        "padding_top": 32,
+        "padding_bottom": 32,
+        "container_padding_horizontal": 40,
+        "mobile_padding": 0
+      }
+    },
+    "flavour_drop": {
+      "type": "pm-flavour-drop",
+      "settings": {
+        "enabled": false,
+        "eyebrow": "New Flavor Just Dropped",
+        "title": "Want to check it out?",
+        "link": "/pages/pineapple-martini",
+        "delay": 3,
+        "speed": 520,
+        "remember": "session",
+        "remember_key": "pineapple",
+        "pulse": true,
+        "offset_bottom": 16,
+        "side_margin": 12,
+        "max_width": 440,
+        "z_index": 9998,
+        "background_color": "#000000",
+        "eyebrow_color": "#a4a4a9",
+        "title_color": "#ffffff",
+        "decline_color": "#fa3532",
+        "accept_color": "#37c058",
+        "radius": 160,
+        "pad_y": 10,
+        "pad_x": 14,
+        "avatar_size": 56,
+        "avatar_radius": 14,
+        "avatar_gap": 8,
+        "eyebrow_size": 13,
+        "title_size": 16,
+        "text_gap": 4,
+        "button_size": 52,
+        "button_gap": 8,
+        "icon_size": 24,
+        "aria_label": "New flavour announcement",
+        "decline_label": "Dismiss",
+        "accept_label": "See the new flavour"
+      }
+    }
+  },
+  "order": [
+    "703_hero_banner_mobile_jQLeaa",
+    "704_features_N36W7D",
+    "705_scroll_bar_9haXpQ",
+    "706_product_imagery_pGWCrK",
+    "707_two_column_images_g6c7jy",
+    "708_experience_v2_AkCbgB",
+    "709_founders_DWx8QD",
+    "flavour_drop"
+  ]
+}

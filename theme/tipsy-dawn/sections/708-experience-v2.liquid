@@ -1,0 +1,466 @@
+{% comment %}
+  Section: 708-experience
+  Purpose: Two-column section featuring experience messaging with animated graph video
+  Performance: Strict mode - minimal code, inline styles, native lazy loading
+{% endcomment %}
+
+<style>
+  @font-face {
+    font-family: 'Coolvetica Compressed Heavy';
+    src: url('https://cdn.shopify.com/s/files/1/0647/7696/2256/files/Coolvetica_Hv_Comp.woff2?v=1758909708') format('woff2');
+    font-weight: 900;
+    font-stretch: condensed;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  .section-708-experience {
+    --s708-bg: {{ section.settings.background_color }};
+    --s708-text: {{ section.settings.text_color }};
+    --s708-heading-size: {{ section.settings.heading_size }}px;
+    --s708-heading-lh: {{ section.settings.heading_line_height }}%;
+    --s708-heading-max-w: {{ section.settings.heading_max_width }}px;
+    --s708-desc-size: {{ section.settings.description_size }}px;
+    --s708-desc-lh: {{ section.settings.description_line_height }}%;
+    --s708-desc-max-w: {{ section.settings.description_max_width }}px;
+    --s708-pt: {{ section.settings.padding_top }}px;
+    --s708-pb: {{ section.settings.padding_bottom }}px;
+    --s708-mobile-heading-size: {{ section.settings.mobile_heading_size }}px;
+    --s708-mobile-desc-size: {{ section.settings.mobile_description_size }}px;
+    
+    background-color: var(--s708-bg);
+    color: var(--s708-text);
+    padding: var(--s708-pt) 0 var(--s708-pb);
+  }
+
+  .s708-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .s708-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .s708-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 87px 0 0;
+  }
+
+  /* Maximum specificity targeting */
+  .section-708-experience .s708-content .s708-heading,
+  .section-708-experience .s708-heading,
+  section.section-708-experience h2.s708-heading,
+  h2.s708-heading {
+    font-family: 'Coolvetica Compressed Heavy', 'Impact', 'Arial Black', sans-serif !important;
+    font-size: var(--s708-heading-size) !important;
+    font-weight: 900 !important;
+    font-stretch: condensed !important;
+    line-height: var(--s708-heading-lh) !important;
+    margin: 0 0 24px 0 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0 !important;
+    max-width: var(--s708-heading-max-w) !important;
+  }
+
+  .s708-description {
+    font-size: var(--s708-desc-size);
+    line-height: var(--s708-desc-lh);
+    margin: 0;
+    max-width: var(--s708-desc-max-w);
+  }
+
+  .s708-video-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 721 / 500;
+    overflow: hidden;
+  }
+
+  .s708-video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* Hide mobile wrappers on desktop */
+  .s708-heading-wrapper,
+  .s708-description-wrapper {
+    display: none;
+  }
+
+  /* Mobile layout */
+  @media (max-width: 989px) {
+    .section-708-experience {
+      padding: var(--s708-mobile-padding, 40px) 0;
+    }
+
+    .s708-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* HIDE desktop content on mobile */
+    .s708-content {
+      display: none !important;
+    }
+
+    /* SHOW mobile wrappers */
+    .s708-heading-wrapper,
+    .s708-description-wrapper {
+      display: block;
+    }
+
+    /* Heading comes first */
+    .s708-heading-wrapper {
+      order: 1;
+      text-align: center;
+    }
+
+    /* Video comes second */
+    .s708-video-wrapper {
+      order: 2;
+    }
+
+    /* Description comes third */
+    .s708-description-wrapper {
+      order: 3;
+      text-align: center;
+    }
+
+    .section-708-experience .s708-content .s708-heading,
+    .section-708-experience .s708-heading,
+    section.section-708-experience h2.s708-heading,
+    h2.s708-heading {
+      font-size: var(--s708-mobile-heading-size) !important;
+      margin: 0 0 24px 0 !important;
+      max-width: 100% !important;
+    }
+
+    .s708-description {
+      font-size: var(--s708-mobile-desc-size);
+      max-width: 100%;
+      margin: 0;
+    }
+  }
+
+  @media (max-width: 749px) {
+    .s708-container {
+      padding: 0 16px;
+    }
+
+    .s708-grid {
+      gap: 20px;
+    }
+
+    .section-708-experience .s708-heading {
+      margin: 0 0 20px 0 !important;
+    }
+  }
+</style>
+
+<section 
+  id="s708-{{ section.id }}" 
+  class="section-708-experience"
+  role="region"
+  aria-label="{{ section.settings.heading | escape }}"
+>
+  <div class="s708-container">
+    <div class="s708-grid">
+      
+      <!-- Desktop: Content (heading + description together) -->
+      <div class="s708-content">
+        {% if section.settings.heading != blank %}
+          <h2 class="s708-heading" style="font-family: 'Coolvetica Compressed Heavy', 'Impact', 'Arial Black', sans-serif !important;">{{ section.settings.heading }}</h2>
+        {% endif %}
+
+        {% if section.settings.description != blank %}
+          <p class="s708-description">{{ section.settings.description }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Mobile: Heading only (order: 1) -->
+      <div class="s708-heading-wrapper">
+        {% if section.settings.heading != blank %}
+          <h2 class="s708-heading" style="font-family: 'Coolvetica Compressed Heavy', 'Impact', 'Arial Black', sans-serif !important;">{{ section.settings.heading }}</h2>
+        {% endif %}
+      </div>
+
+      <!-- Video (order: 2) -->
+      <div class="s708-video-wrapper" id="s708-{{ section.id }}-wrapper">
+        {% if section.settings.video_file != blank %}
+          <video
+            class="s708-video"
+            id="s708-{{ section.id }}-video"
+            {% if section.settings.video_poster != blank %}
+              poster="{{ section.settings.video_poster | image_url: width: 1440 }}"
+            {% endif %}
+            muted
+            playsinline
+            preload="auto"
+            aria-label="Experience timeline animation"
+          >
+            {% if section.settings.video_file.sources %}
+              {% for source in section.settings.video_file.sources %}
+                <source src="{{ source.url }}" type="{{ source.mime_type }}">
+              {% endfor %}
+            {% else %}
+              <source src="{{ section.settings.video_file }}" type="video/mp4">
+            {% endif %}
+            Your browser does not support the video tag.
+          </video>
+        {% else %}
+          <div 
+            class="s708-video s708-placeholder"
+            style="
+              background: #f5f5f5;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 14px;
+              color: #999;
+            "
+          >
+            Add video file in theme editor
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Mobile: Description only (order: 3) -->
+      <div class="s708-description-wrapper">
+        {% if section.settings.description != blank %}
+          <p class="s708-description">{{ section.settings.description }}</p>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+
+  {% if section.settings.video_file != blank %}
+  <script>
+    (function() {
+      var video = document.getElementById('s708-{{ section.id }}-video');
+      var wrapper = document.getElementById('s708-{{ section.id }}-wrapper');
+      
+      if (!video) return;
+
+      var hasPlayed = false;
+
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting && !hasPlayed) {
+            video.play().then(function() {
+              hasPlayed = true;
+            }).catch(function(error) {
+              console.log('Video autoplay prevented:', error);
+            });
+          }
+        });
+      }, {
+        threshold: 0.5,
+        rootMargin: '0px'
+      });
+
+      if (wrapper) {
+        observer.observe(wrapper);
+      }
+
+      window.addEventListener('beforeunload', function() {
+        observer.disconnect();
+      });
+    })();
+  </script>
+  {% endif %}
+
+</section>
+
+{% schema %}
+{
+  "name": "708-experience",
+  "tag": "section",
+  "class": "section-708-experience",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "THE STACKABLE EXPERIENCE THAT DOESN'T DERAIL YOUR DAY"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 24,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading font size",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "heading_line_height",
+      "min": 75,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "label": "Heading line height",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "heading_max_width",
+      "min": 300,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "label": "Heading max width",
+      "default": 500
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Hits in minutes, lasts about an hour, and stacks to extend the vibe. Zero recovery, feel good, be social, and go about your day. You don't have to choose between happy hour and hitting your goals anymore."
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Description font size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "description_line_height",
+      "min": 100,
+      "max": 200,
+      "step": 5,
+      "unit": "%",
+      "label": "Description line height",
+      "default": 150
+    },
+    {
+      "type": "range",
+      "id": "description_max_width",
+      "min": 300,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "label": "Description max width",
+      "default": 500
+    },
+    {
+      "type": "header",
+      "content": "Mobile Typography"
+    },
+    {
+      "type": "range",
+      "id": "mobile_heading_size",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Mobile heading font size",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "mobile_description_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Mobile description font size",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Video"
+    },
+    {
+      "type": "video",
+      "id": "video_file",
+      "label": "Video file",
+      "info": "Upload animated experience graph video (MP4 recommended). Plays once when scrolled into view."
+    },
+    {
+      "type": "image_picker",
+      "id": "video_poster",
+      "label": "Video poster image",
+      "info": "Optional: Shown before video loads"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Mobile padding top/bottom",
+      "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "708 Experience",
+      "category": "Content"
+    }
+  ]
+}
+{% endschema %}

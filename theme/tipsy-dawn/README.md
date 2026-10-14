@@ -47,27 +47,27 @@ Pull first if anyone has edited the theme in the editor (`config/settings_data.j
 ## Migration plan
 
 1. **Base** — fresh Dawn + font library. ✅
-2. **Control product page** — move the live home page (`templates/index.json` on the live theme:
+2. **Control product page** ✅ — `templates/product.control.json`. Moves the live home page (`templates/index.json` on the live theme:
    `703a-hero-banner`, `703-hero-banner-mobile`, `704-features`, `705-scroll-bar`,
    `706-product-imagery`, `pm-offer-selector`, `707-two-column-images`, `708-experience-v2`,
    `709-founders`, `710-ugc`, `pm-flavour-drop`) into a product template, looking the same as it
    does today, so new versions can be tested against it.
-3. **Home page** — rebuild the v3 landing page (`tipsy-af-v3`) as editable sections.
+3. **Home page** — rebuild the v3 landing page (`tipsy-af-v3`,
+   https://jhahn002.github.io/landing-pages-tipsyaf/tipsy-af-v3/preview/index.html) as editable sections.
 4. **Product page variants** on Dawn's `main-product`.
 5. **Collections, contact, FAQ, subscription** and the other pages.
 6. **Header/footer, cart, tracking** — see the checklist below — then QA and publish.
 
-## Tracking and apps to carry over
+## Tracking and apps carried over
 
-From the live theme's `config/settings_data.json` (app embeds) and sections:
-
-- [ ] Klaviyo onsite embed (app embed)
-- [ ] Alia (app embed)
-- [ ] Triple Whale pixel (app embed)
-- [ ] Stape conversion tracking / GTM (app embed)
-- [ ] Intelligems A/B testing (app embed)
-- [ ] US consent bar (app embed)
-- [ ] Klaviyo newsletter form + `_learnq` identify/track in `sections/712-footer.liquid`
+- [x] App embeds copied from the live theme's `config/settings_data.json`: Klaviyo onsite, Alia,
+      Triple Whale, Stape conversion tracking, Intelligems, US consent bar.
+- [x] Google Tag Manager `GTM-P2852HG5` (hard-coded in the live `theme.liquid`) → `snippets/gtm.liquid`,
+      rendered in both layouts.
+- [x] Klaviyo newsletter form + `_learnq` identify/track — inside `sections/712-footer.liquid`
+      (control footer). The new theme's own footer still needs it.
+- [x] Cart: compare-at strike-through (cart drawer + cart page) and 12-pack quantity buttons on the
+      cart page. Cart type set to drawer, as on live.
 - [ ] Check **Settings → Customer events** in the Shopify admin. Pixels installed there are
       store-wide and keep working with any theme.
 

@@ -1,0 +1,503 @@
+<style>
+  .section-705-scroll-bar {
+    background-color: {{ section.settings.background_color }};
+    overflow: hidden;
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+    position: relative;
+  }
+
+  .s705-scroll-container {
+    display: flex;
+    width: fit-content;
+    animation: s705-scroll {{ section.settings.scroll_speed }}s linear infinite;
+    will-change: transform;
+  }
+
+  {% if section.settings.pause_on_hover %}
+  .s705-scroll-container:hover {
+    animation-play-state: paused;
+  }
+  {% endif %}
+
+  .s705-scroll-track {
+    display: flex;
+    align-items: center;
+    gap: {{ section.settings.item_spacing }}px;
+    padding: 0 {{ section.settings.item_spacing | divided_by: 2 }}px;
+  }
+
+  .s705-item {
+    display: flex;
+    align-items: center;
+    gap: {{ section.settings.icon_text_gap }}px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .s705-icon {
+    width: {{ section.settings.icon_size }}px;
+    height: {{ section.settings.icon_size }}px;
+    flex-shrink: 0;
+    display: block;
+    object-fit: contain;
+  }
+
+  .s705-icon.s705-error {
+    display: none;
+  }
+
+  {% if section.settings.skeleton_enabled %}
+  .s705-icon-wrapper {
+    position: relative;
+    width: {{ section.settings.icon_size }}px;
+    height: {{ section.settings.icon_size }}px;
+    flex-shrink: 0;
+  }
+
+  .s705-skeleton {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    animation: s705-pulse 1.5s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .s705-skeleton {
+      animation: none;
+      opacity: 0.5;
+    }
+  }
+
+  .s705-icon-wrapper.s705-loaded .s705-skeleton {
+    display: none;
+  }
+
+  @keyframes s705-pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.6; }
+  }
+  {% endif %}
+
+  .s705-text {
+    color: {{ section.settings.text_color }};
+    font-size: {{ section.settings.font_size }}px;
+    font-weight: {{ section.settings.font_weight }};
+    letter-spacing: {{ section.settings.letter_spacing }}px;
+    text-transform: {{ section.settings.text_transform }};
+    line-height: 1.2;
+  }
+
+  @keyframes s705-scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .s705-scroll-container {
+      animation: none;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .section-705-scroll-bar {
+      padding: {{ section.settings.padding_top_mobile }}px 0 {{ section.settings.padding_bottom_mobile }}px;
+    }
+    
+    .s705-text {
+      font-size: {{ section.settings.font_size_mobile }}px;
+    }
+    
+    .s705-icon {
+      width: {{ section.settings.icon_size_mobile }}px;
+      height: {{ section.settings.icon_size_mobile }}px;
+    }
+
+    {% if section.settings.skeleton_enabled %}
+    .s705-icon-wrapper {
+      width: {{ section.settings.icon_size_mobile }}px;
+      height: {{ section.settings.icon_size_mobile }}px;
+    }
+    {% endif %}
+
+    .s705-scroll-track {
+      gap: {{ section.settings.item_spacing_mobile }}px;
+      padding: 0 {{ section.settings.item_spacing_mobile | divided_by: 2 }}px;
+    }
+
+    .s705-item {
+      gap: {{ section.settings.icon_text_gap_mobile }}px;
+    }
+  }
+</style>
+
+{% if section.blocks.size > 0 %}
+<section class="section-705-scroll-bar" role="region" aria-label="{{ section.settings.section_label | default: 'Product features' }}">
+  <div class="s705-scroll-container">
+    {%- for i in (1..2) -%}
+      <div class="s705-scroll-track" aria-hidden="{% if i == 2 %}true{% else %}false{% endif %}">
+        {%- for block in section.blocks -%}
+          <div class="s705-item" {{ block.shopify_attributes }}>
+            {%- if block.settings.icon -%}
+              {%- assign icon_size_2x = section.settings.icon_size | times: 2 -%}
+              {% if section.settings.skeleton_enabled %}
+                <div class="s705-icon-wrapper">
+                  <div class="s705-skeleton"></div>
+                  <img 
+                    src="{{ block.settings.icon | image_url: width: icon_size_2x }}"
+                    alt="{{ block.settings.icon_alt | default: block.settings.text | escape }}"
+                    class="s705-icon"
+                    width="{{ section.settings.icon_size }}"
+                    height="{{ section.settings.icon_size }}"
+                    loading="lazy"
+                    decoding="async"
+                    onload="this.parentElement.classList.add('s705-loaded')"
+                    onerror="this.classList.add('s705-error')"
+                  >
+                </div>
+              {% else %}
+                <img 
+                  src="{{ block.settings.icon | image_url: width: icon_size_2x }}"
+                  alt="{{ block.settings.icon_alt | default: block.settings.text | escape }}"
+                  class="s705-icon"
+                  width="{{ section.settings.icon_size }}"
+                  height="{{ section.settings.icon_size }}"
+                  loading="lazy"
+                  decoding="async"
+                  onerror="this.classList.add('s705-error')"
+                >
+              {% endif %}
+            {%- endif -%}
+            
+            {% if block.settings.text != blank %}
+              <span class="s705-text">{{ block.settings.text }}</span>
+            {% endif %}
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+{% endif %}
+
+{% schema %}
+{
+  "name": "705-scroll-bar",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "text",
+      "id": "section_label",
+      "label": "Section Label",
+      "info": "For screen readers",
+      "default": "Product features"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#0D0D0D"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "range",
+      "id": "scroll_speed",
+      "label": "Scroll Speed (seconds)",
+      "info": "Time to complete one full cycle. Lower = faster",
+      "min": 10,
+      "max": 120,
+      "step": 5,
+      "default": 40,
+      "unit": "s"
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause on Hover",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font Size (Desktop)",
+      "min": 10,
+      "max": 32,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "font_size_mobile",
+      "label": "Font Size (Mobile)",
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "font_weight",
+      "label": "Font Weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "range",
+      "id": "letter_spacing",
+      "label": "Letter Spacing",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "text_transform",
+      "label": "Text Transform",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "uppercase", "label": "Uppercase" },
+        { "value": "lowercase", "label": "Lowercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "header",
+      "content": "Icons"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon Size (Desktop)",
+      "min": 16,
+      "max": 60,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_size_mobile",
+      "label": "Icon Size (Mobile)",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "item_spacing",
+      "label": "Space Between Items (Desktop)",
+      "min": 20,
+      "max": 120,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "item_spacing_mobile",
+      "label": "Space Between Items (Mobile)",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_text_gap",
+      "label": "Gap Between Icon & Text (Desktop)",
+      "min": 4,
+      "max": 32,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "icon_text_gap_mobile",
+      "label": "Gap Between Icon & Text (Mobile)",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "default": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top (Desktop)",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom (Desktop)",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding Top (Mobile)",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding Bottom (Mobile)",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Skeleton Loader"
+    },
+    {
+      "type": "checkbox",
+      "id": "skeleton_enabled",
+      "label": "Enable Skeleton Loader",
+      "info": "Show loading placeholder for icons",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Scroll Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "icon_alt",
+          "label": "Icon Alt Text",
+          "info": "Leave blank to use text as alt text"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "ZERO THC"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "705-scroll-bar",
+      "blocks": [
+        {
+          "type": "item",
+          "settings": {
+            "text": "ZERO THC"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "text": "ZERO CBD"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "text": "ZERO PSYCHEDELICS"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "text": "ZERO KRATOM"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "text": "ZERO KAVA"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "text": "ZERO ALCOHOL"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "text": "ZERO CAFFEINE"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "text": "ZERO ARTIFICIAL SWEETENERS"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

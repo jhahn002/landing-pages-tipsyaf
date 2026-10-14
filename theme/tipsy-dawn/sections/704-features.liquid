@@ -1,0 +1,1106 @@
+{% comment %}
+  Section: 704-features
+  Purpose: Product features showcase with video and numbered benefits
+  Performance: Strict mode with lazy video loading
+{% endcomment %}
+
+<style>
+  @font-face {
+    font-family: 'Coolvetica Compressed Heavy';
+    src: url('https://cdn.shopify.com/s/files/1/0647/7696/2256/files/Coolvetica_Hv_Comp.woff2?v=1758909708') format('woff2');
+    font-weight: 900;
+    font-stretch: condensed;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  .section-704-features {
+    --s704-bg-color: {{ section.settings.background_color }};
+    --s704-text-color: {{ section.settings.text_color }};
+    --s704-heading-size: {{ section.settings.heading_size }}px;
+    --s704-heading-line-height: {{ section.settings.heading_line_height }};
+    --s704-heading-letter-spacing: {{ section.settings.heading_letter_spacing }}em;
+    --s704-subheading-size: {{ section.settings.subheading_size }}px;
+    --s704-subheading-line-height: {{ section.settings.subheading_line_height }};
+    --s704-body-size: {{ section.settings.body_size }}px;
+    --s704-body-line-height: {{ section.settings.body_line_height }};
+    --s704-feature-heading-size: {{ section.settings.feature_heading_size }}px;
+    --s704-feature-heading-line-height: {{ section.settings.feature_heading_line_height }};
+    --s704-feature-body-size: {{ section.settings.feature_body_size }}px;
+    --s704-feature-body-line-height: {{ section.settings.feature_body_line_height }};
+    --s704-number-size: {{ section.settings.number_size }}px;
+    --s704-mobile-heading-size: {{ section.settings.mobile_heading_size }}px;
+    --s704-mobile-subheading-size: {{ section.settings.mobile_subheading_size }}px;
+    --s704-mobile-body-size: {{ section.settings.mobile_body_size }}px;
+    --s704-mobile-number-size: {{ section.settings.mobile_number_size }}px;
+    --s704-mobile-feature-heading-size: {{ section.settings.mobile_feature_heading_size }}px;
+    --s704-mobile-feature-body-size: {{ section.settings.mobile_feature_body_size }}px;
+    --s704-button-bg: {{ section.settings.button_bg_color }};
+    --s704-button-text: {{ section.settings.button_text_color }};
+    --s704-card-bg: {{ section.settings.card_bg_color }};
+    --s704-card-border: {{ section.settings.card_border_color }};
+    --s704-video-width: {{ section.settings.video_width }}px;
+    --s704-video-height: {{ section.settings.video_height }}px;
+    --s704-section-padding: {{ section.settings.section_padding }}px;
+    --s704-mobile-padding: {{ section.settings.mobile_padding }}px;
+    
+    background-color: var(--s704-bg-color);
+    color: var(--s704-text-color);
+    padding: var(--s704-section-padding) 0;
+  }
+
+  .s704-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .s704-layout {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  /* Left content column */
+  .s704-content {
+    max-width: 412px;
+  }
+
+  .s704-headline {
+    font-family: 'Coolvetica Compressed Heavy', 'Impact', 'Arial Black', sans-serif;
+    font-size: var(--s704-heading-size);
+    font-weight: 900;
+    line-height: var(--s704-heading-line-height);
+    margin: 0 0 40px;
+    text-transform: uppercase;
+    letter-spacing: var(--s704-heading-letter-spacing);
+  }
+
+  .s704-subheadline {
+    font-size: var(--s704-subheading-size);
+    font-weight: 800;
+    line-height: var(--s704-subheading-line-height);
+    margin: 0 0 12px;
+    text-transform: uppercase;
+  }
+
+  .s704-description {
+    font-size: var(--s704-body-size);
+    line-height: var(--s704-body-line-height);
+    margin: 0 0 32px;
+  }
+
+  .s704-button {
+    display: inline-block;
+    background-color: var(--s704-button-bg);
+    color: var(--s704-button-text);
+    padding: 15px 49px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    transition: opacity 0.2s ease;
+  }
+
+  .s704-button:hover {
+    opacity: 0.9;
+  }
+
+  .s704-button:focus {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  /* Video column */
+  .s704-video-wrapper {
+    position: relative;
+    width: var(--s704-video-width);
+    height: var(--s704-video-height);
+    overflow: hidden;
+  }
+
+  .s704-video-skeleton,
+  .s704-poster-image,
+  .s704-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .s704-video-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: s704-skeleton-pulse 1.5s ease-in-out infinite;
+  }
+
+  {% if section.settings.skeleton_enabled %}
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes s704-skeleton-pulse {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .s704-video-skeleton {
+      animation: none;
+      background: #f0f0f0;
+    }
+  }
+  {% endif %}
+
+  .s704-poster-image {
+    z-index: 1;
+  }
+
+  .s704-video {
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .s704-video.s704-loaded {
+    opacity: 1;
+  }
+
+  .s704-poster-image.s704-hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Features column */
+  .s704-features {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 473px;
+  }
+
+  .s704-feature {
+    display: flex;
+    gap: 14px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--s704-card-border);
+  }
+
+  .s704-feature:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .s704-feature-number {
+    font-family: 'Coolvetica Compressed Heavy', 'Impact', 'Arial Black', sans-serif;
+    font-size: var(--s704-number-size);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: 0;
+    flex-shrink: 0;
+    width: 72px;
+  }
+
+  .s704-feature-content {
+    flex: 1;
+  }
+
+  .s704-feature-title {
+    font-family: 'Coolvetica Compressed Heavy', 'Impact', 'Arial Black', sans-serif;
+    font-size: var(--s704-feature-heading-size);
+    font-weight: 900;
+    line-height: var(--s704-feature-heading-line-height);
+    letter-spacing: 0;
+    margin: 0 0 8px;
+    text-transform: uppercase;
+  }
+
+  .s704-feature-text {
+    font-size: var(--s704-feature-body-size);
+    line-height: var(--s704-feature-body-line-height);
+    margin: 0;
+  }
+
+  /* Mobile layout */
+  @media (max-width: 1023px) {
+    .section-704-features {
+      padding: var(--s704-mobile-padding) 0;
+    }
+
+    .s704-layout {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    .s704-content {
+      max-width: 100%;
+      order: 2;
+      padding: 0;
+      display: none; /* Hide standalone content on mobile */
+    }
+
+    .s704-mobile-top .s704-content {
+      display: block; /* Show content only inside mobile-top */
+      flex: 1;
+    }
+
+    .s704-mobile-top .s704-headline {
+      font-size: var(--s704-mobile-heading-size);
+      margin-bottom: 12px;
+    }
+
+    .s704-mobile-top .s704-subheadline {
+      font-size: var(--s704-mobile-subheading-size);
+      line-height: var(--s704-subheading-line-height);
+      margin-bottom: 8px;
+    }
+
+    .s704-mobile-top .s704-description {
+      font-size: var(--s704-mobile-body-size);
+      line-height: var(--s704-body-line-height);
+      margin-bottom: 0;
+    }
+
+    .s704-headline {
+      font-size: var(--s704-mobile-heading-size);
+      margin-bottom: 20px;
+    }
+
+    .s704-subheadline {
+      font-size: var(--s704-mobile-subheading-size);
+      line-height: var(--s704-subheading-line-height);
+      margin-bottom: 8px;
+    }
+
+    .s704-description {
+      font-size: var(--s704-mobile-body-size);
+      margin-bottom: 0;
+    }
+
+    .s704-button {
+      display: none;
+    }
+
+    .s704-video-wrapper {
+      order: 1;
+      width: 141px;
+      height: 378px;
+      flex-shrink: 0;
+      --s704-video-width: 141px;
+      --s704-video-height: 378px;
+    }
+
+    /* Hide desktop video wrapper on mobile */
+    .s704-layout > .s704-video-wrapper:nth-child(3) {
+      display: none;
+    }
+
+    .s704-mobile-top {
+      display: flex;
+      gap: 23px;
+      align-items: flex-start;
+      background-color: #ffffff;
+      padding: 29px 14px;
+    }
+
+    .s704-mobile-top .s704-content {
+      padding: 0;
+      margin: 0;
+    }
+
+    .s704-features {
+      order: 3;
+      max-width: 100%;
+      gap: 9px;
+      padding: 20px 8px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      display: flex;
+      flex-direction: row;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .s704-features::-webkit-scrollbar {
+      display: none;
+    }
+
+    .s704-feature {
+      background-color: var(--s704-card-bg);
+      border: none;
+      border-radius: 10px;
+      padding: 20px 16px;
+      gap: 14px;
+      min-width: 346px;
+      max-width: 346px;
+      flex-shrink: 0;
+      flex-direction: column;
+    }
+
+    .s704-feature-number {
+      font-size: var(--s704-mobile-number-size);
+      width: auto;
+    }
+
+    .s704-feature-content {
+      flex: 1;
+      width: 100%;
+    }
+
+    .s704-feature-title {
+      font-size: var(--s704-mobile-feature-heading-size);
+      line-height: var(--s704-feature-heading-line-height);
+    }
+
+    .s704-feature-text {
+      font-size: var(--s704-mobile-feature-body-size);
+      line-height: var(--s704-feature-body-line-height);
+    }
+
+    .s704-mobile-button-wrapper {
+      order: 4;
+      padding: 0 10px 23px;
+    }
+
+    .s704-mobile-button {
+      display: block;
+      width: 100%;
+      background-color: var(--s704-button-bg);
+      color: var(--s704-button-text);
+      padding: 18px;
+      border-radius: 6px;
+      text-decoration: none;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+      transition: opacity 0.2s ease;
+    }
+
+    .s704-mobile-button:hover {
+      opacity: 0.9;
+    }
+
+    .s704-mobile-button:focus {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .s704-mobile-top,
+    .s704-mobile-button-wrapper {
+      display: none;
+    }
+  }
+
+  /* Reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .s704-button,
+    .s704-mobile-button,
+    .s704-video {
+      transition: none;
+    }
+  }
+</style>
+
+<section class="section-704-features" role="region" aria-label="{{ section.settings.headline | escape }}">
+  <div class="s704-container">
+    <div class="s704-layout">
+      
+      {%- comment -%} Mobile: Video + Headline {%- endcomment -%}
+      <div class="s704-mobile-top">
+        <div class="s704-video-wrapper" role="img" aria-label="{{ section.settings.video_alt_text | escape }}">
+          {% if section.settings.skeleton_enabled %}
+            <div class="s704-video-skeleton" aria-hidden="true"></div>
+          {% endif %}
+          
+          {%- if section.settings.poster_image -%}
+            <img 
+              src="{{ section.settings.poster_image | image_url: width: section.settings.video_width }}"
+              alt="{{ section.settings.video_alt_text | escape }}"
+              width="{{ section.settings.video_width }}"
+              height="{{ section.settings.video_height }}"
+              class="s704-poster-image"
+              loading="eager"
+            >
+          {%- endif -%}
+          
+          <video
+            class="s704-video"
+            {% if section.settings.video_mp4 != blank %}data-src-mp4="{{ section.settings.video_mp4 }}"{% endif %}
+            {% if section.settings.video_webm != blank %}data-src-webm="{{ section.settings.video_webm }}"{% endif %}
+            data-bitrate="{{ section.settings.video_bitrate }}"
+            muted
+            loop
+            playsinline
+            preload="none"
+            width="{{ section.settings.video_width }}"
+            height="{{ section.settings.video_height }}"
+            aria-label="{{ section.settings.video_alt_text | escape }}"
+          ></video>
+        </div>
+
+        <div class="s704-content">
+          {%- if section.settings.headline != blank -%}
+            <h2 class="s704-headline">{{ section.settings.headline }}</h2>
+          {%- endif -%}
+
+          {%- if section.settings.subheadline != blank -%}
+            <h3 class="s704-subheadline">{{ section.settings.subheadline }}</h3>
+          {%- endif -%}
+
+          {%- if section.settings.description != blank -%}
+            <p class="s704-description">{{ section.settings.description }}</p>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- comment -%} Desktop: Left Content {%- endcomment -%}
+      <div class="s704-content">
+        {%- if section.settings.headline != blank -%}
+          <h2 class="s704-headline">{{ section.settings.headline }}</h2>
+        {%- endif -%}
+
+        {%- if section.settings.subheadline != blank -%}
+          <h3 class="s704-subheadline">{{ section.settings.subheadline }}</h3>
+        {%- endif -%}
+
+        {%- if section.settings.description != blank -%}
+          <p class="s704-description">{{ section.settings.description }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.button_text != blank and section.settings.button_link != blank -%}
+          <a href="{{ section.settings.button_link }}" class="s704-button">
+            {{ section.settings.button_text }}
+          </a>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Desktop: Video {%- endcomment -%}
+      <div class="s704-video-wrapper" role="img" aria-label="{{ section.settings.video_alt_text | escape }}">
+        {% if section.settings.skeleton_enabled %}
+          <div class="s704-video-skeleton" aria-hidden="true"></div>
+        {% endif %}
+        
+        {%- if section.settings.poster_image -%}
+          <img 
+            src="{{ section.settings.poster_image | image_url: width: section.settings.video_width }}"
+            alt="{{ section.settings.video_alt_text | escape }}"
+            width="{{ section.settings.video_width }}"
+            height="{{ section.settings.video_height }}"
+            class="s704-poster-image"
+            loading="eager"
+          >
+        {%- endif -%}
+        
+        <video
+          class="s704-video"
+          {% if section.settings.video_mp4 != blank %}data-src-mp4="{{ section.settings.video_mp4 }}"{% endif %}
+          {% if section.settings.video_webm != blank %}data-src-webm="{{ section.settings.video_webm }}"{% endif %}
+          data-bitrate="{{ section.settings.video_bitrate }}"
+          muted
+          loop
+          playsinline
+          preload="none"
+          width="{{ section.settings.video_width }}"
+          height="{{ section.settings.video_height }}"
+          aria-label="{{ section.settings.video_alt_text | escape }}"
+        ></video>
+      </div>
+
+      {%- comment -%} Right: Features {%- endcomment -%}
+      <div class="s704-features">
+        {%- if section.settings.feature_1_number != blank or section.settings.feature_1_title != blank -%}
+          <div class="s704-feature">
+            {%- if section.settings.feature_1_number != blank -%}
+              <div class="s704-feature-number" aria-hidden="true">{{ section.settings.feature_1_number }}</div>
+            {%- endif -%}
+            <div class="s704-feature-content">
+              {%- if section.settings.feature_1_title != blank -%}
+                <h3 class="s704-feature-title">{{ section.settings.feature_1_title }}</h3>
+              {%- endif -%}
+              {%- if section.settings.feature_1_text != blank -%}
+                <p class="s704-feature-text">{{ section.settings.feature_1_text }}</p>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.feature_2_number != blank or section.settings.feature_2_title != blank -%}
+          <div class="s704-feature">
+            {%- if section.settings.feature_2_number != blank -%}
+              <div class="s704-feature-number" aria-hidden="true">{{ section.settings.feature_2_number }}</div>
+            {%- endif -%}
+            <div class="s704-feature-content">
+              {%- if section.settings.feature_2_title != blank -%}
+                <h3 class="s704-feature-title">{{ section.settings.feature_2_title }}</h3>
+              {%- endif -%}
+              {%- if section.settings.feature_2_text != blank -%}
+                <p class="s704-feature-text">{{ section.settings.feature_2_text }}</p>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.feature_3_number != blank or section.settings.feature_3_title != blank -%}
+          <div class="s704-feature">
+            {%- if section.settings.feature_3_number != blank -%}
+              <div class="s704-feature-number" aria-hidden="true">{{ section.settings.feature_3_number }}</div>
+            {%- endif -%}
+            <div class="s704-feature-content">
+              {%- if section.settings.feature_3_title != blank -%}
+                <h3 class="s704-feature-title">{{ section.settings.feature_3_title }}</h3>
+              {%- endif -%}
+              {%- if section.settings.feature_3_text != blank -%}
+                <p class="s704-feature-text">{{ section.settings.feature_3_text }}</p>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Mobile: Button {%- endcomment -%}
+      <div class="s704-mobile-button-wrapper">
+        {%- if section.settings.button_text != blank and section.settings.button_link != blank -%}
+          <a href="{{ section.settings.button_link }}" class="s704-mobile-button">
+            {{ section.settings.button_text }}
+          </a>
+        {%- endif -%}
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+(function() {
+  if (!('IntersectionObserver' in window)) {
+    // Fallback for browsers without IntersectionObserver
+    loadAllVideos();
+    return;
+  }
+
+  const videoWrappers = document.querySelectorAll('.s704-video-wrapper');
+  const observerOptions = {
+    root: null,
+    rootMargin: '200px',
+    threshold: 0
+  };
+
+  const videoObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        loadVideo(entry.target);
+        videoObserver.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  videoWrappers.forEach(function(wrapper) {
+    videoObserver.observe(wrapper);
+  });
+
+  function loadVideo(wrapper) {
+    const video = wrapper.querySelector('.s704-video');
+    const poster = wrapper.querySelector('.s704-poster-image');
+    const skeleton = wrapper.querySelector('.s704-video-skeleton');
+    
+    if (!video) return;
+
+    const mp4Src = video.getAttribute('data-src-mp4');
+    const webmSrc = video.getAttribute('data-src-webm');
+    const bitrate = video.getAttribute('data-bitrate') || 'medium';
+
+    // Add sources based on bitrate preference
+    if (webmSrc) {
+      const sourceWebm = document.createElement('source');
+      sourceWebm.src = webmSrc;
+      sourceWebm.type = 'video/webm';
+      video.appendChild(sourceWebm);
+    }
+
+    if (mp4Src) {
+      const sourceMp4 = document.createElement('source');
+      sourceMp4.src = mp4Src;
+      sourceMp4.type = 'video/mp4';
+      video.appendChild(sourceMp4);
+    }
+
+    video.load();
+
+    video.addEventListener('loadeddata', function() {
+      video.classList.add('s704-loaded');
+      video.play().catch(function(error) {
+        console.log('Video autoplay prevented:', error);
+      });
+      
+      // Hide poster and skeleton after video loads
+      if (poster) {
+        poster.classList.add('s704-hidden');
+      }
+      if (skeleton) {
+        skeleton.style.display = 'none';
+      }
+    }, { once: true });
+
+    // Error handling
+    video.addEventListener('error', function() {
+      console.error('Video failed to load');
+      if (skeleton) {
+        skeleton.style.display = 'none';
+      }
+    }, { once: true });
+  }
+
+  function loadAllVideos() {
+    videoWrappers.forEach(function(wrapper) {
+      loadVideo(wrapper);
+    });
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "704-features",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Video Settings"
+    },
+    {
+      "type": "url",
+      "id": "video_mp4",
+      "label": "Video URL (MP4)",
+      "info": "Primary video format. Recommended for best compatibility."
+    },
+    {
+      "type": "url",
+      "id": "video_webm",
+      "label": "Video URL (WebM)",
+      "info": "Optional. Provides better compression for supported browsers."
+    },
+    {
+      "type": "image_picker",
+      "id": "poster_image",
+      "label": "Poster Image",
+      "info": "Shows before video loads. Required for performance."
+    },
+    {
+      "type": "text",
+      "id": "video_alt_text",
+      "label": "Video Description",
+      "default": "Product feature video",
+      "info": "Describe the video content for accessibility"
+    },
+    {
+      "type": "select",
+      "id": "video_bitrate",
+      "label": "Video Quality/Bitrate",
+      "options": [
+        {
+          "value": "low",
+          "label": "Low (Faster loading)"
+        },
+        {
+          "value": "medium",
+          "label": "Medium (Balanced)"
+        },
+        {
+          "value": "high",
+          "label": "High (Better quality)"
+        }
+      ],
+      "default": "medium",
+      "info": "Lower bitrate = faster loading, smaller file size"
+    },
+    {
+      "type": "range",
+      "id": "video_width",
+      "label": "Video Width (px)",
+      "min": 150,
+      "max": 600,
+      "step": 10,
+      "default": 220,
+      "info": "Desktop video width"
+    },
+    {
+      "type": "range",
+      "id": "video_height",
+      "label": "Video Height (px)",
+      "min": 200,
+      "max": 800,
+      "step": 10,
+      "default": 600,
+      "info": "Desktop video height"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline",
+      "default": "Mushroom Science Meets Happy Hour"
+    },
+    {
+      "type": "text",
+      "id": "subheadline",
+      "label": "Subheadline",
+      "default": "Patent Pending Formula"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Taking over a decade of experience working with mushrooms, we have perfected mushroom science to give you the feel good, stress melting effects of a gentle buzz without the baggage. No trippy ingredients hiding here."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Learn More"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link",
+      "info": "Internal page link"
+    },
+    {
+      "type": "header",
+      "content": "Feature 1"
+    },
+    {
+      "type": "text",
+      "id": "feature_1_number",
+      "label": "Number",
+      "default": "01"
+    },
+    {
+      "type": "text",
+      "id": "feature_1_title",
+      "label": "Title",
+      "default": "Mushrooms work like your body"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_1_text",
+      "label": "Description",
+      "default": "When you exercise or laugh, your body makes endorphins, natural chemicals that lift your mood. Mushrooms do something similar. Under different conditions, they create their own feel-good compounds."
+    },
+    {
+      "type": "header",
+      "content": "Feature 2"
+    },
+    {
+      "type": "text",
+      "id": "feature_2_number",
+      "label": "Number",
+      "default": "02"
+    },
+    {
+      "type": "text",
+      "id": "feature_2_title",
+      "label": "Title",
+      "default": "We reverse-engineered the buzz"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_2_text",
+      "label": "Description",
+      "default": "We studied what actually makes alcohol feel good, the chemistry behind the social, relaxed vibe and created the right conditions for the mushrooms to produce the key actives in enough quantity to synergistically work together with our other ingredients."
+    },
+    {
+      "type": "header",
+      "content": "Feature 3"
+    },
+    {
+      "type": "text",
+      "id": "feature_3_number",
+      "label": "Number",
+      "default": "03"
+    },
+    {
+      "type": "text",
+      "id": "feature_3_title",
+      "label": "Title",
+      "default": "The result: TIPSY AF."
+    },
+    {
+      "type": "textarea",
+      "id": "feature_3_text",
+      "label": "Description",
+      "default": "After years of research and testing, we captured the best part of drinking, the mood, the ease, the vibe powered by mushroom science and other synergistic ingredients."
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Headline Size",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "default": 66,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "heading_line_height",
+      "label": "Headline Line Height",
+      "min": 0.5,
+      "max": 1.5,
+      "step": 0.1,
+      "default": 0.8,
+      "info": "Recommended: 0.7-0.8 for compressed look"
+    },
+    {
+      "type": "range",
+      "id": "heading_letter_spacing",
+      "label": "Headline Letter Spacing (em)",
+      "min": -0.5,
+      "max": 0.5,
+      "step": 0.1,
+      "default": 0,
+      "info": "0 = normal, negative = tighter, positive = wider"
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "label": "Subheadline Size",
+      "min": 16,
+      "max": 40,
+      "step": 1,
+      "default": 26,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "subheading_line_height",
+      "label": "Subheadline Line Height",
+      "min": 0.8,
+      "max": 2.0,
+      "step": 0.1,
+      "default": 1.2
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "label": "Body Text Size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "default": 18,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "body_line_height",
+      "label": "Body Text Line Height",
+      "min": 1.0,
+      "max": 2.5,
+      "step": 0.1,
+      "default": 1.6
+    },
+    {
+      "type": "range",
+      "id": "feature_heading_size",
+      "label": "Feature Title Size",
+      "min": 16,
+      "max": 48,
+      "step": 1,
+      "default": 35,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "feature_heading_line_height",
+      "label": "Feature Title Line Height",
+      "min": 0.8,
+      "max": 2.0,
+      "step": 0.1,
+      "default": 1.2
+    },
+    {
+      "type": "range",
+      "id": "feature_body_size",
+      "label": "Feature Text Size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "default": 19,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "feature_body_line_height",
+      "label": "Feature Text Line Height",
+      "min": 1.0,
+      "max": 2.5,
+      "step": 0.1,
+      "default": 1.6
+    },
+    {
+      "type": "range",
+      "id": "number_size",
+      "label": "Number Size",
+      "min": 40,
+      "max": 120,
+      "step": 5,
+      "default": 85,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Mobile Typography"
+    },
+    {
+      "type": "range",
+      "id": "mobile_heading_size",
+      "label": "Mobile Headline Size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "mobile_subheading_size",
+      "label": "Mobile Subheadline Size",
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "mobile_body_size",
+      "label": "Mobile Body Text Size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "mobile_number_size",
+      "label": "Mobile Number Size",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "default": 70,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "mobile_feature_heading_size",
+      "label": "Mobile Feature Title Size",
+      "min": 14,
+      "max": 36,
+      "step": 1,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "mobile_feature_body_size",
+      "label": "Mobile Feature Text Size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Card Background (Mobile)",
+      "default": "#F0F0F0"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Border Color",
+      "default": "#D3D3D3"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "label": "Section Padding (Desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding",
+      "label": "Section Padding (Mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Performance"
+    },
+    {
+      "type": "checkbox",
+      "id": "skeleton_enabled",
+      "label": "Enable Skeleton Loader",
+      "default": true,
+      "info": "Shows loading animation while video loads"
+    }
+  ],
+  "presets": [
+    {
+      "name": "704-features",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

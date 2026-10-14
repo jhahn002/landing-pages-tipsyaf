@@ -1,0 +1,502 @@
+{% comment %}
+  Section: 701 banner announcement
+  Purpose: Top-of-page announcement banner with auto-scroll or static display
+  Performance Mode: strict
+{% endcomment %}
+
+{%- liquid
+  assign section_id = 'section-701-banner-announcement-' | append: section.id
+  assign bg_color = section.settings.background_color | default: '#000000'
+  assign text_color = section.settings.text_color | default: '#ffffff'
+  assign font_size = section.settings.font_size | default: 14
+  assign icon_size = section.settings.icon_size | default: 20
+  assign padding_top = section.settings.padding_top | default: 12
+  assign padding_bottom = section.settings.padding_bottom | default: 12
+  assign auto_scroll = section.settings.auto_scroll
+  assign scroll_speed = section.settings.scroll_speed | default: 30
+  assign separator = section.settings.separator
+  assign dismissible = section.settings.dismissible
+-%}
+
+{%- if section.blocks.size > 0 -%}
+  <div 
+    id="{{ section_id }}" 
+    class="section-701-banner-announcement{% if dismissible %} section-701-banner-announcement--dismissible{% endif %}"
+    data-section-id="{{ section.id }}"
+    role="region"
+    aria-label="{{ section.settings.aria_label | default: 'Announcement banner' }}"
+  >
+    {%- comment -%} Banner Content {%- endcomment -%}
+    <div class="section-701-banner-announcement__wrapper">
+      {%- if dismissible -%}
+        <button 
+          type="button" 
+          class="section-701-banner-announcement__dismiss"
+          aria-label="Dismiss announcement"
+          onclick="this.closest('.section-701-banner-announcement').style.display='none';sessionStorage.setItem('banner_{{ section.id }}', 'hidden');"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      {%- endif -%}
+
+      <div class="section-701-banner-announcement__container{% if auto_scroll %} section-701-banner-announcement__container--scroll{% endif %}">
+        <div class="section-701-banner-announcement__content">
+          {%- for block in section.blocks -%}
+            {%- liquid
+              assign block_text_color = block.settings.text_color | default: text_color
+              assign block_font_size = block.settings.font_size | default: font_size
+              assign block_icon_size = block.settings.icon_size | default: icon_size
+              assign has_link = false
+              if block.settings.link_url != blank
+                assign has_link = true
+              endif
+            -%}
+
+            <div class="section-701-banner-announcement__item" {{ block.shopify_attributes }}>
+              {%- if has_link -%}
+                <a href="{{ block.settings.link_url }}" class="section-701-banner-announcement__link">
+              {%- endif -%}
+
+              {%- if block.settings.icon != blank -%}
+                <img
+                  src="{{ block.settings.icon | image_url: width: 100 }}"
+                  alt=""
+                  class="section-701-banner-announcement__icon"
+                  width="{{ block_icon_size }}"
+                  height="{{ block_icon_size }}"
+                  loading="lazy"
+                  decoding="async"
+                >
+              {%- endif -%}
+
+              {%- if block.settings.text != blank -%}
+                <span class="section-701-banner-announcement__text">
+                  {{ block.settings.text }}
+                </span>
+              {%- endif -%}
+
+              {%- if has_link -%}
+                </a>
+              {%- endif -%}
+
+              {%- unless forloop.last -%}
+                {%- if separator != blank -%}
+                  <span class="section-701-banner-announcement__separator" aria-hidden="true">{{ separator }}</span>
+                {%- endif -%}
+              {%- endunless -%}
+            </div>
+          {%- endfor -%}
+
+          {%- comment -%} Duplicate content for seamless scroll {%- endcomment -%}
+          {%- if auto_scroll -%}
+            {%- for block in section.blocks -%}
+              {%- liquid
+                assign block_text_color = block.settings.text_color | default: text_color
+                assign block_font_size = block.settings.font_size | default: font_size
+                assign block_icon_size = block.settings.icon_size | default: icon_size
+                assign has_link = false
+                if block.settings.link_url != blank
+                  assign has_link = true
+                endif
+              -%}
+
+              <div class="section-701-banner-announcement__item" aria-hidden="true">
+                {%- if has_link -%}
+                  <a href="{{ block.settings.link_url }}" class="section-701-banner-announcement__link" tabindex="-1">
+                {%- endif -%}
+
+                {%- if block.settings.icon != blank -%}
+                  <img
+                    src="{{ block.settings.icon | image_url: width: 100 }}"
+                    alt=""
+                    class="section-701-banner-announcement__icon"
+                    width="{{ block_icon_size }}"
+                    height="{{ block_icon_size }}"
+                    loading="lazy"
+                    decoding="async"
+                  >
+                {%- endif -%}
+
+                {%- if block.settings.text != blank -%}
+                  <span class="section-701-banner-announcement__text">
+                    {{ block.settings.text }}
+                  </span>
+                {%- endif -%}
+
+                {%- if has_link -%}
+                  </a>
+                {%- endif -%}
+
+                {%- unless forloop.last -%}
+                  {%- if separator != blank -%}
+                    <span class="section-701-banner-announcement__separator" aria-hidden="true">{{ separator }}</span>
+                  {%- endif -%}
+                {%- endunless -%}
+              </div>
+            {%- endfor -%}
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Inline CSS {%- endcomment -%}
+  <style>
+    #{{ section_id }} {
+      --s701-bg: {{ bg_color }};
+      --s701-text: {{ text_color }};
+      --s701-font-size: {{ font_size }}px;
+      --s701-icon-size: {{ icon_size }}px;
+      --s701-padding-top: {{ padding_top }}px;
+      --s701-padding-bottom: {{ padding_bottom }}px;
+      --s701-scroll-speed: {{ scroll_speed }}s;
+    }
+
+    .section-701-banner-announcement {
+      position: relative;
+      background-color: var(--s701-bg);
+      color: var(--s701-text);
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .section-701-banner-announcement__wrapper {
+      position: relative;
+      padding: var(--s701-padding-top) 1rem var(--s701-padding-bottom);
+    }
+
+    .section-701-banner-announcement__dismiss {
+      position: absolute;
+      top: 50%;
+      right: 1rem;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: var(--s701-text);
+      cursor: pointer;
+      padding: 0.5rem;
+      z-index: 10;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .section-701-banner-announcement__dismiss:hover,
+    .section-701-banner-announcement__dismiss:focus {
+      opacity: 1;
+    }
+
+    .section-701-banner-announcement__dismiss:focus {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+    }
+
+    .section-701-banner-announcement__container {
+      max-width: 100%;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .section-701-banner-announcement__container--scroll {
+      overflow: hidden;
+    }
+
+    .section-701-banner-announcement__content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .section-701-banner-announcement__container--scroll .section-701-banner-announcement__content {
+      flex-wrap: nowrap;
+      animation: s701-scroll var(--s701-scroll-speed) linear infinite;
+      width: max-content;
+    }
+
+    @keyframes s701-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .section-701-banner-announcement__container--scroll .section-701-banner-announcement__content {
+        animation: none;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+
+    .section-701-banner-announcement__item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+    }
+
+    .section-701-banner-announcement__link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: inherit;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .section-701-banner-announcement__link:hover,
+    .section-701-banner-announcement__link:focus {
+      opacity: 0.8;
+      text-decoration: underline;
+    }
+
+    .section-701-banner-announcement__link:focus {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+    }
+
+    .section-701-banner-announcement__icon {
+      width: var(--s701-icon-size);
+      height: var(--s701-icon-size);
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .section-701-banner-announcement__text {
+      font-size: var(--s701-font-size);
+      line-height: 1.4;
+    }
+
+    .section-701-banner-announcement__separator {
+      margin: 0 0.5rem;
+      opacity: 0.6;
+    }
+
+    @media (max-width: 768px) {
+      .section-701-banner-announcement__wrapper {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+
+      .section-701-banner-announcement__dismiss {
+        right: 0.5rem;
+      }
+
+      .section-701-banner-announcement__content {
+        gap: 1rem;
+      }
+    }
+  </style>
+
+  {%- comment -%} Minimal JS for session dismiss {%- endcomment -%}
+  <script>
+    (function() {
+      const section = document.getElementById('{{ section_id }}');
+      if (!section) return;
+
+      // Check session dismissal
+      if (sessionStorage.getItem('banner_{{ section.id }}') === 'hidden') {
+        section.style.display = 'none';
+      }
+    })();
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "701 banner announcement",
+  "tag": "section",
+  "class": "section-701-banner-announcement-wrapper",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout & Behavior"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_scroll",
+      "label": "Enable auto-scroll",
+      "default": false,
+      "info": "Continuously scrolls announcements horizontally"
+    },
+    {
+      "type": "range",
+      "id": "scroll_speed",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "s",
+      "label": "Scroll speed",
+      "default": 30,
+      "info": "Lower = faster. Only applies when auto-scroll is enabled."
+    },
+    {
+      "type": "checkbox",
+      "id": "dismissible",
+      "label": "Allow dismissal",
+      "default": false,
+      "info": "Shows close button. Banner stays hidden for current session only."
+    },
+    {
+      "type": "text",
+      "id": "separator",
+      "label": "Separator between items",
+      "default": "•",
+      "info": "Leave blank for no separator. Common options: • | · —"
+    },
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Accessibility label",
+      "default": "Announcement banner",
+      "info": "For screen readers"
+    },
+    {
+      "type": "header",
+      "content": "Colors & Typography"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color (default)",
+      "default": "#ffffff",
+      "info": "Can be overridden per announcement block"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size (default)",
+      "default": 14,
+      "info": "Can be overridden per announcement block"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "min": 12,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Icon size (default)",
+      "default": 20,
+      "info": "Can be overridden per announcement block"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 12
+    }
+  ],
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "Announcement",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Announcement text",
+          "default": "Free shipping on orders over $50"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon (optional)"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link URL (optional)",
+          "info": "Makes the entire announcement clickable"
+        },
+        {
+          "type": "header",
+          "content": "Override Styles"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color",
+          "info": "Leave empty to use section default"
+        },
+        {
+          "type": "range",
+          "id": "font_size",
+          "min": 10,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Font size",
+          "default": 14,
+          "info": "Overrides section default font size"
+        },
+        {
+          "type": "range",
+          "id": "icon_size",
+          "min": 12,
+          "max": 48,
+          "step": 2,
+          "unit": "px",
+          "label": "Icon size",
+          "default": 20,
+          "info": "Overrides section default icon size"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "701 banner announcement",
+      "blocks": [
+        {
+          "type": "announcement",
+          "settings": {
+            "text": "🎉 Free shipping on orders over $50"
+          }
+        },
+        {
+          "type": "announcement",
+          "settings": {
+            "text": "⚡ Flash sale: 20% off everything"
+          }
+        },
+        {
+          "type": "announcement",
+          "settings": {
+            "text": "💎 New arrivals just dropped"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

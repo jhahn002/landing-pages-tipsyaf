@@ -1,0 +1,121 @@
+{
+  "type": "footer",
+  "name": "Control footer",
+  "sections": {
+    "712_footer_fzaDPX": {
+      "type": "712-footer",
+      "blocks": {
+        "column_8yX3YR": {
+          "type": "column",
+          "settings": {
+            "title": "Shop",
+            "link_1_text": "",
+            "link_1_url": "/collections/bundles",
+            "link_2_text": "",
+            "link_2_url": "/collections/concentrates",
+            "link_3_text": "",
+            "link_3_url": "/collections/protein",
+            "link_4_text": "",
+            "link_4_url": "/collections/accessories",
+            "link_5_text": "Subscribe & Save",
+            "link_5_url": "/pages/subscribe",
+            "link_6_text": "Accessibility",
+            "link_6_url": "shopify://pages/accessibility-statement"
+          }
+        },
+        "column_aVkmVd": {
+          "type": "column",
+          "settings": {
+            "title": "Learn More",
+            "link_1_text": "",
+            "link_1_url": "/pages/impact",
+            "link_2_text": "",
+            "link_2_url": "/pages/recipes",
+            "link_3_text": "",
+            "link_3_url": "/blogs/news",
+            "link_4_text": "",
+            "link_4_url": "/pages/affiliates",
+            "link_5_text": "Wholesale",
+            "link_5_url": "/pages/wholesale",
+            "link_6_text": "",
+            "link_6_url": ""
+          }
+        },
+        "column_hAQi4h": {
+          "type": "column",
+          "settings": {
+            "title": "Help",
+            "link_1_text": "Manage Subscriptions",
+            "link_1_url": "https://gettipsy.com/a/loop_subscriptions/customer",
+            "link_2_text": "Support",
+            "link_2_url": "/pages/contact",
+            "link_3_text": "",
+            "link_3_url": "/pages/reviews",
+            "link_4_text": "",
+            "link_4_url": "/pages/store-locator",
+            "link_5_text": "",
+            "link_5_url": "/pages/subscribe",
+            "link_6_text": "",
+            "link_6_url": ""
+          }
+        },
+        "column_qxFLAi": {
+          "type": "column",
+          "settings": {
+            "title": "Support",
+            "link_1_text": "Returns & Refunds",
+            "link_1_url": "shopify://pages/returns-refunds-policy",
+            "link_2_text": "Terms of Service",
+            "link_2_url": "shopify://pages/terms-of-service",
+            "link_3_text": "Privacy Policy",
+            "link_3_url": "shopify://pages/privacy-policy",
+            "link_4_text": "Do Not Share My Personal Info",
+            "link_4_url": "shopify://pages/do-not-sell-or-share-my-personal-information",
+            "link_5_text": "",
+            "link_5_url": "",
+            "link_6_text": "",
+            "link_6_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "column_8yX3YR",
+        "column_aVkmVd",
+        "column_hAQi4h",
+        "column_qxFLAi"
+      ],
+      "name": "712-footer",
+      "settings": {
+        "container_width": 1550,
+        "padding_top": 20,
+        "padding_bottom": 20,
+        "padding_horizontal": 25,
+        "logo": "shopify://shop_images/TIPSY_AF_Logo_Header.png",
+        "logo_width": 80,
+        "show_newsletter": true,
+        "klaviyo_list_id": "RAfJtf",
+        "input_placeholder": "Your email",
+        "submit_text": "GET SOME SAUCY EMAILS",
+        "show_benefits": true,
+        "benefit_1": "No spam ever",
+        "benefit_2": "Best Deals Only",
+        "show_social": true,
+        "social_facebook": "",
+        "social_instagram": "",
+        "social_twitter": "",
+        "social_tiktok": "",
+        "copyright_text": "©[year] TIPSY Beverages LLC. All rights reserved.",
+        "accent_color": "#c6f952",
+        "text_color": "#000000",
+        "bg_color": "#ffffff",
+        "border_color": "#e2e2e2",
+        "input_border_color": "#e2e2e2",
+        "placeholder_color": "#a9a9a9",
+        "skeleton_enabled": true
+      }
+    }
+  },
+  "order": [
+    "712_footer_fzaDPX"
+  ]
+}
