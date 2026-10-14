@@ -42,6 +42,11 @@ recommendations that use the Mix switch to Blood Orange automatically.
   "Best way to start" and a yellow check; the 12-packs sit below as quiet rows under "Or skip the trial".
   The earlier options remain as the theme setting **Offer layout** (`ticket`, `stamp`, `cards`) and can be
   previewed with `?offer=ticket` etc.
+- **Flavor picker (chosen: shelf):** the three cans stand on a dark shelf; the chosen can lifts into a
+  flavor-colored glow and floats gently. On entry (buy box scrolling into view, or the checkout opening)
+  the cans rise onto the shelf one after another. Switching flavors pops the new can (bounce + wiggle),
+  flares the glow, ripples a ring and slides in the name underline. All motion is skipped when the
+  visitor has reduced motion turned on. Other layouts remain as a hidden option (`?flavor=tiles|pop|chips`).
 - **Colors:** buy box, plan cards, flavor selection and add-on buttons use the brand charcoal/yellow
   (the light blue from the Bev reference is gone).
 - **Buy box:** round flavor selectors and size & plan cards (Bev-style); its button continues to

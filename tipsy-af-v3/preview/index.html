@@ -635,13 +635,14 @@ body { margin: 0; background: #fff; }
 .tpm-shelf__opt { position: relative; display: block; cursor: pointer; }
 .tpm-shelf__box { position: relative; display: grid; justify-items: center; text-align: center; padding-bottom: 12px; }
 .tpm-shelf__box::before { content: ""; position: absolute; left: 50%; bottom: 70px; width: 140px; height: 140px; margin-left: -70px; border-radius: 50%; background: radial-gradient(closest-side, var(--f-deep), rgba(0,0,0,0)); opacity: 0; transition: opacity .25s; }
-.tpm-shelf__img { position: relative; z-index: 1; height: 132px; display: flex; align-items: flex-end; justify-content: center; transition: transform .3s cubic-bezier(.3,1.5,.5,1), filter .25s; filter: grayscale(.6) brightness(.7); }
+.tpm-shelf__img { position: relative; z-index: 1; height: 132px; display: flex; align-items: flex-end; justify-content: center; transition: translate .35s cubic-bezier(.3,1.5,.5,1), scale .35s cubic-bezier(.3,1.5,.5,1), filter .3s; filter: grayscale(.6) brightness(.7); }
 .tpm-shelf__img > img, .tpm-shelf__img .tpm-can-pair img { height: 118px; width: auto; filter: drop-shadow(0 8px 8px rgba(0,0,0,.4)); }
 .tpm-shelf__name { position: relative; z-index: 1; margin-top: 14px; min-height: 34px; font-size: 13px; font-weight: 600; line-height: 1.25; color: rgba(255,255,255,.55); padding: 0 4px; }
 .tpm-shelf__opt input:checked + .tpm-shelf__box::before { opacity: .7; }
-.tpm-shelf__opt input:checked + .tpm-shelf__box .tpm-shelf__img { transform: translateY(-10px) scale(1.08); filter: none; }
+.tpm-shelf__opt input:checked + .tpm-shelf__box .tpm-shelf__img { translate: 0 -10px; scale: 1.08; filter: none; }
 .tpm-shelf__opt input:checked + .tpm-shelf__box .tpm-shelf__name { color: #fff; }
-.tpm-shelf__opt input:checked + .tpm-shelf__box .tpm-shelf__name::after { content: ""; display: block; width: 22px; height: 3px; border-radius: 3px; background: var(--tpm-accent); margin: 6px auto 0; }
+.tpm-shelf__name::after { content: ""; display: block; width: 0; height: 3px; border-radius: 3px; background: var(--tpm-accent); margin: 6px auto 0; transition: width .3s cubic-bezier(.3,1.5,.5,1); }
+.tpm-shelf__opt input:checked + .tpm-shelf__box .tpm-shelf__name::after { width: 22px; }
 .tpm-shelf__note { margin-top: 10px; font-size: 14px; color: var(--tpm-muted); text-align: center; }
 
 /* 3. Pop: full-color cards, can breaking out of the top */
@@ -700,6 +701,40 @@ body { margin: 0; background: #fff; }
 .tpm-flav--shelflight .tpm-shelf__name { color: #a49d91; }
 .tpm-flav--shelflight .tpm-shelf__opt input:checked + .tpm-shelf__box .tpm-shelf__name { color: var(--tpm-ink); }
 .tpm-flav--shelflight .tpm-shelf__opt input:checked + .tpm-shelf__box .tpm-shelf__name::after { background: var(--tpm-ink); }
+
+/* Shelf motion */
+.tpm-shelf__box::after { content: ""; position: absolute; left: 50%; bottom: 96px; width: 96px; height: 96px; margin-left: -48px; border-radius: 50%; border: 2px solid var(--f-deep); opacity: 0; pointer-events: none; }
+.tpm-shelf__note { transition: opacity .2s; }
+@media (prefers-reduced-motion: no-preference) {
+  /* Waiting to scroll into view */
+  .tpm-shelf.is-waiting .tpm-shelf__img > * { opacity: 0; transform: translateY(70px); }
+  /* Entry: cans rise onto the shelf one after another, then the glow comes up */
+  .tpm-shelf.is-enter .tpm-shelf__img > * { animation: tpm-can-rise .7s cubic-bezier(.2,1.3,.4,1) both; }
+  .tpm-shelf.is-enter .tpm-shelf__opt:nth-child(2) .tpm-shelf__img > * { animation-delay: .1s; }
+  .tpm-shelf.is-enter .tpm-shelf__opt:nth-child(3) .tpm-shelf__img > * { animation-delay: .2s; }
+  .tpm-shelf.is-enter .tpm-shelf__box::before { animation: tpm-glow-in .9s ease .45s both; }
+  .tpm-shelf.is-enter .tpm-shelf__name { animation: tpm-fade-up .5s ease both; animation-delay: .35s; }
+  /* Chosen can floats gently */
+  .tpm-shelf__opt input:checked + .tpm-shelf__box .tpm-shelf__img { animation: tpm-can-float 3.2s ease-in-out 1s infinite; }
+  /* Change: pop, glow flare, ring ripple, note swap */
+  .tpm-shelf__opt.is-pop input:checked + .tpm-shelf__box .tpm-shelf__img > * { animation: tpm-can-pop .6s cubic-bezier(.3,1.4,.5,1); }
+  .tpm-shelf__opt.is-pop input:checked + .tpm-shelf__box::before { animation: tpm-glow-flare .6s ease-out; }
+  .tpm-shelf__opt.is-pop input:checked + .tpm-shelf__box::after { animation: tpm-ring .7s ease-out; }
+  .tpm-shelf__note.is-swap { animation: tpm-fade-up .35s ease; }
+}
+@keyframes tpm-can-rise { from { opacity: 0; transform: translateY(70px); } to { opacity: 1; transform: none; } }
+@keyframes tpm-glow-in { from { opacity: 0; transform: scale(.4); } }
+@keyframes tpm-fade-up { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes tpm-can-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes tpm-can-pop {
+  0% { transform: scale(.9) rotate(0); }
+  35% { transform: scale(1.14) rotate(-7deg) translateY(-6px); }
+  60% { transform: scale(.98) rotate(4deg); }
+  80% { transform: scale(1.03) rotate(-2deg); }
+  100% { transform: none; }
+}
+@keyframes tpm-glow-flare { 0% { opacity: .2; transform: scale(.5); } 45% { opacity: 1; transform: scale(1.2); } 100% { opacity: .7; transform: scale(1); } }
+@keyframes tpm-ring { 0% { opacity: .9; transform: scale(.4); } 100% { opacity: 0; transform: scale(1.9); } }
 
 </style>
 </head>
@@ -1278,14 +1313,14 @@ body { margin: 0; background: #fff; }
   }
 
   var pickerCount = 0;
-  // Flavor selector design direction: 'tiles' (chosen), 'shelf', 'pop' or 'chips'.
+  // Flavor selector design: 'shelf' (chosen), or 'tiles', 'pop', 'chips'.
   var FLAVOR_STYLES = ['tiles', 'shelf', 'pop', 'chips', 'shelflight'];
   var flavorStyle = String(DATA.flavorStyle || '').trim();
   if (MODE === 'preview') {
     var fq = (window.location.search.match(/[?&]flavor=(\w+)/) || [])[1];
     if (fq) flavorStyle = fq;
   }
-  if (FLAVOR_STYLES.indexOf(flavorStyle) < 0) flavorStyle = 'tiles';
+  if (FLAVOR_STYLES.indexOf(flavorStyle) < 0) flavorStyle = 'shelf';
 
   var CHECK = '<span class="tpm-fcheck" aria-hidden="true"></span>';
   function flavorRadio(n, f, cls, inner) {
@@ -1331,42 +1366,43 @@ body { margin: 0; background: #fff; }
     return flavorsHtml(n) + plansHtml(n) + '<p class="tpm-pick__terms" data-tpm-terms></p>';
   }
 
-  // Preview only: compare flavor selector directions.
-  if (MODE === 'preview') {
-    var fsw = document.createElement('div');
-    fsw.className = 'tpm-styleswitch';
-    fsw.setAttribute('role', 'group');
-    fsw.setAttribute('aria-label', 'Preview: flavor selector design');
-    fsw.innerHTML = '<span>Flavor picker</span>' + FLAVOR_STYLES.map(function (st, k) {
-      return '<button type="button" data-style="' + st + '">' + (k + 1) + '</button>';
-    }).join('');
-    root.appendChild(fsw);
-    var paintFsw = function () {
-      $all('button', fsw).forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-style') === flavorStyle); });
-    };
-    fsw.addEventListener('click', function (e) {
-      var b = e.target.closest('button');
-      if (!b) return;
-      flavorStyle = b.getAttribute('data-style');
-      $all('[data-tpm-picker]').forEach(function (el) { el.innerHTML = pickerHtml(el.getAttribute('data-tpm-picker-n')); });
-      paintFsw();
-      sync();
-      if (window.history && history.replaceState) history.replaceState(null, '', '?flavor=' + flavorStyle + window.location.hash);
-    });
-    paintFsw();
-  }
 
   function renderPicker(el) {
     var n = ++pickerCount;
     el.setAttribute('data-tpm-picker-n', n);
     el.innerHTML = pickerHtml(n);
     el.addEventListener('change', function (e) {
-      if (e.target.name.indexOf('tpm-flavor-') === 0) state.flavor = e.target.value;
+      if (e.target.name.indexOf('tpm-flavor-') === 0) {
+        state.flavor = e.target.value;
+        popFlavor(e.target.closest('.tpm-shelf__opt'));
+      }
       if (e.target.name.indexOf('tpm-offer-') === 0) state.offer = e.target.value;
       sync();
     });
   }
   $all('[data-tpm-picker]').forEach(renderPicker);
+
+  // ---- Shelf animations: cans rise in on entry, chosen can pops on change ----
+  function restartClass(el, cls) {
+    if (!el) return;
+    el.classList.remove(cls);
+    void el.offsetWidth; // restart the CSS animation
+    el.classList.add(cls);
+  }
+  function popFlavor(opt) {
+    restartClass(opt, 'is-pop');
+    var shelf = opt && opt.closest('.tpm-shelf');
+    if (shelf) restartClass(shelf.parentNode.querySelector('[data-tpm-fnote]'), 'is-swap');
+  }
+  function enterShelf(scope) {
+    $all('.tpm-shelf', scope).forEach(function (sh) { restartClass(sh, 'is-enter'); });
+  }
+  if ('IntersectionObserver' in window) {
+    var shelfIo = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.remove('is-waiting'); restartClass(en.target, 'is-enter'); shelfIo.unobserve(en.target); } });
+    }, { threshold: 0.4 });
+    $all('.tpm-buy .tpm-shelf').forEach(function (sh) { sh.classList.add('is-waiting'); shelfIo.observe(sh); });
+  }
 
 
   // ---- Checkout sheet ----
@@ -1415,7 +1451,7 @@ body { margin: 0; background: #fff; }
     sheet.querySelector('[data-tpm-timeline]').hidden = state.offer !== 'trial';
   }
 
-  function showStep(n) {
+  function showStep(n, opened) {
     step = n;
     $all('[data-tpm-step]', sheet).forEach(function (s) { s.hidden = s.getAttribute('data-tpm-step') !== String(n); });
     $all('[data-tpm-stepdot]', sheet).forEach(function (d) {
@@ -1425,6 +1461,7 @@ body { margin: 0; background: #fff; }
       if (k === n) d.setAttribute('aria-current', 'step'); else d.removeAttribute('aria-current');
     });
     sheet.querySelector('[data-tpm-back]').style.visibility = n > 1 ? 'visible' : 'hidden';
+    if (n === 1 && opened) enterShelf(sheet);
     if (n === 2) { renderAddons(); renderRewards(); }
     if (n === 3) renderReview();
     errorEl.textContent = '';
@@ -1441,7 +1478,7 @@ body { margin: 0; background: #fff; }
     if (opts.offer) state.offer = opts.offer;
     if (typeof sheet.showModal === 'function') { if (!sheet.open) sheet.showModal(); } else sheet.setAttribute('open', '');
     document.documentElement.classList.add('tpm-lock');
-    showStep(opts.step || 1);
+    showStep(opts.step || 1, true);
   }
   function closeCheckout() {
     if (typeof sheet.close === 'function') sheet.close(); else sheet.removeAttribute('open');

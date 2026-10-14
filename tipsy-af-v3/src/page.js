@@ -114,14 +114,14 @@
   }
 
   var pickerCount = 0;
-  // Flavor selector design direction: 'tiles' (chosen), 'shelf', 'pop' or 'chips'.
+  // Flavor selector design: 'shelf' (chosen), or 'tiles', 'pop', 'chips'.
   var FLAVOR_STYLES = ['tiles', 'shelf', 'pop', 'chips', 'shelflight'];
   var flavorStyle = String(DATA.flavorStyle || '').trim();
   if (MODE === 'preview') {
     var fq = (window.location.search.match(/[?&]flavor=(\w+)/) || [])[1];
     if (fq) flavorStyle = fq;
   }
-  if (FLAVOR_STYLES.indexOf(flavorStyle) < 0) flavorStyle = 'tiles';
+  if (FLAVOR_STYLES.indexOf(flavorStyle) < 0) flavorStyle = 'shelf';
 
   var CHECK = '<span class="tpm-fcheck" aria-hidden="true"></span>';
   function flavorRadio(n, f, cls, inner) {
@@ -167,42 +167,43 @@
     return flavorsHtml(n) + plansHtml(n) + '<p class="tpm-pick__terms" data-tpm-terms></p>';
   }
 
-  // Preview only: compare flavor selector directions.
-  if (MODE === 'preview') {
-    var fsw = document.createElement('div');
-    fsw.className = 'tpm-styleswitch';
-    fsw.setAttribute('role', 'group');
-    fsw.setAttribute('aria-label', 'Preview: flavor selector design');
-    fsw.innerHTML = '<span>Flavor picker</span>' + FLAVOR_STYLES.map(function (st, k) {
-      return '<button type="button" data-style="' + st + '">' + (k + 1) + '</button>';
-    }).join('');
-    root.appendChild(fsw);
-    var paintFsw = function () {
-      $all('button', fsw).forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-style') === flavorStyle); });
-    };
-    fsw.addEventListener('click', function (e) {
-      var b = e.target.closest('button');
-      if (!b) return;
-      flavorStyle = b.getAttribute('data-style');
-      $all('[data-tpm-picker]').forEach(function (el) { el.innerHTML = pickerHtml(el.getAttribute('data-tpm-picker-n')); });
-      paintFsw();
-      sync();
-      if (window.history && history.replaceState) history.replaceState(null, '', '?flavor=' + flavorStyle + window.location.hash);
-    });
-    paintFsw();
-  }
 
   function renderPicker(el) {
     var n = ++pickerCount;
     el.setAttribute('data-tpm-picker-n', n);
     el.innerHTML = pickerHtml(n);
     el.addEventListener('change', function (e) {
-      if (e.target.name.indexOf('tpm-flavor-') === 0) state.flavor = e.target.value;
+      if (e.target.name.indexOf('tpm-flavor-') === 0) {
+        state.flavor = e.target.value;
+        popFlavor(e.target.closest('.tpm-shelf__opt'));
+      }
       if (e.target.name.indexOf('tpm-offer-') === 0) state.offer = e.target.value;
       sync();
     });
   }
   $all('[data-tpm-picker]').forEach(renderPicker);
+
+  // ---- Shelf animations: cans rise in on entry, chosen can pops on change ----
+  function restartClass(el, cls) {
+    if (!el) return;
+    el.classList.remove(cls);
+    void el.offsetWidth; // restart the CSS animation
+    el.classList.add(cls);
+  }
+  function popFlavor(opt) {
+    restartClass(opt, 'is-pop');
+    var shelf = opt && opt.closest('.tpm-shelf');
+    if (shelf) restartClass(shelf.parentNode.querySelector('[data-tpm-fnote]'), 'is-swap');
+  }
+  function enterShelf(scope) {
+    $all('.tpm-shelf', scope).forEach(function (sh) { restartClass(sh, 'is-enter'); });
+  }
+  if ('IntersectionObserver' in window) {
+    var shelfIo = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.remove('is-waiting'); restartClass(en.target, 'is-enter'); shelfIo.unobserve(en.target); } });
+    }, { threshold: 0.4 });
+    $all('.tpm-buy .tpm-shelf').forEach(function (sh) { sh.classList.add('is-waiting'); shelfIo.observe(sh); });
+  }
 
 
   // ---- Checkout sheet ----
@@ -251,7 +252,7 @@
     sheet.querySelector('[data-tpm-timeline]').hidden = state.offer !== 'trial';
   }
 
-  function showStep(n) {
+  function showStep(n, opened) {
     step = n;
     $all('[data-tpm-step]', sheet).forEach(function (s) { s.hidden = s.getAttribute('data-tpm-step') !== String(n); });
     $all('[data-tpm-stepdot]', sheet).forEach(function (d) {
@@ -261,6 +262,7 @@
       if (k === n) d.setAttribute('aria-current', 'step'); else d.removeAttribute('aria-current');
     });
     sheet.querySelector('[data-tpm-back]').style.visibility = n > 1 ? 'visible' : 'hidden';
+    if (n === 1 && opened) enterShelf(sheet);
     if (n === 2) { renderAddons(); renderRewards(); }
     if (n === 3) renderReview();
     errorEl.textContent = '';
@@ -277,7 +279,7 @@
     if (opts.offer) state.offer = opts.offer;
     if (typeof sheet.showModal === 'function') { if (!sheet.open) sheet.showModal(); } else sheet.setAttribute('open', '');
     document.documentElement.classList.add('tpm-lock');
-    showStep(opts.step || 1);
+    showStep(opts.step || 1, true);
   }
   function closeCheckout() {
     if (typeof sheet.close === 'function') sheet.close(); else sheet.removeAttribute('open');
