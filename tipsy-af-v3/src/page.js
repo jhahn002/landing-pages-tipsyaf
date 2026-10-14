@@ -44,13 +44,13 @@
   // ---- Picker: flavor circles + size & plan cards (used inline and in the sheet) ----
   // Offer layout: 'cards' (three equal cards), or a highlighted 6-pack trial
   // with the 12-packs toned down: 'ticket', 'spotlight' or 'stamp'.
-  var STYLES = ['ticket', 'spotlight', 'stamp', 'cards'];
+  var STYLES = ['spotlight', 'ticket', 'stamp', 'cards'];
   var offerStyle = String(DATA.offerStyle || '').trim();
   if (MODE === 'preview') {
     var q = (window.location.search.match(/[?&]offer=(\w+)/) || [])[1];
     if (q) offerStyle = q;
   }
-  if (STYLES.indexOf(offerStyle) < 0) offerStyle = 'ticket';
+  if (STYLES.indexOf(offerStyle) < 0) offerStyle = 'spotlight';
 
   function planOpt(n, k, cls, inner) {
     return '<label class="' + cls + '"><input type="radio" name="tpm-offer-' + n + '" value="' + k + '">' + inner + '</label>';
@@ -134,30 +134,6 @@
   }
   $all('[data-tpm-picker]').forEach(renderPicker);
 
-  // Preview only: switch between offer layouts to compare them.
-  if (MODE === 'preview') {
-    var sw = document.createElement('div');
-    sw.className = 'tpm-styleswitch';
-    sw.setAttribute('role', 'group');
-    sw.setAttribute('aria-label', 'Preview: offer layout');
-    sw.innerHTML = '<span>Offer layout</span>' + STYLES.map(function (st, k) {
-      return '<button type="button" data-style="' + st + '">' + String.fromCharCode(65 + k) + '</button>';
-    }).join('');
-    root.appendChild(sw);
-    var paintSw = function () {
-      $all('button', sw).forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-style') === offerStyle); });
-    };
-    sw.addEventListener('click', function (e) {
-      var b = e.target.closest('button');
-      if (!b) return;
-      offerStyle = b.getAttribute('data-style');
-      $all('[data-tpm-picker]').forEach(function (el) { el.innerHTML = pickerHtml(el.getAttribute('data-tpm-picker-n')); });
-      paintSw();
-      sync();
-      if (window.history && history.replaceState) history.replaceState(null, '', '?offer=' + offerStyle + window.location.hash);
-    });
-    paintSw();
-  }
 
   // ---- Checkout sheet ----
   var sheet = root.querySelector('[data-tpm-checkout]');

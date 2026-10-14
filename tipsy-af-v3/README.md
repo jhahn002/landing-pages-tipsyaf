@@ -38,12 +38,10 @@ recommendations that use the Mix switch to Blood Orange automatically.
 - **Comparison chart:** benefit labels and the yellow TIPSY AF column stay pinned; Mocktails, Kava drinks,
   Kratom drinks, THC seltzers and Cocktails scroll sideways on phones (all visible on desktop). Eight rows,
   compared by category, with "Varies" where it depends on the brand or state. TIPSY checks animate in.
-- **Offer layouts:** the 6-pack trial is shown as a highlighted deal, with the 12-pack options as quiet
-  rows under "Or skip the trial". Three treatments: **A ticket** (yellow coupon with "Offer applied"),
-  **B spotlight** (dark card, glowing cans, "Best way to start"), **C stamp** (white card with a
-  "Claimed" stamp). **D** is the earlier three-equal-cards layout. Switch in the preview with the
-  A/B/C/D bar at the top or `?offer=ticket|spotlight|stamp|cards`; on the store, set **Offer layout**
-  in the theme editor (default ticket).
+- **Offer layout (chosen: B spotlight):** the 6-pack trial is a dark featured card with glowing cans,
+  "Best way to start" and a yellow check; the 12-packs sit below as quiet rows under "Or skip the trial".
+  The earlier options remain as the theme setting **Offer layout** (`ticket`, `stamp`, `cards`) and can be
+  previewed with `?offer=ticket` etc.
 - **Colors:** buy box, plan cards, flavor selection and add-on buttons use the brand charcoal/yellow
   (the light blue from the Bev reference is gone).
 - **Buy box:** round flavor selectors and size & plan cards (Bev-style); its button continues to

@@ -593,9 +593,3 @@
 .tpm-alt__price { grid-area: price; font-weight: 600; }
 .tpm-alt input:checked + .tpm-alt__row { color: var(--tpm-ink); border-color: var(--tpm-ink); background: #fff; }
 .tpm-alt input:checked + .tpm-alt__row::before { border-color: var(--tpm-ink); background: var(--tpm-ink); box-shadow: inset 0 0 0 3px #fff; }
-
-/* Preview-only layout switcher */
-.tpm-styleswitch { position: fixed; left: 50%; top: 10px; transform: translateX(-50%); z-index: 2147483000; display: flex; align-items: center; gap: 4px; padding: 5px 5px 5px 14px; border-radius: 999px; background: rgba(31,30,33,.92); color: #fff; font-size: 13px; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
-.tpm-styleswitch span { margin-right: 6px; white-space: nowrap; }
-.tpm-styleswitch button { width: 34px; height: 34px; border-radius: 50%; border: 0; background: rgba(255,255,255,.12); color: #fff; font-weight: 700; cursor: pointer; }
-.tpm-styleswitch button[aria-pressed="true"] { background: var(--tpm-accent); color: var(--tpm-ink); }
