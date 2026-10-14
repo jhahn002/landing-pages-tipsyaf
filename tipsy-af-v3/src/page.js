@@ -42,24 +42,90 @@
   }
 
   // ---- Picker: flavor circles + size & plan cards (used inline and in the sheet) ----
+  // Offer layout: 'cards' (three equal cards), or a highlighted 6-pack trial
+  // with the 12-packs toned down: 'ticket', 'spotlight' or 'stamp'.
+  var STYLES = ['ticket', 'spotlight', 'stamp', 'cards'];
+  var offerStyle = String(DATA.offerStyle || '').trim();
+  if (MODE === 'preview') {
+    var q = (window.location.search.match(/[?&]offer=(\w+)/) || [])[1];
+    if (q) offerStyle = q;
+  }
+  if (STYLES.indexOf(offerStyle) < 0) offerStyle = 'ticket';
+
+  function planOpt(n, k, cls, inner) {
+    return '<label class="' + cls + '"><input type="radio" name="tpm-offer-' + n + '" value="' + k + '">' + inner + '</label>';
+  }
+
+  function plansHtml(n) {
+    var keys = Object.keys(DATA.offers);
+    if (offerStyle === 'cards') {
+      return '<fieldset class="tpm-plan"><legend class="tpm-pick__label">Size &amp; plan</legend><div class="tpm-plan__row">' +
+        keys.map(function (k) {
+          var o = DATA.offers[k];
+          return planOpt(n, k, 'tpm-plan__opt', '<span class="tpm-plan__card">' + (o.badge ? '<span class="tpm-plan__badge">' + o.badge + '</span>' : '') +
+            '<span class="tpm-plan__name">' + o.name + '</span><span class="tpm-plan__price">' + money(o.price) + '</span>' +
+            '<span class="tpm-plan__sub">' + o.sub + '</span></span>');
+        }).join('') + '</div></fieldset>';
+    }
+    var t = DATA.offers.trial;
+    var feature;
+    if (offerStyle === 'ticket') {
+      feature = planOpt(n, 'trial', 'tpm-deal tpm-deal--ticket',
+        '<span class="tpm-ticket">' +
+          '<span class="tpm-ticket__stub"><span class="tpm-ticket__big">6</span><span class="tpm-ticket__unit">cans</span></span>' +
+          '<span class="tpm-ticket__main">' +
+            '<span class="tpm-ticket__kicker">Trial offer</span>' +
+            '<span class="tpm-ticket__price">' + money(t.price) + '</span>' +
+            '<span class="tpm-ticket__sub">Then 12 cans for $49.80/mo. Cancel anytime.</span>' +
+            '<span class="tpm-deal__state"><span class="tpm-deal__on">Offer applied</span><span class="tpm-deal__off">Tap to redeem</span></span>' +
+          '</span>' +
+        '</span>');
+    } else if (offerStyle === 'spotlight') {
+      feature = planOpt(n, 'trial', 'tpm-deal tpm-deal--spot',
+        '<span class="tpm-spot">' +
+          '<span class="tpm-spot__tag">Best way to start</span>' +
+          '<span class="tpm-spot__cans" aria-hidden="true"><img src="' + DATA.flavors.bo.img + '" alt=""><img src="' + DATA.flavors.pm.img + '" alt=""></span>' +
+          '<span class="tpm-spot__text">' +
+            '<span class="tpm-spot__name">Try 6 cans</span>' +
+            '<span class="tpm-spot__price">' + money(t.price) + '</span>' +
+            '<span class="tpm-spot__sub">Then 12 cans for $49.80/mo. Cancel anytime.</span>' +
+          '</span>' +
+          '<span class="tpm-spot__check" aria-hidden="true"></span>' +
+        '</span>');
+    } else {
+      feature = planOpt(n, 'trial', 'tpm-deal tpm-deal--stamp',
+        '<span class="tpm-stamp">' +
+          '<span class="tpm-stamp__cans" aria-hidden="true"><img src="' + DATA.flavors.bo.img + '" alt=""><img src="' + DATA.flavors.pm.img + '" alt=""></span>' +
+          '<span class="tpm-stamp__text">' +
+            '<span class="tpm-stamp__name">6-can trial</span>' +
+            '<span class="tpm-stamp__price">' + money(t.price) + '</span>' +
+            '<span class="tpm-stamp__sub">Then 12 cans for $49.80/mo. Cancel anytime.</span>' +
+          '</span>' +
+          '<span class="tpm-stamp__mark" aria-hidden="true"><span class="tpm-deal__on">Claimed</span><span class="tpm-deal__off">Claim</span></span>' +
+        '</span>');
+    }
+    var others = keys.filter(function (k) { return k !== 'trial'; }).map(function (k) {
+      var o = DATA.offers[k];
+      return planOpt(n, k, 'tpm-alt', '<span class="tpm-alt__row"><span class="tpm-alt__name">' + o.name + '</span>' +
+        '<span class="tpm-alt__sub">' + o.sub + '</span><span class="tpm-alt__price">' + money(o.price) + '</span></span>');
+    }).join('');
+    return '<fieldset class="tpm-plan tpm-plan--deal tpm-plan--' + offerStyle + '"><legend class="tpm-pick__label">Your offer</legend>' + feature +
+      '<p class="tpm-alt__label">Or skip the trial</p><div class="tpm-alt__list">' + others + '</div></fieldset>';
+  }
+
   var pickerCount = 0;
-  function renderPicker(el) {
-    var n = ++pickerCount;
+  function pickerHtml(n) {
     var html = '<fieldset class="tpm-flav"><legend class="tpm-pick__label">Flavor</legend><div class="tpm-flav__row">';
     Object.keys(DATA.flavors).forEach(function (f) {
       html += '<label class="tpm-flav__opt tpm-flav__opt--' + f + '"><input type="radio" name="tpm-flavor-' + n + '" value="' + f + '">' +
         '<span class="tpm-flav__circle">' + canStack(f) + '</span><span class="tpm-flav__name">' + DATA.flavors[f].short + '</span></label>';
     });
-    html += '</div></fieldset><fieldset class="tpm-plan"><legend class="tpm-pick__label">Size &amp; plan</legend><div class="tpm-plan__row">';
-    Object.keys(DATA.offers).forEach(function (k) {
-      var o = DATA.offers[k];
-      html += '<label class="tpm-plan__opt"><input type="radio" name="tpm-offer-' + n + '" value="' + k + '">' +
-        '<span class="tpm-plan__card">' + (o.badge ? '<span class="tpm-plan__badge">' + o.badge + '</span>' : '') +
-        '<span class="tpm-plan__name">' + o.name + '</span><span class="tpm-plan__price">' + money(o.price) + '</span>' +
-        '<span class="tpm-plan__sub">' + o.sub + '</span></span></label>';
-    });
-    html += '</div></fieldset><p class="tpm-pick__terms" data-tpm-terms></p>';
-    el.innerHTML = html;
+    return html + '</div></fieldset>' + plansHtml(n) + '<p class="tpm-pick__terms" data-tpm-terms></p>';
+  }
+  function renderPicker(el) {
+    var n = ++pickerCount;
+    el.setAttribute('data-tpm-picker-n', n);
+    el.innerHTML = pickerHtml(n);
     el.addEventListener('change', function (e) {
       if (e.target.name.indexOf('tpm-flavor-') === 0) state.flavor = e.target.value;
       if (e.target.name.indexOf('tpm-offer-') === 0) state.offer = e.target.value;
@@ -67,6 +133,31 @@
     });
   }
   $all('[data-tpm-picker]').forEach(renderPicker);
+
+  // Preview only: switch between offer layouts to compare them.
+  if (MODE === 'preview') {
+    var sw = document.createElement('div');
+    sw.className = 'tpm-styleswitch';
+    sw.setAttribute('role', 'group');
+    sw.setAttribute('aria-label', 'Preview: offer layout');
+    sw.innerHTML = '<span>Offer layout</span>' + STYLES.map(function (st, k) {
+      return '<button type="button" data-style="' + st + '">' + String.fromCharCode(65 + k) + '</button>';
+    }).join('');
+    root.appendChild(sw);
+    var paintSw = function () {
+      $all('button', sw).forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-style') === offerStyle); });
+    };
+    sw.addEventListener('click', function (e) {
+      var b = e.target.closest('button');
+      if (!b) return;
+      offerStyle = b.getAttribute('data-style');
+      $all('[data-tpm-picker]').forEach(function (el) { el.innerHTML = pickerHtml(el.getAttribute('data-tpm-picker-n')); });
+      paintSw();
+      sync();
+      if (window.history && history.replaceState) history.replaceState(null, '', '?offer=' + offerStyle + window.location.hash);
+    });
+    paintSw();
+  }
 
   // ---- Checkout sheet ----
   var sheet = root.querySelector('[data-tpm-checkout]');

@@ -527,6 +527,85 @@
   .tpm-compare .tpm-wrap--narrow { max-width: 1120px; }
   .tpm-compare__sub { margin-bottom: 8px; }
 }
+
+/* ---- Highlighted trial offer + toned-down 12-pack options ---- */
+.tpm-deal { position: relative; display: block; cursor: pointer; margin-bottom: 14px; }
+.tpm-deal input, .tpm-alt input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.tpm-deal input:focus-visible + *, .tpm-alt input:focus-visible + * { outline: 3px solid var(--tpm-ink); outline-offset: 3px; }
+.tpm-deal__on, .tpm-deal__off { display: none; }
+.tpm-deal input:checked + * .tpm-deal__on { display: inline; }
+.tpm-deal input:not(:checked) + * .tpm-deal__off { display: inline; }
+
+/* A. Ticket */
+.tpm-ticket { position: relative; display: grid; grid-template-columns: 92px 1fr; background: var(--tpm-accent); border-radius: 18px; overflow: hidden; transition: filter .2s, opacity .2s; }
+.tpm-ticket::before, .tpm-ticket::after { content: ""; position: absolute; left: 82px; width: 20px; height: 20px; border-radius: 50%; background: var(--tpm-panel); }
+.tpm-ticket::before { top: -10px; }
+.tpm-ticket::after { bottom: -10px; }
+.tpm-step .tpm-ticket::before, .tpm-step .tpm-ticket::after { background: #fff; }
+.tpm-ticket__stub { display: grid; place-content: center; text-align: center; border-right: 2px dashed rgba(31,30,33,.35); padding: 16px 6px; }
+.tpm-ticket__big { font-family: var(--tpm-cond); font-size: 64px; line-height: .8; }
+.tpm-ticket__unit { font-weight: 700; text-transform: uppercase; font-size: 13px; letter-spacing: .06em; }
+.tpm-ticket__main { display: grid; gap: 2px; padding: 16px 16px 16px 18px; }
+.tpm-ticket__kicker { font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: .08em; }
+.tpm-ticket__price { font-family: var(--tpm-cond); font-size: 46px; line-height: .9; }
+.tpm-ticket__sub { font-size: 14px; color: #4a4630; }
+.tpm-ticket .tpm-deal__state { margin-top: 8px; justify-self: start; font-size: 13px; font-weight: 700; border-radius: 999px; padding: 5px 12px 5px 28px; position: relative; background: var(--tpm-ink); color: #fff; }
+.tpm-ticket .tpm-deal__state::before { content: ""; position: absolute; left: 9px; top: 50%; width: 12px; height: 12px; margin-top: -6px; border-radius: 50%; background: var(--tpm-accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%231f1e21' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 10px no-repeat; }
+.tpm-deal input:not(:checked) + .tpm-ticket { filter: saturate(.25); opacity: .75; }
+.tpm-deal input:not(:checked) + .tpm-ticket .tpm-deal__state { background: transparent; color: var(--tpm-ink); box-shadow: inset 0 0 0 2px var(--tpm-ink); padding-left: 12px; }
+.tpm-deal input:not(:checked) + .tpm-ticket .tpm-deal__state::before { display: none; }
+
+/* B. Spotlight */
+.tpm-spot { position: relative; display: grid; grid-template-columns: 86px 1fr 30px; gap: 14px; align-items: center; padding: 22px 16px 18px; border-radius: 20px; background: var(--tpm-ink); color: #fff; overflow: hidden; transition: opacity .2s; }
+.tpm-spot::before { content: ""; position: absolute; left: -40px; top: 50%; width: 200px; height: 200px; margin-top: -100px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,231,72,.55), rgba(255,231,72,0)); }
+.tpm-spot > * { position: relative; }
+.tpm-spot__tag { position: absolute; top: 0; right: 0; background: var(--tpm-accent); color: var(--tpm-ink); font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 0 0 0 14px; }
+.tpm-spot__cans { display: flex; justify-content: center; }
+.tpm-spot__cans img { height: 88px; width: auto; filter: drop-shadow(0 8px 10px rgba(0,0,0,.45)); }
+.tpm-spot__cans img:first-child { transform: rotate(-8deg); margin-right: -12px; }
+.tpm-spot__cans img:last-child { transform: rotate(8deg); }
+.tpm-spot__text { display: grid; gap: 2px; }
+.tpm-spot__name { font-size: 15px; font-weight: 600; color: rgba(255,255,255,.8); }
+.tpm-spot__price { font-size: 34px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; color: var(--tpm-accent); }
+.tpm-spot__sub { font-size: 13px; color: rgba(255,255,255,.7); line-height: 1.35; }
+.tpm-spot__check { width: 28px; height: 28px; border-radius: 50%; border: 2px solid rgba(255,255,255,.6); }
+.tpm-deal input:checked + .tpm-spot .tpm-spot__check { border: 0; background: var(--tpm-accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%231f1e21' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 18px no-repeat; }
+.tpm-deal input:not(:checked) + .tpm-spot { opacity: .55; }
+
+/* C. Stamp */
+.tpm-stamp { position: relative; display: grid; grid-template-columns: 78px 1fr; gap: 14px; align-items: center; padding: 16px 16px 16px 12px; border-radius: 20px; background: #fff; border: 2.5px solid var(--tpm-ink); transition: opacity .2s, border-color .2s; }
+.tpm-stamp__cans { display: flex; justify-content: center; }
+.tpm-stamp__cans img { height: 80px; width: auto; }
+.tpm-stamp__cans img + img { margin-left: -10px; }
+.tpm-stamp__text { display: grid; gap: 2px; padding-right: 64px; }
+.tpm-stamp__name { font-family: var(--tpm-cond); text-transform: uppercase; font-size: 26px; line-height: .95; }
+.tpm-stamp__price { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+.tpm-stamp__sub { font-size: 13px; color: var(--tpm-muted); line-height: 1.35; }
+.tpm-stamp__mark { position: absolute; right: 12px; top: 50%; width: 72px; height: 72px; margin-top: -36px; border-radius: 50%; display: grid; place-items: center; font-family: var(--tpm-cond); text-transform: uppercase; font-size: 20px; transform: rotate(-14deg); border: 3px solid var(--tpm-ink); background: var(--tpm-accent); box-shadow: inset 0 0 0 4px var(--tpm-accent), inset 0 0 0 6px var(--tpm-ink); transition: transform .25s cubic-bezier(.3,1.6,.5,1); }
+.tpm-deal input:not(:checked) + .tpm-stamp { border-color: var(--tpm-line); }
+.tpm-deal input:not(:checked) + .tpm-stamp .tpm-stamp__mark { background: #fff; box-shadow: none; border-style: dashed; transform: rotate(0); font-size: 18px; }
+@media (prefers-reduced-motion: no-preference) {
+  .tpm-deal input:checked + .tpm-stamp .tpm-stamp__mark { animation: tpm-stamp .35s cubic-bezier(.3,1.6,.5,1); }
+}
+@keyframes tpm-stamp { from { transform: rotate(-14deg) scale(1.5); opacity: 0; } to { transform: rotate(-14deg) scale(1); opacity: 1; } }
+
+/* Toned-down alternatives */
+.tpm-alt__label { font-size: 13px; font-weight: 600; color: var(--tpm-muted); margin: 4px 0 6px; }
+.tpm-alt__list { display: grid; gap: 6px; }
+.tpm-alt { position: relative; display: block; cursor: pointer; }
+.tpm-alt__row { display: grid; grid-template-columns: 18px 1fr auto; grid-template-areas: "dot name price" "dot sub price"; column-gap: 10px; align-items: center; padding: 10px 14px; border-radius: 12px; border: 1.5px solid var(--tpm-line); background: transparent; color: var(--tpm-muted); font-size: 14px; line-height: 1.25; }
+.tpm-alt__row::before { content: ""; grid-area: dot; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #b9b8bc; }
+.tpm-alt__name { grid-area: name; font-weight: 600; }
+.tpm-alt__sub { grid-area: sub; font-size: 12px; }
+.tpm-alt__price { grid-area: price; font-weight: 600; }
+.tpm-alt input:checked + .tpm-alt__row { color: var(--tpm-ink); border-color: var(--tpm-ink); background: #fff; }
+.tpm-alt input:checked + .tpm-alt__row::before { border-color: var(--tpm-ink); background: var(--tpm-ink); box-shadow: inset 0 0 0 3px #fff; }
+
+/* Preview-only layout switcher */
+.tpm-styleswitch { position: fixed; left: 50%; top: 10px; transform: translateX(-50%); z-index: 2147483000; display: flex; align-items: center; gap: 4px; padding: 5px 5px 5px 14px; border-radius: 999px; background: rgba(31,30,33,.92); color: #fff; font-size: 13px; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+.tpm-styleswitch span { margin-right: 6px; white-space: nowrap; }
+.tpm-styleswitch button { width: 34px; height: 34px; border-radius: 50%; border: 0; background: rgba(255,255,255,.12); color: #fff; font-weight: 700; cursor: pointer; }
+.tpm-styleswitch button[aria-pressed="true"] { background: var(--tpm-accent); color: var(--tpm-ink); }
 </style>
 
 <div class="tpm" id="tpm">
@@ -961,7 +1040,8 @@
       {"id": "bo12", "name": "Blood Orange Margarita 12-pack", "note": "One time, $5.00/can", "price": 60.00, "variant": "44868867457232", "img": "{{ 'tipsy-can-blood-orange.webp' | asset_url }}"},
       {"id": "pm12", "name": "Pineapple Martini 12-pack", "note": "One time, $5.00/can", "price": 60.00, "variant": "45108737540304", "img": "{{ 'tipsy-can-pineapple.webp' | asset_url }}"}
     ],
-    "rewards": "{{ section.settings.rewards | escape }}"
+    "rewards": "{{ section.settings.rewards | escape }}",
+    "offerStyle": "{{ section.settings.offer_style | escape }}"
   }
   </script>
 
@@ -1016,24 +1096,90 @@
   }
 
   // ---- Picker: flavor circles + size & plan cards (used inline and in the sheet) ----
+  // Offer layout: 'cards' (three equal cards), or a highlighted 6-pack trial
+  // with the 12-packs toned down: 'ticket', 'spotlight' or 'stamp'.
+  var STYLES = ['ticket', 'spotlight', 'stamp', 'cards'];
+  var offerStyle = String(DATA.offerStyle || '').trim();
+  if (MODE === 'preview') {
+    var q = (window.location.search.match(/[?&]offer=(\w+)/) || [])[1];
+    if (q) offerStyle = q;
+  }
+  if (STYLES.indexOf(offerStyle) < 0) offerStyle = 'ticket';
+
+  function planOpt(n, k, cls, inner) {
+    return '<label class="' + cls + '"><input type="radio" name="tpm-offer-' + n + '" value="' + k + '">' + inner + '</label>';
+  }
+
+  function plansHtml(n) {
+    var keys = Object.keys(DATA.offers);
+    if (offerStyle === 'cards') {
+      return '<fieldset class="tpm-plan"><legend class="tpm-pick__label">Size &amp; plan</legend><div class="tpm-plan__row">' +
+        keys.map(function (k) {
+          var o = DATA.offers[k];
+          return planOpt(n, k, 'tpm-plan__opt', '<span class="tpm-plan__card">' + (o.badge ? '<span class="tpm-plan__badge">' + o.badge + '</span>' : '') +
+            '<span class="tpm-plan__name">' + o.name + '</span><span class="tpm-plan__price">' + money(o.price) + '</span>' +
+            '<span class="tpm-plan__sub">' + o.sub + '</span></span>');
+        }).join('') + '</div></fieldset>';
+    }
+    var t = DATA.offers.trial;
+    var feature;
+    if (offerStyle === 'ticket') {
+      feature = planOpt(n, 'trial', 'tpm-deal tpm-deal--ticket',
+        '<span class="tpm-ticket">' +
+          '<span class="tpm-ticket__stub"><span class="tpm-ticket__big">6</span><span class="tpm-ticket__unit">cans</span></span>' +
+          '<span class="tpm-ticket__main">' +
+            '<span class="tpm-ticket__kicker">Trial offer</span>' +
+            '<span class="tpm-ticket__price">' + money(t.price) + '</span>' +
+            '<span class="tpm-ticket__sub">Then 12 cans for $49.80/mo. Cancel anytime.</span>' +
+            '<span class="tpm-deal__state"><span class="tpm-deal__on">Offer applied</span><span class="tpm-deal__off">Tap to redeem</span></span>' +
+          '</span>' +
+        '</span>');
+    } else if (offerStyle === 'spotlight') {
+      feature = planOpt(n, 'trial', 'tpm-deal tpm-deal--spot',
+        '<span class="tpm-spot">' +
+          '<span class="tpm-spot__tag">Best way to start</span>' +
+          '<span class="tpm-spot__cans" aria-hidden="true"><img src="' + DATA.flavors.bo.img + '" alt=""><img src="' + DATA.flavors.pm.img + '" alt=""></span>' +
+          '<span class="tpm-spot__text">' +
+            '<span class="tpm-spot__name">Try 6 cans</span>' +
+            '<span class="tpm-spot__price">' + money(t.price) + '</span>' +
+            '<span class="tpm-spot__sub">Then 12 cans for $49.80/mo. Cancel anytime.</span>' +
+          '</span>' +
+          '<span class="tpm-spot__check" aria-hidden="true"></span>' +
+        '</span>');
+    } else {
+      feature = planOpt(n, 'trial', 'tpm-deal tpm-deal--stamp',
+        '<span class="tpm-stamp">' +
+          '<span class="tpm-stamp__cans" aria-hidden="true"><img src="' + DATA.flavors.bo.img + '" alt=""><img src="' + DATA.flavors.pm.img + '" alt=""></span>' +
+          '<span class="tpm-stamp__text">' +
+            '<span class="tpm-stamp__name">6-can trial</span>' +
+            '<span class="tpm-stamp__price">' + money(t.price) + '</span>' +
+            '<span class="tpm-stamp__sub">Then 12 cans for $49.80/mo. Cancel anytime.</span>' +
+          '</span>' +
+          '<span class="tpm-stamp__mark" aria-hidden="true"><span class="tpm-deal__on">Claimed</span><span class="tpm-deal__off">Claim</span></span>' +
+        '</span>');
+    }
+    var others = keys.filter(function (k) { return k !== 'trial'; }).map(function (k) {
+      var o = DATA.offers[k];
+      return planOpt(n, k, 'tpm-alt', '<span class="tpm-alt__row"><span class="tpm-alt__name">' + o.name + '</span>' +
+        '<span class="tpm-alt__sub">' + o.sub + '</span><span class="tpm-alt__price">' + money(o.price) + '</span></span>');
+    }).join('');
+    return '<fieldset class="tpm-plan tpm-plan--deal tpm-plan--' + offerStyle + '"><legend class="tpm-pick__label">Your offer</legend>' + feature +
+      '<p class="tpm-alt__label">Or skip the trial</p><div class="tpm-alt__list">' + others + '</div></fieldset>';
+  }
+
   var pickerCount = 0;
-  function renderPicker(el) {
-    var n = ++pickerCount;
+  function pickerHtml(n) {
     var html = '<fieldset class="tpm-flav"><legend class="tpm-pick__label">Flavor</legend><div class="tpm-flav__row">';
     Object.keys(DATA.flavors).forEach(function (f) {
       html += '<label class="tpm-flav__opt tpm-flav__opt--' + f + '"><input type="radio" name="tpm-flavor-' + n + '" value="' + f + '">' +
         '<span class="tpm-flav__circle">' + canStack(f) + '</span><span class="tpm-flav__name">' + DATA.flavors[f].short + '</span></label>';
     });
-    html += '</div></fieldset><fieldset class="tpm-plan"><legend class="tpm-pick__label">Size &amp; plan</legend><div class="tpm-plan__row">';
-    Object.keys(DATA.offers).forEach(function (k) {
-      var o = DATA.offers[k];
-      html += '<label class="tpm-plan__opt"><input type="radio" name="tpm-offer-' + n + '" value="' + k + '">' +
-        '<span class="tpm-plan__card">' + (o.badge ? '<span class="tpm-plan__badge">' + o.badge + '</span>' : '') +
-        '<span class="tpm-plan__name">' + o.name + '</span><span class="tpm-plan__price">' + money(o.price) + '</span>' +
-        '<span class="tpm-plan__sub">' + o.sub + '</span></span></label>';
-    });
-    html += '</div></fieldset><p class="tpm-pick__terms" data-tpm-terms></p>';
-    el.innerHTML = html;
+    return html + '</div></fieldset>' + plansHtml(n) + '<p class="tpm-pick__terms" data-tpm-terms></p>';
+  }
+  function renderPicker(el) {
+    var n = ++pickerCount;
+    el.setAttribute('data-tpm-picker-n', n);
+    el.innerHTML = pickerHtml(n);
     el.addEventListener('change', function (e) {
       if (e.target.name.indexOf('tpm-flavor-') === 0) state.flavor = e.target.value;
       if (e.target.name.indexOf('tpm-offer-') === 0) state.offer = e.target.value;
@@ -1041,6 +1187,31 @@
     });
   }
   $all('[data-tpm-picker]').forEach(renderPicker);
+
+  // Preview only: switch between offer layouts to compare them.
+  if (MODE === 'preview') {
+    var sw = document.createElement('div');
+    sw.className = 'tpm-styleswitch';
+    sw.setAttribute('role', 'group');
+    sw.setAttribute('aria-label', 'Preview: offer layout');
+    sw.innerHTML = '<span>Offer layout</span>' + STYLES.map(function (st, k) {
+      return '<button type="button" data-style="' + st + '">' + String.fromCharCode(65 + k) + '</button>';
+    }).join('');
+    root.appendChild(sw);
+    var paintSw = function () {
+      $all('button', sw).forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-style') === offerStyle); });
+    };
+    sw.addEventListener('click', function (e) {
+      var b = e.target.closest('button');
+      if (!b) return;
+      offerStyle = b.getAttribute('data-style');
+      $all('[data-tpm-picker]').forEach(function (el) { el.innerHTML = pickerHtml(el.getAttribute('data-tpm-picker-n')); });
+      paintSw();
+      sync();
+      if (window.history && history.replaceState) history.replaceState(null, '', '?offer=' + offerStyle + window.location.hash);
+    });
+    paintSw();
+  }
 
   // ---- Checkout sheet ----
   var sheet = root.querySelector('[data-tpm-checkout]');
@@ -1341,6 +1512,12 @@
         "id": "rewards",
         "label": "Checkout rewards",
         "info": "Optional. Spend thresholds shown as a progress bar in the add-ons step, e.g. 75:Free shipping|110:Free gift. Set up the matching automatic discounts in Shopify first. Leave empty to hide."
+    },
+    {
+        "type": "text",
+        "id": "offer_style",
+        "label": "Offer layout",
+        "info": "ticket, spotlight, stamp or cards. Leave empty for ticket."
     }
 ],
   "presets": [{ "name": "TIPSY AF Meta landing page v3" }]

@@ -24,6 +24,12 @@
       "label": "Checkout rewards",
       "info": "Optional. Spend thresholds shown as a progress bar in the add-ons step, e.g. 75:Free shipping|110:Free gift. Set up the matching automatic discounts in Shopify first. Leave empty to hide.",
       "preview": "75:Free shipping|110:Free gift"
+    },
+    {
+      "id": "offer_style",
+      "label": "Offer layout",
+      "info": "ticket, spotlight, stamp or cards. Leave empty for ticket.",
+      "preview": ""
     }
   ],
   "stylesheets": [
