@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "tipsy_home": {
+      "type": "tipsy-af-meta-v3",
+      "settings": {}
+    }
+  },
+  "order": ["tipsy_home"]
+}
