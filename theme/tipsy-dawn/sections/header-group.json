@@ -26,7 +26,8 @@
       },
       "block_order": [
         "announcement-bar-0"
-      ]
+      ],
+      "disabled": true
     },
     "header": {
       "type": "header",
@@ -44,11 +45,55 @@
         "margin_bottom": 0,
         "padding_top": 20,
         "padding_bottom": 20
-      }
+      },
+      "disabled": true
+    },
+    "tpm-header": {
+      "type": "tpm-header",
+      "settings": {
+        "overlay_home": true,
+        "flavor_1_product": "6-pack-trial",
+        "flavor_1_label": "Blood Orange Margarita",
+        "flavor_2_product": "6-pack-pineapple-martini-starter-kit",
+        "flavor_2_label": "Pineapple Martini",
+        "secondary_menu": "main-menu"
+      },
+      "blocks": {
+        "l1": {
+          "type": "link",
+          "settings": {
+            "label": "6-can trial",
+            "link": "shopify://products/6-pack-trial",
+            "note": "$29.94"
+          }
+        },
+        "l2": {
+          "type": "link",
+          "settings": {
+            "label": "12-pack auto ship",
+            "link": "shopify://products/12-pack-auto-ship-save",
+            "note": "$4.15 a can"
+          }
+        },
+        "l3": {
+          "type": "link",
+          "settings": {
+            "label": "Shop all",
+            "link": "shopify://collections/all",
+            "note": ""
+          }
+        }
+      },
+      "block_order": [
+        "l1",
+        "l2",
+        "l3"
+      ]
     }
   },
   "order": [
     "announcement-bar",
+    "tpm-header",
     "header"
   ]
 }

@@ -246,15 +246,20 @@
 .tpm-chart__pt text { fill: #fff; font-size: 24px; font-weight: 700; }
 .tpm-chart__axis text { fill: rgba(255,255,255,.6); font-size: 21px; }
 .tpm-chart figcaption { font-size: 13px; color: rgba(255,255,255,.55); margin-top: 10px; }
-/* Animate only when JS has marked the card and motion is allowed */
+/* Animate only when JS has marked the card and motion is allowed:
+   the line flows in, the dots pop in quickly, then the phase bar fills segment by segment. */
 @media (prefers-reduced-motion: no-preference) {
   .will-animate .tpm-chart__line { stroke-dashoffset: 1; }
-  .will-animate .tpm-chart__area, .will-animate .tpm-chart__pt, .will-animate .tpm-chart__phases, .will-animate .tpm-chart__phase-labels { opacity: 0; }
-  .will-animate .tpm-chart__pt { transform-box: fill-box; transform-origin: center; transform: scale(.6); }
-  .is-in .tpm-chart__line { transition: stroke-dashoffset 1.6s cubic-bezier(.4,0,.2,1); stroke-dashoffset: 0; }
-  .is-in .tpm-chart__area { transition: opacity .8s ease .9s; opacity: 1; }
-  .is-in .tpm-chart__phases, .is-in .tpm-chart__phase-labels { transition: opacity .6s ease 1.4s; opacity: 1; }
-  .is-in .tpm-chart__pt { transition: opacity .4s ease, transform .4s cubic-bezier(.3,1.6,.5,1); transition-delay: calc(var(--d) * 1.6); opacity: 1; transform: scale(1); }
+  .will-animate .tpm-chart__area, .will-animate .tpm-chart__pt, .will-animate .tpm-chart__phase-labels text { opacity: 0; }
+  .will-animate .tpm-chart__pt { transform-box: fill-box; transform-origin: center; transform: scale(.3); }
+  .will-animate .tpm-chart__seg { transform-box: fill-box; transform-origin: left center; transform: scaleX(0); }
+  .will-animate .tpm-chart__phase-labels text { transform: translateY(8px); }
+  .tpm-chart__seg, .tpm-chart__pt, .tpm-chart__phase-labels text { transform-box: fill-box; }
+  .is-in .tpm-chart__line { transition: stroke-dashoffset 1.5s cubic-bezier(.45,0,.25,1); stroke-dashoffset: 0; }
+  .is-in .tpm-chart__area { transition: opacity 1s ease .4s; opacity: 1; }
+  .is-in .tpm-chart__pt { transform-origin: center; transition: opacity .12s ease, transform .24s cubic-bezier(.3,1.8,.5,1); transition-delay: calc(1.5s + var(--i) * .12s); opacity: 1; transform: scale(1); }
+  .is-in .tpm-chart__seg { transform-origin: left center; transition: transform .45s cubic-bezier(.25,.8,.25,1); transition-delay: calc(2s + var(--i) * .35s); transform: scaleX(1); }
+  .is-in .tpm-chart__phase-labels text { transition: opacity .3s ease, transform .3s ease; transition-delay: calc(2.15s + var(--i) * .35s); opacity: 1; transform: none; }
 }
 
 /* ---- Comparison chart ---- */
