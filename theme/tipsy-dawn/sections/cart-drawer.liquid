@@ -1,1 +1,6 @@
-{%- render 'cart-drawer' -%}
+{%- comment -%} The control page keeps the original drawer; everything else uses the TIPSY drawer. {%- endcomment -%}
+{%- if template.suffix == 'control' -%}
+  {%- render 'cart-drawer-legacy' -%}
+{%- else -%}
+  {%- render 'cart-drawer' -%}
+{%- endif -%}
