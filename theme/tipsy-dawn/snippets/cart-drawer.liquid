@@ -122,6 +122,18 @@
   .tpm-cart__price strong { font-size: 16px; font-weight: 700; }
   .tpm-cart .cart-item__error { font-size: 12px; color: #b3261e; }
   .tpm-cart .cart-item__error:empty, .tpm-cart .cart-item__error-text:empty { display: none; }
+  .tpm-up { display: flex; align-items: center; gap: 12px; margin-top: -6px; padding: 10px 10px 10px 12px; border-radius: 16px; border: 1.5px dashed #e8b98f; background: #fff7ef; animation: tpmOfferIn .45s cubic-bezier(.2,.8,.2,1); }
+  .tpm-up__cans { position: relative; flex: none; width: 46px; height: 52px; }
+  .tpm-up__cans img { position: absolute; bottom: 0; height: 50px; width: auto; filter: drop-shadow(0 4px 5px rgba(120,50,10,.2)); }
+  .tpm-up__cans img:first-child { left: 2px; transform: rotate(-10deg); }
+  .tpm-up__cans img:nth-child(2) { left: 18px; transform: rotate(8deg); }
+  .tpm-up__cans span { position: absolute; right: -6px; top: -6px; min-width: 24px; height: 24px; padding: 0 5px; box-sizing: border-box; border-radius: 999px; background: #1f1e21; color: #ffe748; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; border: 2px solid #fff7ef; }
+  .tpm-up__copy { flex: 1; min-width: 0; display: grid; gap: 2px; }
+  .tpm-up__copy b { font-size: 14px; font-weight: 700; }
+  .tpm-up__copy small { font-size: 12px; color: #6b6870; }
+  .tpm-up__btn { flex: none; min-width: 64px; height: 40px; padding: 0 16px; border: 0; border-radius: 999px; background: #1f1e21; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .tpm-up__btn:hover { background: #000; }
+  .tpm-up__btn[aria-busy="true"] { opacity: .7; pointer-events: none; }
   .tpm-cart__save { border-radius: 16px; border: 1px solid #ece6dc; overflow: hidden; }
   .tpm-cart__save-row { display: flex; align-items: center; gap: 12px; padding: 14px; }
   .tpm-cart__save-copy { flex: 1; display: grid; gap: 2px; }
@@ -277,8 +289,47 @@
                       {%- if line_was > item.final_line_price -%}<s>{{ line_was | money }}</s>{%- endif -%}
                       <strong>{{ item.final_line_price | money }}</strong>
                     </div>
-                    
                   </div>
+                  {%- liquid
+                    # 6-can trial -> 12-pack auto ship of the same flavor.
+                    assign up_handle = ''
+                    assign up_can = 'tipsy-can-blood-orange.webp'
+                    if item.product.handle == '6-pack-trial'
+                      assign up_handle = '12-pack-auto-ship-save'
+                    elsif item.product.handle == '6-pack-pineapple-martini-starter-kit'
+                      assign up_handle = '12-pack-pineapple-martini-auto-ship-save'
+                      assign up_can = 'tipsy-can-pineapple.webp'
+                    endif
+                    assign up_diff = 0
+                    if up_handle != ''
+                      assign up = all_products[up_handle]
+                      assign uv = up.selected_or_first_available_variant
+                      assign up_plan = up.selling_plan_groups.first.selling_plans.first
+                      assign up_price = uv.price
+                      for alloc in uv.selling_plan_allocations
+                        if alloc.selling_plan.id == up_plan.id
+                          assign up_price = alloc.price
+                        endif
+                      endfor
+                      assign up_diff = up_price | minus: item.final_price | times: item.quantity
+                      assign up_per_can = up_price | divided_by: 12
+                      assign up_more = 6 | times: item.quantity
+                    endif
+                  -%}
+                  {%- if up_diff > 0 and uv.available -%}
+                    <div class="tpm-up">
+                      <div class="tpm-up__cans" aria-hidden="true">
+                        <img src="{{ up_can | asset_url }}" alt="" width="289" height="755" loading="lazy">
+                        <img src="{{ up_can | asset_url }}" alt="" width="289" height="755" loading="lazy">
+                        <span>+6</span>
+                      </div>
+                      <div class="tpm-up__copy">
+                        <b>Add {{ up_more }} more cans for {{ up_diff | money }}</b>
+                        <small>Make it a 12-pack on auto ship · {{ up_per_can | money }} a can</small>
+                      </div>
+                      <button type="button" class="tpm-up__btn" data-tpm-upgrade data-key="{{ item.key }}" data-qty="{{ item.quantity }}" data-to="{{ uv.id }}" data-plan="{{ up_plan.id }}" aria-label="Add {{ up_more }} more cans for {{ up_diff | money }}: upgrade to the 12-pack on auto ship">Add</button>
+                    </div>
+                  {%- endif -%}
                 {%- endfor -%}
 
                 {%- if swap_item != nil and save > 0 and cpv.available -%}
@@ -395,17 +446,23 @@
           .catch(function () { undo.disabled = false; });
         return;
       }
-      var sw = e.target.closest('[data-tpm-swap]');
+      var sw = e.target.closest('[data-tpm-swap], [data-tpm-upgrade]');
       if (sw) {
         if (sw.getAttribute('aria-busy') === 'true') return;
+        var isSwitch = sw.hasAttribute('data-tpm-swap');
         sw.setAttribute('aria-busy', 'true');
-        sw.setAttribute('aria-checked', sw.getAttribute('aria-checked') === 'true' ? 'false' : 'true');
+        if (isSwitch) sw.setAttribute('aria-checked', sw.getAttribute('aria-checked') === 'true' ? 'false' : 'true');
+        else sw.textContent = 'Adding';
         var add = { id: +sw.dataset.to, quantity: +sw.dataset.qty || 1 };
         if (sw.dataset.plan) add.selling_plan = +sw.dataset.plan;
         post(window.routes.cart_add_url + '.js', { items: [add] })
           .then(function () { return post(window.routes.cart_change_url + '.js', Object.assign({ id: sw.dataset.key, quantity: 0 }, sections())); })
           .then(render)
-          .catch(function () { sw.removeAttribute('aria-busy'); sw.setAttribute('aria-checked', sw.getAttribute('aria-checked') === 'true' ? 'false' : 'true'); });
+          .catch(function () {
+            sw.removeAttribute('aria-busy');
+            if (isSwitch) sw.setAttribute('aria-checked', sw.getAttribute('aria-checked') === 'true' ? 'false' : 'true');
+            else sw.textContent = 'Add';
+          });
       }
     });
     // Remember a line the moment its quantity is taken from 1 to 0, so the empty state can offer Undo.
