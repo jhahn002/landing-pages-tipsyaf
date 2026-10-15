@@ -238,10 +238,10 @@
 .tpm-feel__note { font-size: 15px; color: rgba(255,255,255,.7); }
 .tpm-chart { margin-top: 18px; }
 .tpm-chart svg { width: 100%; height: auto; display: block; overflow: visible; font-family: var(--tpm-font); }
-.tpm-chart__grid line { stroke: rgba(255,255,255,.12); stroke-width: 1.5; stroke-dasharray: 4 6; }
-.tpm-chart__grid line:first-child { stroke-dasharray: none; stroke: rgba(255,255,255,.3); }
-.tpm-chart__area { fill: url(#tpm-chart-fill); }
-.tpm-chart__line { fill: none; stroke: var(--tpm-accent); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+.tpm-chart__base { stroke: rgba(255,255,255,.25); stroke-width: 1.5; }
+.tpm-chart__line { fill: none; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+.tpm-chart__peak path { fill: none; stroke: rgba(255,255,255,.6); stroke-width: 2; stroke-linecap: round; }
+.tpm-chart__phase-labels text { fill: rgba(255,255,255,.85); font-size: 20px; font-weight: 600; }
 .tpm-chart__pt circle { fill: var(--tpm-night); stroke: #fff; stroke-width: 3; }
 .tpm-chart__pt text { fill: #fff; font-size: 24px; font-weight: 700; }
 .tpm-chart__axis text { fill: rgba(255,255,255,.6); font-size: 21px; }
@@ -249,10 +249,11 @@
 /* Animate only when JS has marked the card and motion is allowed */
 @media (prefers-reduced-motion: no-preference) {
   .will-animate .tpm-chart__line { stroke-dashoffset: 1; }
-  .will-animate .tpm-chart__area, .will-animate .tpm-chart__pt { opacity: 0; }
+  .will-animate .tpm-chart__area, .will-animate .tpm-chart__pt, .will-animate .tpm-chart__phases, .will-animate .tpm-chart__phase-labels { opacity: 0; }
   .will-animate .tpm-chart__pt { transform-box: fill-box; transform-origin: center; transform: scale(.6); }
   .is-in .tpm-chart__line { transition: stroke-dashoffset 1.6s cubic-bezier(.4,0,.2,1); stroke-dashoffset: 0; }
   .is-in .tpm-chart__area { transition: opacity .8s ease .9s; opacity: 1; }
+  .is-in .tpm-chart__phases, .is-in .tpm-chart__phase-labels { transition: opacity .6s ease 1.4s; opacity: 1; }
   .is-in .tpm-chart__pt { transition: opacity .4s ease, transform .4s cubic-bezier(.3,1.6,.5,1); transition-delay: calc(var(--d) * 1.6); opacity: 1; transform: scale(1); }
 }
 

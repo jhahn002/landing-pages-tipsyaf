@@ -9,30 +9,41 @@
           {%- if s.note != blank -%}<p class="tpm-feel__note">{{ s.note | escape }}</p>{%- endif -%}
         </div>
         <figure class="tpm-chart">
-          <svg viewBox="0 0 680 300" role="img" aria-labelledby="tpm-chart-desc-{{ section.id }}">
-            <desc id="tpm-chart-desc-{{ section.id }}">Illustration of one can over about an hour: you feel it around minute 10 to 15, it peaks around minute 20, then eases off and ends around minute 60.</desc>
+          <svg viewBox="0 0 680 352" role="img" aria-labelledby="tpm-chart-desc-{{ section.id }}">
+            <desc id="tpm-chart-desc-{{ section.id }}">Illustration of one can over about an hour: it sets in around minute 10, builds to a peak at minute 20, holds until about minute 30, then slowly eases off through the hour.</desc>
             <defs>
-              <linearGradient id="tpm-chart-fill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="#ffe748" stop-opacity=".85"/>
-                <stop offset="1" stop-color="#ffe748" stop-opacity="0"/>
+              <linearGradient id="tpm-chart-hue-{{ section.id }}" x1="40" y1="0" x2="620" y2="0" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#ffb347"/>
+                <stop offset=".45" stop-color="#ff6a3d"/>
+                <stop offset="1" stop-color="#b06cff"/>
               </linearGradient>
+              <linearGradient id="tpm-chart-fade-{{ section.id }}" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#fff" stop-opacity=".55"/>
+                <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+              </linearGradient>
+              <mask id="tpm-chart-mask-{{ section.id }}"><rect x="0" y="40" width="680" height="212" fill="url(#tpm-chart-fade-{{ section.id }})"/></mask>
             </defs>
-            <g class="tpm-chart__grid">
-              <line x1="40" y1="250" x2="620" y2="250"/>
-              <line x1="233" y1="40" x2="233" y2="250"/>
-              <line x1="427" y1="40" x2="427" y2="250"/>
-              <line x1="620" y1="40" x2="620" y2="250"/>
-            </g>
-            <path class="tpm-chart__area" d="M40 248 C 90 246, 120 210, 150 160 S 210 64, 233 62 S 330 74, 380 120 S 470 168, 520 196 S 590 246, 620 248 L 620 250 L 40 250 Z"/>
-            <path class="tpm-chart__line" pathLength="1" d="M40 248 C 90 246, 120 210, 150 160 S 210 64, 233 62 S 330 74, 380 120 S 470 168, 520 196 S 590 246, 620 248"/>
-            <g class="tpm-chart__pt" style="--d:.35s"><circle cx="150" cy="160" r="7"/><text x="134" y="168" text-anchor="end">{{ s.label_1 | escape }}</text></g>
-            <g class="tpm-chart__pt" style="--d:.6s"><circle cx="233" cy="62" r="7"/><text x="233" y="34" text-anchor="middle">{{ s.label_2 | escape }}</text></g>
-            <g class="tpm-chart__pt" style="--d:.95s"><circle cx="520" cy="196" r="7"/><text x="536" y="178" text-anchor="start">{{ s.label_3 | escape }}</text></g>
+            <line class="tpm-chart__base" x1="40" y1="250" x2="620" y2="250"/>
+            <path class="tpm-chart__area" fill="url(#tpm-chart-hue-{{ section.id }})" mask="url(#tpm-chart-mask-{{ section.id }})" d="M40.0 249.0 C56.1 247.3, 72.2 248.2, 88.3 244.0 C104.4 239.8, 120.6 239.7, 136.7 224.0 C152.8 208.3, 168.9 173.3, 185.0 150.0 C201.1 126.7, 217.2 91.0, 233.3 84.0 C249.4 77.0, 265.6 77.0, 281.7 77.0 C297.8 77.0, 313.9 77.1, 330.0 80.0 C349.3 83.4, 368.7 90.3, 388.0 97.0 C407.3 103.7, 426.7 111.8, 446.0 120.0 C465.3 128.2, 484.7 136.8, 504.0 146.0 C523.3 155.2, 542.7 165.0, 562.0 175.0 C581.3 185.0, 600.7 195.7, 620.0 206.0 L620 250 L40 250 Z"/>
+            <path class="tpm-chart__line" pathLength="1" stroke="url(#tpm-chart-hue-{{ section.id }})" d="M40.0 249.0 C56.1 247.3, 72.2 248.2, 88.3 244.0 C104.4 239.8, 120.6 239.7, 136.7 224.0 C152.8 208.3, 168.9 173.3, 185.0 150.0 C201.1 126.7, 217.2 91.0, 233.3 84.0 C249.4 77.0, 265.6 77.0, 281.7 77.0 C297.8 77.0, 313.9 77.1, 330.0 80.0 C349.3 83.4, 368.7 90.3, 388.0 97.0 C407.3 103.7, 426.7 111.8, 446.0 120.0 C465.3 128.2, 484.7 136.8, 504.0 146.0 C523.3 155.2, 542.7 165.0, 562.0 175.0 C581.3 185.0, 600.7 195.7, 620.0 206.0"/>
+            <g class="tpm-chart__pt" style="--d:.3s"><circle cx="137" cy="224" r="7"/><text x="121" y="232" text-anchor="end">{{ s.label_1 | escape }}</text></g>
+            <g class="tpm-chart__pt tpm-chart__peak" style="--d:.55s"><path d="M233 54 V46 H330 V54"/><text x="282" y="32" text-anchor="middle">{{ s.label_2 | escape }}</text></g>
+            <g class="tpm-chart__pt" style="--d:.9s"><circle cx="485" cy="137" r="7"/><text x="499" y="123" text-anchor="start">{{ s.label_3 | escape }}</text></g>
             <g class="tpm-chart__axis">
-              <text x="40" y="278">0 min</text>
-              <text x="233" y="278" text-anchor="middle">20</text>
-              <text x="427" y="278" text-anchor="middle">40</text>
-              <text x="620" y="278" text-anchor="end">60 min</text>
+              <text x="40" y="280">0 min</text>
+              <text x="233" y="280" text-anchor="middle">20</text>
+              <text x="427" y="280" text-anchor="middle">40</text>
+              <text x="620" y="280" text-anchor="end">60 min</text>
+            </g>
+            <g class="tpm-chart__phases" fill="url(#tpm-chart-hue-{{ section.id }})">
+              <rect x="40" y="302" width="190" height="10" rx="5"/>
+              <rect x="237" y="302" width="90" height="10" rx="5"/>
+              <rect x="334" y="302" width="286" height="10" rx="5"/>
+            </g>
+            <g class="tpm-chart__phase-labels">
+              <text x="40" y="342">{{ s.phase_1 | escape }}</text>
+              <text x="282" y="342" text-anchor="middle">{{ s.phase_2 | escape }}</text>
+              <text x="620" y="342" text-anchor="end">{{ s.phase_3 | escape }}</text>
             </g>
           </svg>
           {%- if s.caption != blank -%}<figcaption>{{ s.caption | escape }}</figcaption>{%- endif -%}
@@ -50,9 +61,12 @@
   "settings": [
     { "type": "text", "id": "heading", "label": "Heading", "default": "What one can feels like" },
     { "type": "text", "id": "note", "label": "Text", "default": "One can is one serving. Have another to keep it going." },
-    { "type": "text", "id": "label_1", "label": "Chart label: start", "default": "You feel it" },
+    { "type": "text", "id": "label_1", "label": "Chart label: start", "default": "Sets in" },
     { "type": "text", "id": "label_2", "label": "Chart label: top", "default": "Peak" },
     { "type": "text", "id": "label_3", "label": "Chart label: end", "default": "Easing off" },
+    { "type": "text", "id": "phase_1", "label": "Phase bar: first", "default": "Settling in" },
+    { "type": "text", "id": "phase_2", "label": "Phase bar: middle", "default": "Peak" },
+    { "type": "text", "id": "phase_3", "label": "Phase bar: last", "default": "Easing off" },
     { "type": "text", "id": "caption", "label": "Caption", "default": "Illustration. Everyone feels it a little differently." }
   ],
   "presets": [{ "name": "TIPSY how it feels" }]
