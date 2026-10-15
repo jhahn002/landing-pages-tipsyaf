@@ -1,11 +1,11 @@
 {% comment %}
-  TIPSY cart drawer (concept 1): one line per item with a remove X, a "Save $X"
+  TIPSY cart drawer (concept 1): one line per item (the quantity minus removes it), a "Save $X"
   switch that moves a one-time 12-pack to auto ship (and back), and a footer
   with the total, cans, and the 100-day guarantee.
 
   Keeps Dawn's hooks so cart.js and cart-drawer.js still work: <cart-drawer>,
   #CartDrawer, .drawer__inner, <cart-drawer-items>, #CartDrawer-Form,
-  #CartDrawer-CartItems, quantity inputs with data-index, <cart-remove-button>,
+  #CartDrawer-CartItems, quantity inputs with data-index (minus to 0 removes a line),
   #CartDrawer-Checkout. The control page renders snippets/cart-drawer-legacy.
 
   Usage:
@@ -78,6 +78,19 @@
     assign per_can = sub_price | divided_by: 12
   endif
   assign trial = all_products['6-pack-trial']
+  if trial != blank
+    assign tv = trial.selected_or_first_available_variant
+    assign trial_price = tv.price
+    assign trial_plan = trial.selling_plan_groups.first.selling_plans.first
+    if trial_plan
+      for alloc in tv.selling_plan_allocations
+        if alloc.selling_plan.id == trial_plan.id
+          assign trial_price = alloc.price
+        endif
+      endfor
+    endif
+    assign trial_per_can = trial_price | divided_by: 6
+  endif
 -%}
 
 <style>
@@ -107,9 +120,6 @@
   .tpm-cart__price { flex: none; display: grid; justify-items: end; }
   .tpm-cart__price s { font-size: 13px; color: #8a8590; }
   .tpm-cart__price strong { font-size: 16px; font-weight: 700; }
-  .tpm-cart__remove { width: 36px; height: 44px; margin-right: -6px; border: 0; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; }
-  .tpm-cart__remove span { width: 26px; height: 26px; border-radius: 50%; background: #f2eee7; display: flex; align-items: center; justify-content: center; transition: background .2s; }
-  .tpm-cart__remove:hover span { background: #e7e1d7; }
   .tpm-cart .cart-item__error { font-size: 12px; color: #b3261e; }
   .tpm-cart .cart-item__error:empty, .tpm-cart .cart-item__error-text:empty { display: none; }
   .tpm-cart__save { border-radius: 16px; border: 1px solid #ece6dc; overflow: hidden; }
@@ -139,12 +149,33 @@
   .tpm-cart__chips { display: flex; flex-wrap: wrap; gap: 6px; }
   .tpm-cart__chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px; border-radius: 999px; background: #f2eee7; font-size: 12.5px; font-weight: 600; }
   .tpm-cart__chip--good { background: #dff3e6; color: #1d6b3d; }
-  .tpm-cart__empty { flex: 1; display: grid; align-content: center; justify-items: center; gap: 12px; padding: 0 28px 60px; text-align: center; }
+  .tpm-cart__empty { flex: 1; overflow: auto; display: grid; align-content: start; justify-items: center; gap: 14px; padding: 8px 18px 24px; text-align: center; }
+  .tpm-cart__empty-top { display: grid; justify-items: center; gap: 2px; }
+  .tpm-offer { width: 100%; border-radius: 22px; overflow: hidden; background: linear-gradient(170deg, #ffe0c2 0%, #ffb27d 100%); box-shadow: 0 12px 30px rgba(196,90,30,.18); animation: tpmOfferIn .5s cubic-bezier(.2,.8,.2,1); }
+  @keyframes tpmOfferIn { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+  .tpm-offer__top { position: relative; padding: 18px 18px 16px; display: grid; justify-items: center; gap: 6px; }
+  .tpm-offer__tag { padding: 4px 10px; border-radius: 999px; background: #1f1e21; color: #ffe748; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+  .tpm-offer__can { height: 150px; width: auto; margin: 4px 0 2px; transform: rotate(-8deg); filter: drop-shadow(0 12px 14px rgba(120,50,10,.28)); animation: tpmCanBob 3.2s ease-in-out infinite; }
+  @keyframes tpmCanBob { 0%, 100% { transform: rotate(-8deg) translateY(0); } 50% { transform: rotate(-5deg) translateY(-6px); } }
+  .tpm-offer__title { margin: 0; font-size: 30px; font-weight: 600; line-height: 1.02; letter-spacing: -0.035em; }
+  .tpm-offer__sub { margin: 0; font-size: 14px; color: #5a3a24; }
+  .tpm-offer__perf { position: relative; height: 0; border-top: 2px dashed rgba(31,30,33,.25); margin: 0 18px; }
+  .tpm-offer__perf::before, .tpm-offer__perf::after { content: ''; position: absolute; top: -12px; width: 22px; height: 22px; border-radius: 50%; background: #fff; }
+  .tpm-offer__perf::before { left: -30px; } .tpm-offer__perf::after { right: -30px; }
+  .tpm-offer__bottom { padding: 16px 18px 18px; display: grid; justify-items: center; gap: 10px; }
+  .tpm-offer__accept { width: 100%; height: 54px; border: 0; border-radius: 16px; background: #1f1e21; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; }
+  .tpm-offer__accept:hover { background: #000; }
+  .tpm-offer__accept[aria-busy="true"] { opacity: .7; pointer-events: none; }
+  .tpm-offer__terms { font-size: 11.5px; color: #5a3a24; }
+  .tpm-cart__nothanks { min-height: 44px; padding: 0 16px; border: 0; background: none; color: #6b6870; font-size: 14px; font-weight: 600; text-decoration: underline; cursor: pointer; }
+  @media (prefers-reduced-motion: reduce) { .tpm-offer, .tpm-offer__can { animation: none; } }
   .tpm-cart__empty h2 { margin: 0; font-size: 20px; font-weight: 700; }
   .tpm-cart__empty p { margin: 0; font-size: 14px; color: #6b6870; }
   .tpm-cart__undo { min-height: 44px; padding: 0 18px; border: 0; background: none; font-size: 15px; font-weight: 700; text-decoration: underline; cursor: pointer; color: #1f1e21; }
   .tpm-cart__cta { display: inline-flex; align-items: center; justify-content: center; height: 52px; padding: 0 24px; border-radius: 16px; background: #1f1e21; color: #fff; font-weight: 700; font-size: 15px; text-decoration: none; }
-  cart-drawer.is-empty .tpm-cart { display: flex; }
+  cart-drawer.is-empty .tpm-cart { display: flex; align-items: stretch; text-align: left; }
+  .tpm-cart__empty { text-align: center; }
+  .tpm-offer__perf { display: block !important; }
   @media (prefers-reduced-motion: reduce) { .tpm-cart__pill { animation: none; } .tpm-cart__switch span, .tpm-cart__switch span::after { transition: none; } }
 </style>
 
@@ -161,11 +192,27 @@
 
       {%- if cart == empty -%}
         <div class="tpm-cart__empty drawer__inner-empty">
-          <h2>Your cart is empty</h2>
-          <p data-tpm-undo-note hidden></p>
-          <button type="button" class="tpm-cart__undo" data-tpm-undo hidden>Undo</button>
-          {%- if trial != blank -%}
-            <a class="tpm-cart__cta" href="{{ trial.url }}">Try 6 cans · {{ trial.selected_or_first_available_variant.price | money }}</a>
+          <div class="tpm-cart__empty-top">
+            <h2>Your cart is empty</h2>
+            <p data-tpm-undo-note hidden></p>
+            <button type="button" class="tpm-cart__undo" data-tpm-undo hidden>Undo</button>
+          </div>
+          {%- if trial != blank and tv.available -%}
+            <div class="tpm-offer">
+              <div class="tpm-offer__top">
+                <span class="tpm-offer__tag">Before you go</span>
+                <img class="tpm-offer__can" src="{{ 'tipsy-can-blood-orange.webp' | asset_url }}" alt="" width="289" height="755" loading="lazy">
+                <h3 class="tpm-offer__title">Try 6 cans<br>for {{ trial_price | money }}</h3>
+                <p class="tpm-offer__sub">{{ trial_per_can | money }} a can · felt in about 10 minutes</p>
+              </div>
+              <div class="tpm-offer__perf" aria-hidden="true"></div>
+              <div class="tpm-offer__bottom">
+                <button type="button" class="tpm-offer__accept" data-tpm-offer data-variant-id="{{ tv.id }}" data-plan="{{ trial_plan.id }}">Accept offer</button>
+                <span class="tpm-cart__chip tpm-cart__chip--good"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 6.5 2.5 2.5L10 3"/></svg>100-day money-back guarantee</span>
+                {%- if trial_plan -%}<small class="tpm-offer__terms">Then 12 cans for $49.80/mo + $2.99 shipping. Cancel anytime.</small>{%- endif -%}
+              </div>
+            </div>
+            <button type="button" class="tpm-cart__nothanks" onclick="this.closest('cart-drawer').close()">No thanks</button>
           {%- else -%}
             <a class="tpm-cart__cta" href="{{ routes.all_products_collection_url }}">{{ 'general.continue_shopping' | t }}</a>
           {%- endif -%}
@@ -195,7 +242,7 @@
                         {%- if item.selling_plan_allocation -%}{{ item.selling_plan_allocation.selling_plan.name | escape }}{%- else -%}One time{%- endif -%}
                         {%- unless item.product.has_only_default_variant -%} · {{ item.variant.title | escape }}{%- endunless -%}
                       </span>
-                      <quantity-input class="quantity cart-quantity tpm-cart__qty">
+                      <quantity-input class="quantity cart-quantity tpm-cart__qty" data-tpm-line data-variant-id="{{ item.variant.id }}" data-plan="{{ item.selling_plan_allocation.selling_plan.id }}" data-title="{{ item.product.title | escape }}">
                         <button class="quantity__button" name="minus" type="button" {% if item.instructions and item.instructions.can_update_quantity == false %}disabled{% endif %}>
                           <span class="visually-hidden">{{ 'products.product.quantity.decrease' | t: product: item.product.title | escape }}</span>
                           <span class="svg-wrapper">{{- 'icon-minus.svg' | inline_asset_content -}}</span>
@@ -210,7 +257,7 @@
                           {% # theme-check-disable %}
                           data-cart-quantity="{{ cart | item_count_for_variant: item.variant.id }}"
                           min="0"
-                          data-min="{{ item.variant.quantity_rule.min }}"
+                          data-min="{% if item.variant.quantity_rule.min > 1 %}{{ item.variant.quantity_rule.min }}{% else %}0{% endif %}"
                           {% if item.variant.quantity_rule.max != null %}max="{{ item.variant.quantity_rule.max }}"{% endif %}
                           step="{{ item.variant.quantity_rule.increment }}"
                           {% # theme-check-enable %}
@@ -230,22 +277,7 @@
                       {%- if line_was > item.final_line_price -%}<s>{{ line_was | money }}</s>{%- endif -%}
                       <strong>{{ item.final_line_price | money }}</strong>
                     </div>
-                    {%- unless item.instructions and item.instructions.can_remove == false -%}
-                      <cart-remove-button id="CartDrawer-Remove-{{ idx }}" data-index="{{ idx }}">
-                        <button
-                          type="button"
-                          class="tpm-cart__remove"
-                          aria-label="{{ 'sections.cart.remove_title' | t: title: item.title | escape }}"
-                          data-tpm-remove
-                          data-variant-id="{{ item.variant.id }}"
-                          data-qty="{{ item.quantity }}"
-                          data-plan="{{ item.selling_plan_allocation.selling_plan.id }}"
-                          data-title="{{ item.product.title | escape }}"
-                        >
-                          <span aria-hidden="true"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#55525a" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 1.5l7 7M8.5 1.5l-7 7"/></svg></span>
-                        </button>
-                      </cart-remove-button>
-                    {%- endunless -%}
+                    
                   </div>
                 {%- endfor -%}
 
@@ -341,11 +373,15 @@
       if (note && note.textContent !== text) { note.textContent = text; note.hidden = !saved; }
     }
     document.addEventListener('click', function (e) {
-      var rm = e.target.closest('[data-tpm-remove]');
-      if (rm) {
-        var item = { id: +rm.dataset.variantId, quantity: +rm.dataset.qty || 1 };
-        if (rm.dataset.plan) item.selling_plan = +rm.dataset.plan;
-        try { sessionStorage.setItem(KEY, JSON.stringify({ item: item, title: rm.dataset.title })); } catch (err) {}
+      var offer = e.target.closest('[data-tpm-offer]');
+      if (offer) {
+        offer.setAttribute('aria-busy', 'true');
+        var it = { id: +offer.dataset.variantId, quantity: 1 };
+        if (offer.dataset.plan) it.selling_plan = +offer.dataset.plan;
+        try { sessionStorage.removeItem(KEY); } catch (err) {}
+        post(window.routes.cart_add_url + '.js', Object.assign({ items: [it] }, sections()))
+          .then(function (state) { state.item_count = 1; render(state); })
+          .catch(function () { offer.removeAttribute('aria-busy'); });
         return;
       }
       var undo = e.target.closest('[data-tpm-undo]');
@@ -372,6 +408,16 @@
           .catch(function () { sw.removeAttribute('aria-busy'); sw.setAttribute('aria-checked', sw.getAttribute('aria-checked') === 'true' ? 'false' : 'true'); });
       }
     });
+    // Remember a line the moment its quantity is taken from 1 to 0, so the empty state can offer Undo.
+    document.addEventListener('click', function (e) {
+      var minus = e.target.closest('.tpm-cart__qty button[name="minus"]');
+      if (!minus) return;
+      var line = minus.closest('[data-tpm-line]'), input = line && line.querySelector('input');
+      if (!input || +input.value > 1) return;
+      var item = { id: +line.dataset.variantId, quantity: 1 };
+      if (line.dataset.plan) item.selling_plan = +line.dataset.plan;
+      try { sessionStorage.setItem(KEY, JSON.stringify({ item: item, title: line.dataset.title })); } catch (err) {}
+    }, true);
     var root = document.getElementById('CartDrawer');
     if (root && window.MutationObserver) new MutationObserver(syncUndo).observe(root, { childList: true, subtree: true });
     document.addEventListener('DOMContentLoaded', syncUndo); syncUndo();
