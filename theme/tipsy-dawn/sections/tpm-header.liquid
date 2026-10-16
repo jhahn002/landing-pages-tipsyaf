@@ -32,7 +32,6 @@
   .tpm-hdr__cart .svg-wrapper { display: flex; width: 40px; height: 40px; }
   .tpm-hdr__cart svg { width: 40px; height: 40px; }
   .tpm-hdr__cart .cart-count-bubble { position: absolute; top: 5px; right: 4px; min-width: 17px; height: 17px; padding: 0 3px; border-radius: 999px; background: #ffe748; color: #1f1e21; border: 1.5px solid #fff; font-size: 10px; font-weight: 800; line-height: 1; display: flex; align-items: center; justify-content: center; box-sizing: border-box; }
-  .tpm-hdr__desk { display: none; }
   .tpm-hdr__scrim { position: fixed; inset: 0; z-index: 1; background: rgba(20,12,8,.45); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility 0s linear .3s; }
   .tpm-hdr.is-open .tpm-hdr__scrim { opacity: 1; visibility: visible; transition: opacity .3s ease; }
   .tpm-hdr__menu { position: absolute; z-index: 2; left: 12px; right: 12px; top: 74px; max-width: 520px; max-height: calc(100svh - 90px); overflow: auto; box-sizing: border-box; border-radius: 22px; background: #fff; padding: 14px; display: grid; gap: 12px; box-shadow: 0 18px 40px rgba(0,0,0,.18); opacity: 0; visibility: hidden; transform: translateY(-10px) scale(.97); transform-origin: top center; transition: opacity .3s ease, transform .35s cubic-bezier(.2,.8,.2,1), visibility 0s linear .35s; }
@@ -54,9 +53,6 @@
     .tpm-hdr { height: 92px; }
     .tpm-hdr--overlay { height: 0; }
     .tpm-hdr__bar { left: 28px; right: 28px; top: 16px; height: 60px; padding: 0 10px 0 6px; }
-    .tpm-hdr__desk { display: flex; gap: 4px; margin-right: auto; margin-left: 4px; }
-    .tpm-hdr__desk a { min-height: 44px; display: flex; align-items: center; padding: 0 12px; border-radius: 12px; font-size: 15px; font-weight: 600; color: inherit; text-decoration: none; }
-    .tpm-hdr__desk a:hover { background: #f4efe7; }
     .tpm-hdr__menu { left: max(28px, calc((100% - 1240px) / 2)); right: auto; width: 440px; top: 84px; }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -71,14 +67,6 @@
     <button type="button" class="tpm-hdr__icon tpm-hdr__burger" aria-expanded="false" aria-controls="TpmMenu-{{ section.id }}" aria-label="Open menu" data-tpm-hdr-toggle>
       <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
     </button>
-
-    {%- if section.blocks.size > 0 -%}
-      <nav class="tpm-hdr__desk" aria-label="Shop">
-        {%- for block in section.blocks -%}
-          {%- if block.settings.label != blank -%}<a href="{{ block.settings.link | default: routes.all_products_collection_url }}" {{ block.shopify_attributes }}>{{ block.settings.label | escape }}</a>{%- endif -%}
-        {%- endfor -%}
-      </nav>
-    {%- endif -%}
 
     <a href="{{ routes.root_url }}" class="tpm-hdr__logo" aria-label="{{ shop.name | escape }} home">
       {%- if s.logo != blank -%}

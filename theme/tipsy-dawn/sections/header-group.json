@@ -95,7 +95,15 @@
       "settings": {
         "mode": "rotate",
         "default_style": "8",
-        "speed": 5
+        "speed": 5,
+        "include_1": false,
+        "include_2": false,
+        "include_3": false,
+        "include_4": false,
+        "include_5": true,
+        "include_6": true,
+        "include_7": true,
+        "include_8": true
       }
     }
   },
