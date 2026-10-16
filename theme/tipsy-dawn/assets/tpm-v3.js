@@ -177,13 +177,13 @@
   $all('[data-tpm-picker]').forEach(renderPicker);
 
   // ---- Flavor step: fill the order with six-packs ----
-  // Four designs, chosen in the theme editor (TIPSY buy box > Flavor step) or
-  // previewed with ?packer=box|steppers|sequence|split.
-  var PACKER_STYLES = ['box', 'steppers', 'sequence', 'split'];
+  // Five designs, chosen in the theme editor (TIPSY buy box > Flavor step) or
+  // previewed with ?packer=shelf|box|steppers|sequence|split. 'shelf' is the chosen one.
+  var PACKER_STYLES = ['shelf', 'box', 'steppers', 'sequence', 'split'];
   var packerStyle = String(DATA.packerStyle || '').trim();
   var pq = (window.location.search.match(/[?&]packer=(\w+)/) || [])[1];
   if (pq) packerStyle = pq;
-  if (PACKER_STYLES.indexOf(packerStyle) < 0) packerStyle = 'box';
+  if (PACKER_STYLES.indexOf(packerStyle) < 0) packerStyle = 'shelf';
 
   function fname(f) { return DATA.flavors[f].name; }
   function canImg(f, cls) { return '<img' + (cls ? ' class="' + cls + '"' : '') + ' src="' + DATA.flavors[f].img + '" alt="">'; }
@@ -284,6 +284,105 @@
     return '<div class="tpm-pk tpm-pk--split"><div class="tpm-splits">' + opts + '</div></div>';
   }
 
+  // The swipeable shelf: the can in the center is the flavor of the six-pack
+  // being picked. A 12-pack shows two six-pack tabs above it.
+  function shelfChipsHtml() {
+    var n = packsNeeded(), i = Math.min(state.seq, n - 1), chips = '';
+    for (var k = 0; k < n; k++) {
+      var f = state.packs[k];
+      chips += '<li class="' + (k === i ? 'is-on' : '') + '"><button type="button" data-tpm-seq="' + k + '"' + (k === i ? ' aria-current="true"' : '') + '>' +
+        '<span class="tpm-seq__dot tpm-f--' + f + '"></span>Six-pack ' + (k + 1) + '<em>' + (f ? DATA.flavors[f].short : '') + '</em></button></li>';
+    }
+    return chips;
+  }
+  function shelfNote(f) { return '<strong>' + fname(f) + '</strong> · ' + DATA.flavors[f].note; }
+  function shelfHtml() {
+    var n = packsNeeded(), i = Math.min(state.seq, n - 1);
+    var cur = state.packs[i] || PACK_FLAVORS[0];
+    var opts = PACK_FLAVORS.map(function (f) {
+      return '<label class="tpm-shelf__opt tpm-f--' + f + '"><input type="radio" name="tpm-pk-shelf" value="' + f + '"' + (f === cur ? ' checked' : '') + '>' +
+        '<span class="tpm-shelf__box"><span class="tpm-shelf__img">' + canImg(f) + '</span><span class="tpm-shelf__name">' + fname(f) + '</span></span></label>';
+    }).join('');
+    var dots = PACK_FLAVORS.map(function (f) { return '<i' + (f === cur ? ' class="is-on"' : '') + '></i>'; }).join('');
+    return '<div class="tpm-pk tpm-pk--shelf">' +
+      (n > 1 ? '<ol class="tpm-seq__packs" data-tpm-shelf-chips>' + shelfChipsHtml() + '</ol>' : '') +
+      '<p class="tpm-pk__count">' + (n > 1 ? 'Six-pack ' + (i + 1) + ' of ' + n + '. Swipe to pick its flavor.' : 'Swipe to pick your flavor.') + '</p>' +
+      '<div class="tpm-shelf"><div class="tpm-shelf__track" data-tpm-shelf-track role="radiogroup" aria-label="Flavor">' + opts + '</div></div>' +
+      '<div class="tpm-shelf__dots" aria-hidden="true">' + dots + '</div>' +
+      '<p class="tpm-shelf__note" data-tpm-fnote aria-live="polite">' + shelfNote(cur) + '</p>' +
+      (n > 1 && i < n - 1 ? '<button type="button" class="tpm-shelf__next" data-tpm-seq="' + (i + 1) + '">Next: six-pack ' + (i + 2) + ' →</button>' : '') +
+      '</div>';
+  }
+
+  // ---- Shelf scrolling: the can that settles in the center gets selected ----
+  function restartClass(el, cls) {
+    if (!el) return;
+    el.classList.remove(cls);
+    void el.offsetWidth; // restart the CSS animation
+    el.classList.add(cls);
+  }
+  function shelfCentered(track) {
+    var mid = track.scrollLeft + track.clientWidth / 2, best = null, bestD = Infinity;
+    $all('.tpm-shelf__opt', track).forEach(function (o) {
+      var d = Math.abs(o.offsetLeft + o.offsetWidth / 2 - mid);
+      if (d < bestD) { bestD = d; best = o; }
+    });
+    return best;
+  }
+  function shelfCenter(track, opt, smooth) {
+    if (!track.clientWidth || !opt) return;
+    track._prog = true;
+    clearTimeout(track._pt);
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    track.scrollTo({ left: opt.offsetLeft + opt.offsetWidth / 2 - track.clientWidth / 2, behavior: smooth && !reduce ? 'smooth' : 'auto' });
+    track._pt = setTimeout(function () { track._prog = false; }, smooth ? 600 : 80);
+  }
+  function initShelf(enter) {
+    var track = packerEl.querySelector('[data-tpm-shelf-track]');
+    if (!track) return;
+    var shelf = track.parentNode;
+    if (enter) restartClass(shelf, 'is-enter');
+    requestAnimationFrame(function () {
+      var sel = track.querySelector('input:checked');
+      shelfCenter(track, sel && sel.closest('.tpm-shelf__opt'), false);
+    });
+    track.addEventListener('scroll', function () {
+      if (track._prog) return;
+      clearTimeout(track._st);
+      track._st = setTimeout(function () {
+        var o = shelfCentered(track);
+        var input = o && o.querySelector('input');
+        if (input && !input.checked) {
+          input.checked = true;
+          input.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      }, 90);
+    }, { passive: true });
+  }
+  // Picking a flavor updates the shelf in place so the swipe isn't interrupted.
+  function shelfChange(input) {
+    var f = input.value;
+    state.packs[Math.min(state.seq, packsNeeded() - 1)] = f;
+    if (!allowMixed) state.packs = state.packs.map(function () { return f; });
+    var opt = input.closest('.tpm-shelf__opt');
+    var track = opt.closest('[data-tpm-shelf-track]');
+    restartClass(opt, 'is-pop');
+    if (shelfCentered(track) !== opt) shelfCenter(track, opt, true);
+    var opts = $all('.tpm-shelf__opt', track);
+    $all('.tpm-shelf__dots i', packerEl).forEach(function (d, k) { d.classList.toggle('is-on', opts[k] === opt); });
+    var note = packerEl.querySelector('[data-tpm-fnote]');
+    if (note) { note.innerHTML = shelfNote(f); restartClass(note, 'is-swap'); }
+    var chips = packerEl.querySelector('[data-tpm-shelf-chips]');
+    if (chips) chips.innerHTML = shelfChipsHtml();
+    sync();
+  }
+  window.addEventListener('resize', function () {
+    if (!packerEl) return;
+    var track = packerEl.querySelector('[data-tpm-shelf-track]');
+    var sel = track && track.querySelector('input:checked');
+    if (sel) shelfCenter(track, sel.closest('.tpm-shelf__opt'), false);
+  });
+
   // Savings nudge: one six-pack -> two (auto ship), or one-time -> auto ship.
   function upsellHtml() {
     var t = DATA.offers.trial, a = DATA.offers.autoship, o = DATA.offers.onetime;
@@ -306,13 +405,14 @@
 
   var packerEl = null;
   var LABELS = { toFlavors: DATA.labels && DATA.labels.toFlavors || 'Choose flavors', toCustomize: DATA.labels && DATA.labels.toCustomize || 'Continue' };
-  function renderPacker() {
+  function renderPacker(enter) {
     if (!packerEl) return;
-    var html = packerStyle === 'steppers' ? steppersHtml() : packerStyle === 'sequence' ? sequenceHtml() : packerStyle === 'split' ? splitHtml() : boxHtml();
+    var html = packerStyle === 'shelf' ? shelfHtml() : packerStyle === 'steppers' ? steppersHtml() : packerStyle === 'sequence' ? sequenceHtml() : packerStyle === 'split' ? splitHtml() : boxHtml();
     var o = DATA.offers[state.offer];
     packerEl.innerHTML = '<p class="tpm-pk__offer"><strong>' + o.name + '</strong> · ' + money(o.price) + (state.offer === 'autoship' ? '/mo' : '') + '</p>' +
       html + upsellHtml() + '<p class="tpm-pk__terms" data-tpm-terms></p>';
     packerEl.className = 'tpm-packer tpm-packer--' + packerStyle;
+    if (packerStyle === 'shelf') initShelf(enter === true);
     sync();
   }
 
@@ -358,7 +458,10 @@
   }
 
   packerEl = sheet.querySelector('[data-tpm-packer]');
-  if (packerEl) packerEl.addEventListener('click', packerClick);
+  if (packerEl) {
+    packerEl.addEventListener('click', packerClick);
+    packerEl.addEventListener('change', function (e) { if (e.target.name === 'tpm-pk-shelf') shelfChange(e.target); });
+  }
 
   function renderAddons() {
     var box = sheet.querySelector('[data-tpm-addons]');
@@ -400,7 +503,7 @@
     sheet.classList.toggle('is-dark', n === 2);
     if (n === 2) {
       if (!packsFull() && packerStyle !== 'box') fillPacks(packFlavor());
-      renderPacker();
+      renderPacker(true);
     }
     if (n === 3) {
       renderAddons(); renderRewards();
