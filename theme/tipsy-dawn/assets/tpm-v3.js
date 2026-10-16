@@ -24,6 +24,15 @@
     $all('[data-tpm-mix-only]').forEach(function (el) { el.remove(); });
   }
   function hasFlavor(f) { return !!DATA.flavors[f]; }
+  // One case is one flavor. "Both flavors" is a second case (the Customize step's
+  // offer), so six-packs inside an order are never mixed. mixPage only decides
+  // whether the page's "both flavors" buttons stay.
+  var mixPage = allowMixed;
+  allowMixed = false;
+
+  // ---- Second case offer (Customize step): add another 12-pack at a discount ----
+  var CASE2 = DATA.case2 || {};
+  var case2On = CASE2.enabled !== false && CASE2.percent > 0;
 
   // ---- Optional rewards ("60:Free shipping|100:Free gift") ----
   var REWARDS = String(DATA.rewards || '').split('|').map(function (part) {
@@ -37,7 +46,7 @@
   // packs[i] is a flavor key, or null for an empty slot (the "box" design).
   var PACK_FLAVORS = Object.keys(DATA.flavors).filter(function (f) { return f !== 'mix'; });
   var PACKS_PER_OFFER = { trial: 1, autoship: 2, onetime: 2 };
-  var state = { offer: 'trial', packs: [PACK_FLAVORS[0]], addons: {}, seq: 0 };
+  var state = { offer: 'trial', packs: [PACK_FLAVORS[0]], addons: {}, seq: 0, case2: null };
 
   function packsNeeded(offer) { return PACKS_PER_OFFER[offer || state.offer] || 1; }
   function packsFull() { return state.packs.length === packsNeeded() && state.packs.every(Boolean); }
@@ -57,7 +66,11 @@
     while (state.packs.length < n) state.packs.push(last);
     if (!allowMixed) state.packs = state.packs.map(function () { return state.packs[0] || last; });
     state.seq = Math.min(state.seq, n - 1);
+    if (!case2Available()) state.case2 = null;
   }
+  function case2Available() { return case2On && state.offer !== 'trial' && packsNeeded() > 1; }
+  function case2Price() { return Math.round(DATA.offers[state.offer].price * (100 - CASE2.percent)) / 100; }
+  function case2Saving() { return Math.round((DATA.offers[state.offer].price - case2Price()) * 100) / 100; }
   if (DATA.defaultOffer && DATA.defaultOffer !== state.offer) setOffer(DATA.defaultOffer);
 
   function packFlavor() {
@@ -68,6 +81,7 @@
 
   function dueToday() {
     var t = DATA.offers[state.offer].price;
+    if (state.case2) t += case2Price();
     DATA.addons.forEach(function (a) { if (state.addons[a.id]) t += a.price; });
     return Math.round(t * 100) / 100;
   }
@@ -284,33 +298,22 @@
     return '<div class="tpm-pk tpm-pk--split"><div class="tpm-splits">' + opts + '</div></div>';
   }
 
-  // The swipeable shelf: the can in the center is the flavor of the six-pack
-  // being picked. A 12-pack shows two six-pack tabs above it.
-  function shelfChipsHtml() {
-    var n = packsNeeded(), i = Math.min(state.seq, n - 1), chips = '';
-    for (var k = 0; k < n; k++) {
-      var f = state.packs[k];
-      chips += '<li class="' + (k === i ? 'is-on' : '') + '"><button type="button" data-tpm-seq="' + k + '"' + (k === i ? ' aria-current="true"' : '') + '>' +
-        '<span class="tpm-seq__dot tpm-f--' + f + '"></span>Six-pack ' + (k + 1) + '<em>' + (f ? DATA.flavors[f].short : '') + '</em></button></li>';
-    }
-    return chips;
-  }
-  function shelfNote(f) { return '<strong>' + fname(f) + '</strong> · ' + DATA.flavors[f].note; }
+  // The swipeable shelf: the can in the center is the flavor of the whole case.
+  function shelfNote(f) { return '<strong>' + (packsNeeded() * 6) + ' cans of ' + fname(f) + '</strong> · ' + DATA.flavors[f].note; }
   function shelfHtml() {
-    var n = packsNeeded(), i = Math.min(state.seq, n - 1);
-    var cur = state.packs[i] || PACK_FLAVORS[0];
+    var n = packsNeeded();
+    var cur = state.packs[0] || PACK_FLAVORS[0];
     var opts = PACK_FLAVORS.map(function (f) {
       return '<label class="tpm-shelf__opt tpm-f--' + f + '"><input type="radio" name="tpm-pk-shelf" value="' + f + '"' + (f === cur ? ' checked' : '') + '>' +
         '<span class="tpm-shelf__box"><span class="tpm-shelf__img">' + canImg(f) + '</span><span class="tpm-shelf__name">' + fname(f) + '</span></span></label>';
     }).join('');
     var dots = PACK_FLAVORS.map(function (f) { return '<i' + (f === cur ? ' class="is-on"' : '') + '></i>'; }).join('');
     return '<div class="tpm-pk tpm-pk--shelf">' +
-      (n > 1 ? '<ol class="tpm-seq__packs" data-tpm-shelf-chips>' + shelfChipsHtml() + '</ol>' : '') +
-      '<p class="tpm-pk__count">' + (n > 1 ? 'Six-pack ' + (i + 1) + ' of ' + n + '. Swipe to pick its flavor.' : 'Swipe to pick your flavor.') + '</p>' +
+      '<p class="tpm-pk__count">' + (n > 1 ? 'One case, one flavor. Tap or swipe.' : 'Tap or swipe to pick your flavor.') + '</p>' +
       '<div class="tpm-shelf"><div class="tpm-shelf__track" data-tpm-shelf-track role="radiogroup" aria-label="Flavor">' + opts + '</div></div>' +
       '<div class="tpm-shelf__dots" aria-hidden="true">' + dots + '</div>' +
       '<p class="tpm-shelf__note" data-tpm-fnote aria-live="polite">' + shelfNote(cur) + '</p>' +
-      (n > 1 && i < n - 1 ? '<button type="button" class="tpm-shelf__next" data-tpm-seq="' + (i + 1) + '">Next: six-pack ' + (i + 2) + ' →</button>' : '') +
+      (case2Available() && PACK_FLAVORS.length > 1 ? '<p class="tpm-shelf__tease"><span aria-hidden="true">🎁</span><span>Want both flavors? <strong>Add a second case for ' + CASE2.percent + '% off</strong> on the next step.</span></p>' : '') +
       '</div>';
   }
 
@@ -362,8 +365,7 @@
   // Picking a flavor updates the shelf in place so the swipe isn't interrupted.
   function shelfChange(input) {
     var f = input.value;
-    state.packs[Math.min(state.seq, packsNeeded() - 1)] = f;
-    if (!allowMixed) state.packs = state.packs.map(function () { return f; });
+    state.packs = state.packs.map(function () { return f; });
     var opt = input.closest('.tpm-shelf__opt');
     var track = opt.closest('[data-tpm-shelf-track]');
     restartClass(opt, 'is-pop');
@@ -372,8 +374,6 @@
     $all('.tpm-shelf__dots i', packerEl).forEach(function (d, k) { d.classList.toggle('is-on', opts[k] === opt); });
     var note = packerEl.querySelector('[data-tpm-fnote]');
     if (note) { note.innerHTML = shelfNote(f); restartClass(note, 'is-swap'); }
-    var chips = packerEl.querySelector('[data-tpm-shelf-chips]');
-    if (chips) chips.innerHTML = shelfChipsHtml();
     sync();
   }
   window.addEventListener('resize', function () {
@@ -463,8 +463,64 @@
     packerEl.addEventListener('change', function (e) { if (e.target.name === 'tpm-pk-shelf') shelfChange(e.target); });
   }
 
+  // ---- Customize step: the order as cart lines, plus one offer ----
+  // 12-packs get the second-case switch; the trial gets the upgrade to 12 cans.
+  function lineHtml(f, name, sub, price, was, tag) {
+    return '<div class="tpm-line tpm-f--' + f + '"><span class="tpm-line__thumb">' + canImg(f) + '</span>' +
+      '<span class="tpm-line__text"><strong>' + name + '</strong><span>' + sub + '</span>' + (tag ? '<em class="tpm-line__tag">' + tag + '</em>' : '') + '</span>' +
+      '<span class="tpm-line__price"><b>' + money(price) + '</b>' + (was ? '<s>' + money(was) + '</s>' : '') + '</span></div>';
+  }
+  function planText() { return state.offer === 'onetime' ? 'One time' : 'Every month'; }
+  function renderOrder() {
+    var box = sheet.querySelector('[data-tpm-order]');
+    if (!box) return;
+    var o = DATA.offers[state.offer], f = state.packs[0] || PACK_FLAVORS[0];
+    var html = lineHtml(f, o.name, fname(f) + ' · ' + planText(), o.price);
+    if (state.case2) html += lineHtml(state.case2, 'Second case', fname(state.case2) + ' · ' + planText(), case2Price(), o.price, CASE2.percent + '% off');
+    if (case2Available()) {
+      var on = !!state.case2;
+      html += '<div class="tpm-c2' + (on ? ' is-on' : '') + '">' +
+        (CASE2.tag ? '<span class="tpm-c2__tag"><span aria-hidden="true">⏱</span>' + CASE2.tag + (CASE2.ends ? ' · ' + CASE2.ends : '') + '</span>' : '') +
+        '<button type="button" class="tpm-c2__row" role="switch" aria-checked="' + on + '" data-tpm-case2>' +
+          '<span class="tpm-c2__icon" aria-hidden="true">%</span>' +
+          '<span class="tpm-c2__text"><strong>' + (on ? 'Saving ' + money(case2Saving()) + ' on case 2' : 'Add a 2nd case, save ' + money(case2Saving())) + '</strong>' +
+          '<span>Second case ' + CASE2.percent + '% off · ' + planText().toLowerCase() + '</span></span>' +
+          '<span class="tpm-c2__switch" aria-hidden="true"></span></button>' +
+        (on ? '<div class="tpm-c2__flavors" role="radiogroup" aria-label="Flavor for case 2">' + PACK_FLAVORS.map(function (k) {
+          var sel = k === state.case2;
+          return '<button type="button" role="radio" aria-checked="' + sel + '" class="tpm-c2__flavor tpm-f--' + k + '" data-tpm-case2-flavor="' + k + '">' + canImg(k) + DATA.flavors[k].short + '</button>';
+        }).join('') + '</div>' : '') +
+      '</div>';
+    } else if (state.offer === 'trial' && DATA.offers.autoship && DATA.offers.autoship.price > o.price) {
+      var a = DATA.offers.autoship;
+      html += '<div class="tpm-c2 tpm-c2--up"><div class="tpm-c2__row"><span class="tpm-c2__icon" aria-hidden="true">+6</span>' +
+        '<span class="tpm-c2__text"><strong>Add 6 more cans for ' + money(a.price - o.price) + '</strong><span>12 cans for ' + money(a.price) + '/mo · ' + money(a.price / 12) + ' a can</span></span>' +
+        '<button type="button" class="tpm-c2__btn" data-tpm-upgrade>Upgrade</button></div></div>';
+    }
+    box.innerHTML = html;
+    var pills = sheet.querySelector('[data-tpm-pills]');
+    if (pills) {
+      pills.hidden = step !== 3;
+      pills.innerHTML = (state.case2 ? '<span class="tpm-pill tpm-pill--save">You\'re saving ' + money(case2Saving()) + '</span>' : '') +
+        '<span class="tpm-pill tpm-pill--ok">' + (DATA.guarantee || '100-day money-back guarantee') + '</span>';
+    }
+  }
+  sheet.addEventListener('click', function (e) {
+    var t;
+    if ((t = e.target.closest('[data-tpm-case2]'))) {
+      var cur = state.packs[0];
+      state.case2 = state.case2 ? null : (PACK_FLAVORS.filter(function (k) { return k !== cur; })[0] || cur);
+    } else if ((t = e.target.closest('[data-tpm-case2-flavor]'))) {
+      state.case2 = t.getAttribute('data-tpm-case2-flavor');
+    } else if ((t = e.target.closest('[data-tpm-upgrade]'))) {
+      setOffer('autoship');
+    } else return;
+    renderOrder(); sync();
+  });
+
   function renderAddons() {
     var box = sheet.querySelector('[data-tpm-addons]');
+    if (!box) return;
     box.innerHTML = DATA.addons.map(function (a) {
       var on = !!state.addons[a.id];
       return '<div class="tpm-addon' + (on ? ' is-on' : '') + '"><img src="' + a.img + '" alt="">' +
@@ -506,7 +562,7 @@
       renderPacker(true);
     }
     if (n === 3) {
-      renderAddons(); renderRewards();
+      renderOrder(); renderAddons(); renderRewards();
       var tl = sheet.querySelector('[data-tpm-timeline]');
       if (tl) tl.hidden = state.offer !== 'trial';
     }
@@ -522,8 +578,9 @@
     opts = opts || {};
     if (opts.offer) setOffer(opts.offer);
     // "Get both" needs two six-packs, so the trial steps up to the 12-pack auto ship.
-    if (opts.flavor === 'mix' && allowMixed && packsNeeded() === 1 && !opts.offer) setOffer('autoship');
+    if (opts.flavor === 'mix' && case2On && packsNeeded() === 1 && !opts.offer) setOffer('autoship');
     if (opts.flavor) fillPacks(opts.flavor);
+    if (opts.flavor === 'mix' && case2Available()) state.case2 = PACK_FLAVORS[1] || null;
     else if (!packsFull() && packerStyle !== 'box') fillPacks(packFlavor());
     if (typeof sheet.showModal === 'function') { if (!sheet.open) sheet.showModal(); } else sheet.setAttribute('open', '');
     document.documentElement.classList.add('tpm-lock');
@@ -562,6 +619,12 @@
     }
     if (o.plan) main.selling_plan = o.plan;
     var items = [main];
+    if (state.case2 && id(o.variants[state.case2])) {
+      var c2 = { id: id(o.variants[state.case2]), quantity: 1, properties: { _offer: 'Second case ' + CASE2.percent + '% off' } };
+      if (o.plan) c2.selling_plan = o.plan;
+      // Two cases of one flavor share a variant; Shopify merges them into one line of 2.
+      items.push(c2);
+    }
     DATA.addons.forEach(function (a) { if (state.addons[a.id]) items.push({ id: id(a.variant), quantity: 1 }); });
     return items;
   }
@@ -597,7 +660,7 @@
           if (!r.ok) throw new Error(d.description || d.message || 'Something went wrong. Please try again.');
         });
       })
-      .then(function () { window.location.href = '/checkout'; })
+      .then(function () { window.location.href = '/checkout' + (state.case2 && CASE2.code ? '?discount=' + encodeURIComponent(CASE2.code) : ''); })
       .catch(function (err) {
         errorEl.textContent = err.message;
         busy = false;
@@ -618,6 +681,8 @@
     var media = root.querySelector('[data-tpm-buy-media]');
     if (media) media.innerHTML = '<div class="tpm-buy__stage tpm-buy__stage--' + packFlavor() + '">' + canStack(packFlavor()) + '</div>';
     sheet.querySelector('[data-tpm-total]').textContent = money(dueToday());
+    var pillsEl = sheet.querySelector('[data-tpm-pills]');
+    if (pillsEl) pillsEl.hidden = step !== 3;
     if (!busy) {
       sheet.querySelector('[data-tpm-next-label]').textContent = step === 1 ? LABELS.toFlavors : step === 2 ? LABELS.toCustomize : 'Checkout · ' + money(dueToday());
       nextBtn.classList.toggle('is-waiting', step === 2 && !packsFull());
@@ -637,7 +702,7 @@
   $all('[data-tpm-apply]').forEach(function (b) {
     var parts = b.getAttribute('data-tpm-apply').split(':');
     var pickText = b.parentNode.querySelector('.tpm-use__pick');
-    if (parts[0] === 'mix' && !allowMixed && pickText) pickText.innerHTML = pickText.innerHTML.replace('The Mix', DATA.flavors.bo.name);
+    if (parts[0] === 'mix' && !mixPage && pickText) pickText.innerHTML = pickText.innerHTML.replace('The Mix', DATA.flavors.bo.name);
     b.addEventListener('click', function () { openCheckout({ flavor: parts[0], offer: parts[1], step: 1 }); });
   });
 

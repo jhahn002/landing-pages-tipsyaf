@@ -80,7 +80,8 @@
             <div class="tpm-rewards__bar"><span data-tpm-rewards-fill></span></div>
             <ol class="tpm-rewards__marks" data-tpm-rewards-marks></ol>
           </div>
-          <div class="tpm-addons" data-tpm-addons></div>
+          <div class="tpm-order" data-tpm-order></div>
+          {%- if s.show_addons -%}<div class="tpm-addons" data-tpm-addons></div>{%- endif -%}
           <ol class="tpm-timeline" data-tpm-timeline aria-label="How the trial works">
             <li><strong>Today</strong><span>{{ s.timeline_1 | escape }}</span></li>
             <li><strong>Day 25</strong><span>{{ s.timeline_2 | escape }}</span></li>
@@ -91,6 +92,7 @@
       </div>
       <footer class="tpm-sheet__foot">
         <p class="tpm-error" data-tpm-error role="alert"></p>
+        <div class="tpm-pills" data-tpm-pills hidden></div>
         <div class="tpm-sheet__total"><span>Due today</span><strong data-tpm-total></strong></div>
         <button type="button" class="tpm-knobbtn tpm-knobbtn--accent" data-tpm-next><span data-tpm-next-label>Continue</span>{% render 'tpm-knob' %}</button>
       </footer>
@@ -156,6 +158,7 @@
     "defaultOffer": {{ s.default_offer | default: 'trial' | json }},
     "labels": { "toFlavors": {{ s.button_label | json }}, "toCustomize": {{ s.flavors_button | default: 'Continue' | json }} },
     "mixFallback": {{ s.mix_fallback | json }},
+    "case2": { "enabled": {{ s.case2_enabled | json }}, "percent": {{ s.case2_percent | default: 0 }}, "tag": {{ s.case2_tag | default: '' | json }}, "ends": {{ s.case2_ends | default: '' | json }}, "code": {{ s.case2_code | default: '' | strip | json }} },
     "flavorStyle": ""
   }
   </script>
@@ -246,9 +249,17 @@
     ], "default": "shelf" },
     { "type": "checkbox", "id": "mix_fallback", "label": "Allow mixed 12-packs without Mix products", "info": "A 6 + 6 order adds the first flavor's 12-pack with a Flavors note (e.g. 6 Blood Orange Margarita + 6 Pineapple Martini) on the order line. Fulfillment has to pack from that note. Ignored once the Mix products are set.", "default": true },
     { "type": "text", "id": "step0_title", "label": "Step 1 title (quantity)", "info": "Step 1 shows the same offer choice as the buy box. The buy box's button skips it.", "default": "Choose your quantity" },
-    { "type": "text", "id": "step1_title", "label": "Step 2 title (flavors)", "default": "Choose your flavors" },
+    { "type": "text", "id": "step1_title", "label": "Step 2 title (flavors)", "default": "Choose your flavor" },
     { "type": "text", "id": "flavors_button", "label": "Step 2 button", "default": "Continue" },
     { "type": "text", "id": "step2_title", "label": "Step 3 title (customize)", "default": "Customize" },
+    { "type": "header", "content": "Second case offer (Customize step)" },
+    { "type": "paragraph", "content": "12-pack orders get a switch to add a second case of either flavor at a discount. The theme only shows the discounted price: set up the matching discount in Shopify (an automatic Buy X Get Y discount on the 12-pack products, or a discount code below), or checkout will charge full price." },
+    { "type": "checkbox", "id": "case2_enabled", "label": "Offer a second case", "default": true },
+    { "type": "range", "id": "case2_percent", "label": "Second case discount", "min": 5, "max": 50, "step": 5, "unit": "%", "default": 20 },
+    { "type": "text", "id": "case2_tag", "label": "Offer tag", "default": "Limited time offer" },
+    { "type": "text", "id": "case2_ends", "label": "Offer end (optional)", "info": "Shown after the tag, e.g. Ends Sunday. Only use a real end date." },
+    { "type": "text", "id": "case2_code", "label": "Discount code (optional)", "info": "Applied at checkout when the second case is added. Leave empty if you use an automatic discount." },
+    { "type": "checkbox", "id": "show_addons", "label": "Also show one-time 12-pack add-ons", "default": false },
     { "type": "text", "id": "addon_note", "label": "Add-on note", "default": "One time, $5.00/can" },
     { "type": "text", "id": "rewards", "label": "Checkout rewards", "info": "Optional. Spend thresholds shown as a progress bar in the add-ons step, e.g. 75:Free shipping|110:Free gift. Set up the matching automatic discounts first. Leave empty to hide." },
     { "type": "text", "id": "timeline_1", "label": "Trial timeline: today", "default": "6 cans ship" },
