@@ -299,7 +299,7 @@
   }
 
   // The swipeable shelf: the can in the center is the flavor of the whole case.
-  function shelfNote(f) { return '<strong>' + (packsNeeded() * 6) + ' cans of ' + fname(f) + '</strong> · ' + DATA.flavors[f].note; }
+  function shelfNote(f) { return '<strong>' + fname(f) + '</strong> · ' + DATA.flavors[f].note; }
   function shelfHtml() {
     var n = packsNeeded();
     var cur = state.packs[0] || PACK_FLAVORS[0];
@@ -309,11 +309,10 @@
     }).join('');
     var dots = PACK_FLAVORS.map(function (f) { return '<i' + (f === cur ? ' class="is-on"' : '') + '></i>'; }).join('');
     return '<div class="tpm-pk tpm-pk--shelf">' +
-      '<p class="tpm-pk__count">' + (n > 1 ? 'One case, one flavor. Tap or swipe.' : 'Tap or swipe to pick your flavor.') + '</p>' +
+      '<p class="tpm-pk__count">Swipe to pick your flavor.</p>' +
       '<div class="tpm-shelf"><div class="tpm-shelf__track" data-tpm-shelf-track role="radiogroup" aria-label="Flavor">' + opts + '</div></div>' +
       '<div class="tpm-shelf__dots" aria-hidden="true">' + dots + '</div>' +
       '<p class="tpm-shelf__note" data-tpm-fnote aria-live="polite">' + shelfNote(cur) + '</p>' +
-      (case2Available() && PACK_FLAVORS.length > 1 ? '<p class="tpm-shelf__tease"><span aria-hidden="true">🎁</span><span>Want both flavors? <strong>Add a second case for ' + CASE2.percent + '% off</strong> on the next step.</span></p>' : '') +
       '</div>';
   }
 
