@@ -89,10 +89,19 @@
         "l2",
         "l3"
       ]
+    },
+    "tpm-guarantee-strip": {
+      "type": "tpm-guarantee-strip",
+      "settings": {
+        "mode": "rotate",
+        "default_style": "8",
+        "speed": 5
+      }
     }
   },
   "order": [
     "announcement-bar",
+    "tpm-guarantee-strip",
     "tpm-header",
     "header"
   ]

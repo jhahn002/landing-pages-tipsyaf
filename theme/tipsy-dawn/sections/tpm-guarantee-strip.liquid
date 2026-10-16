@@ -1,0 +1,213 @@
+{%- comment -%}
+  TIPSY guarantee strip: a black bar above the header with eight designs.
+  Mode "single" shows the default design; mode "rotate" slides horizontally
+  through every included design, starting with the default. Each design's
+  wording is editable below.
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign order = s.default_style | append: ',1,2,3,4,5,6,7,8' | split: ','
+  assign shown = ''
+  for n in order
+    if shown contains n
+      continue
+    endif
+    if s.mode == 'single' and n != s.default_style
+      continue
+    endif
+    assign inc_key = 'include_' | append: n
+    if s.mode == 'rotate' and s[inc_key] == false and n != s.default_style
+      continue
+    endif
+    assign shown = shown | append: n | append: ','
+  endfor
+  assign styles = shown | split: ','
+  assign tag = 'div'
+  if s.link != blank
+    assign tag = 'a'
+  endif
+-%}
+<style>
+  .tpm-gs { position: relative; height: 40px; overflow: hidden; background: #121113; color: #fff; font-family: var(--font-figtree), system-ui, sans-serif; }
+  .tpm-gs__track { display: flex; height: 100%; }
+  .tpm-gs__track.is-moving { transition: transform .6s cubic-bezier(.65,0,.35,1); }
+  .tpm-gs__slide { flex: 0 0 100%; height: 100%; display: flex; align-items: center; justify-content: center; gap: 9px; padding: 0 12px; box-sizing: border-box; font-size: 13px; line-height: 1.2; white-space: nowrap; overflow: hidden; color: inherit; text-decoration: none; }
+  a.tpm-gs__slide:focus-visible { outline: 2px solid #ffe748; outline-offset: -4px; }
+  .tpm-gs b { font-weight: 700; }
+  .tpm-gs__y { color: #ffe748; }
+  .tpm-gs__mute { color: rgba(255,255,255,.72); }
+  .tpm-gs__caps { font-size: 10.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+  .tpm-gs__serif { font-family: var(--font-serif), Georgia, serif; font-style: italic; }
+  .tpm-gs__gothic { font-family: var(--font-league-gothic), 'League Gothic', Impact, sans-serif; letter-spacing: .06em; }
+  /* 2 ticker */
+  .tpm-gs__slide--2 { justify-content: flex-start; padding: 0; border-bottom: 2px solid #ffe748; }
+  .tpm-gs__mq { display: flex; align-items: center; gap: 14px; padding-left: 14px; font-size: 19px; text-transform: uppercase; animation: tpmGsMq 28s linear infinite; }
+  .tpm-gs__mq i { font-style: normal; font-size: 13px; color: #ffe748; }
+  @keyframes tpmGsMq { to { transform: translateX(-50%); } }
+  /* 3 stitched */
+  .tpm-gs__slide--3 { padding: 5px 8px; }
+  .tpm-gs__stitch { flex: 1; height: 100%; border: 1px dashed rgba(255,231,72,.55); border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 6px; overflow: hidden; }
+  .tpm-gs__slide--3 .tpm-gs__serif { font-size: 17px; color: #ffe748; }
+  /* 4 big number */
+  .tpm-gs__slide--4 { justify-content: space-between; gap: 10px; background: linear-gradient(90deg, #121113 0%, #121113 60%, #2a2410 100%); }
+  .tpm-gs__num { font-size: 30px; line-height: 1; color: #ffe748; }
+  .tpm-gs__slide--4 .tpm-gs__txt { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; color: rgba(255,255,255,.85); }
+  .tpm-gs__more { font-size: 12px; font-weight: 700; color: #ffe748; text-decoration: underline; text-underline-offset: 2px; }
+  /* 5 tag */
+  .tpm-gs__slide--5 { justify-content: flex-start; gap: 12px; padding: 0 12px 0 0; }
+  .tpm-gs__tag { height: 100%; display: flex; align-items: center; padding: 0 22px 0 14px; background: #ffe748; color: #121113; font-size: 22px; clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%); }
+  /* 6 checks */
+  .tpm-gs__slide--6 { justify-content: space-evenly; gap: 0; font-size: 12.5px; font-weight: 600; }
+  .tpm-gs__slide--6 span { display: flex; align-items: center; gap: 5px; }
+  /* 7 day track */
+  .tpm-gs__slide--7 { gap: 7px; font-size: 12px; }
+  .tpm-gs__day { font-size: 10.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,.65); }
+  .tpm-gs__track7 { position: relative; width: 66px; height: 4px; margin-right: 6px; border-radius: 2px; background: linear-gradient(90deg, #ffe748, #ff8a1f); }
+  .tpm-gs__track7::after { content: ''; position: absolute; right: -2px; top: -4px; width: 12px; height: 12px; border-radius: 50%; background: #ffe748; box-shadow: 0 0 0 3px rgba(255,231,72,.25); }
+  /* 8 happiness */
+  .tpm-gs__slide--8 .tpm-gs__serif { font-size: 21px; }
+  .tpm-gs__slide--8 .tpm-gs__caps { font-size: 10px; letter-spacing: .14em; color: #ffe748; }
+  .tpm-gs__slide > svg, .tpm-gs__stitch > svg { flex: none; }
+  @media (max-width: 420px) {
+    .tpm-gs__slide { font-size: 12.5px; gap: 7px; }
+    .tpm-gs__slide--8 .tpm-gs__serif { font-size: 19px; }
+    .tpm-gs__slide--8 .tpm-gs__caps { font-size: 9.5px; letter-spacing: .12em; }
+  }
+  @media (min-width: 750px) { .tpm-gs__slide { font-size: 14px; } }
+  @media (prefers-reduced-motion: reduce) { .tpm-gs__mq { animation: none; } .tpm-gs__track.is-moving { transition: none; } }
+</style>
+
+{%- capture check -%}<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#ffe748" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 6.5 2.5 2.5L10 3"/></svg>{%- endcapture -%}
+{%- capture spark -%}<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M7 0l1.6 5.4L14 7l-5.4 1.6L7 14l-1.6-5.4L0 7l5.4-1.6z" fill="#ffe748"/></svg>{%- endcapture -%}
+
+<div class="tpm-gs" role="region" aria-label="Our guarantee" data-tpm-gs data-speed="{{ s.speed }}">
+  <div class="tpm-gs__track">
+    {%- for n in styles -%}
+      <{{ tag }} class="tpm-gs__slide tpm-gs__slide--{{ n }}"{% if s.link != blank %} href="{{ s.link }}"{% endif %}{% unless forloop.first %} aria-hidden="true" tabindex="-1"{% endunless %}>
+        {%- case n -%}
+          {%- when '1' -%}
+            <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><path d="M13 1.5l2.3 1.7 2.8-.4 1.1 2.6 2.6 1.1-.4 2.8 1.7 2.3-1.7 2.3.4 2.8-2.6 1.1-1.1 2.6-2.8-.4L13 24.5l-2.3-1.7-2.8.4-1.1-2.6-2.6-1.1.4-2.8L1.5 13l1.7-2.3-.4-2.8 2.6-1.1 1.1-2.6 2.8.4z" fill="#ffe748"/><text x="13" y="16.4" text-anchor="middle" font-family="Figtree, sans-serif" font-weight="800" font-size="8.5" fill="#1f1e21">100</text></svg>
+            <span><b>{{ s.s1_text | escape }}</b>{% if s.s1_sub != blank %}<span class="tpm-gs__mute"> · {{ s.s1_sub | escape }}</span>{% endif %}</span>
+          {%- when '2' -%}
+            {%- assign items = s.s2_items | split: ',' -%}
+            <span class="tpm-gs__mq tpm-gs__gothic">
+              {%- for r in (1..4) -%}{%- for it in items -%}<span>{{ it | strip | escape }}</span><i aria-hidden="true">✦</i>{%- endfor -%}{%- endfor -%}
+            </span>
+          {%- when '3' -%}
+            <span class="tpm-gs__stitch">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#ffe748" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M5.3 9.5a3.2 3.2 0 0 0 5.4 0"/><path d="M6 6.3h.01M10 6.3h.01" stroke-width="2.2"/></svg>
+              <span class="tpm-gs__serif">{{ s.s3_script | escape }}</span><span>{{ s.s3_text | escape }}</span><span class="tpm-gs__mute" aria-hidden="true">·</span><span class="tpm-gs__caps tpm-gs__mute">{{ s.s3_caps | escape }}</span>
+            </span>
+          {%- when '4' -%}
+            <span class="tpm-gs__num tpm-gs__gothic">{{ s.s4_num | escape }}</span>
+            <span class="tpm-gs__txt"><b>{{ s.s4_bold | escape }}</b> {{ s.s4_rest | escape }}</span>
+            {%- if s.s4_more != blank -%}<span class="tpm-gs__more">{{ s.s4_more | escape }}</span>{%- endif -%}
+          {%- when '5' -%}
+            <span class="tpm-gs__tag tpm-gs__gothic">{{ s.s5_tag | escape }}</span>
+            <span class="tpm-gs__mute">{{ s.s5_lead | escape }} <b style="color:#fff">{{ s.s5_bold | escape }}</b></span>
+          {%- when '6' -%}
+            <span>{{ check }}{{ s.s6_1 | escape }}</span><span>{{ check }}{{ s.s6_2 | escape }}</span><span>{{ check }}{{ s.s6_3 | escape }}</span>
+          {%- when '7' -%}
+            <span class="tpm-gs__day">Day 1</span><span class="tpm-gs__track7" aria-hidden="true"></span><span class="tpm-gs__day">Day 100</span>
+            <b>{{ s.s7_text | escape }}</b>
+          {%- when '8' -%}
+            {{ spark }}<span class="tpm-gs__serif">{{ s.s8_script | escape }}</span><span class="tpm-gs__caps">{{ s.s8_caps | escape }}</span>{{ spark }}
+        {%- endcase -%}
+      </{{ tag }}>
+    {%- endfor -%}
+  </div>
+</div>
+
+{%- if styles.size > 1 -%}
+<script>
+  (function () {
+    var root = document.currentScript.previousElementSibling;
+    if (!root || !root.matches('[data-tpm-gs]')) return;
+    var track = root.querySelector('.tpm-gs__track');
+    var slides = Array.prototype.slice.call(track.children);
+    var n = slides.length, i = 0, paused = false;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Clone the first slide onto the end so the loop always slides left.
+    var clone = slides[0].cloneNode(true); clone.setAttribute('aria-hidden', 'true'); clone.setAttribute('tabindex', '-1'); track.appendChild(clone);
+    function go(k) {
+      track.classList.toggle('is-moving', !reduce);
+      track.style.transform = 'translateX(' + (-k * 100) + '%)';
+      slides.forEach(function (sl, j) { var on = j === (k % n); sl.setAttribute('aria-hidden', on ? 'false' : 'true'); if (on) sl.removeAttribute('tabindex'); else sl.setAttribute('tabindex', '-1'); });
+    }
+    track.addEventListener('transitionend', function () {
+      if (i === n) { track.classList.remove('is-moving'); i = 0; track.style.transform = 'translateX(0)'; }
+    });
+    var ms = Math.max(2, parseInt(root.dataset.speed, 10) || 5) * 1000;
+    setInterval(function () {
+      if (paused || document.hidden) return;
+      i += 1; go(i);
+      if (reduce && i === n) { i = 0; go(0); }
+    }, ms);
+    root.addEventListener('mouseenter', function () { paused = true; });
+    root.addEventListener('mouseleave', function () { paused = false; });
+    root.addEventListener('focusin', function () { paused = true; });
+    root.addEventListener('focusout', function () { paused = false; });
+  })();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "TIPSY guarantee strip",
+  "class": "tpm-gs-section",
+  "settings": [
+    { "type": "select", "id": "mode", "label": "Display", "default": "rotate", "options": [
+      { "value": "single", "label": "Show the default design only" },
+      { "value": "rotate", "label": "Rotate through designs" }
+    ] },
+    { "type": "select", "id": "default_style", "label": "Default design", "info": "Shown alone, or first when rotating.", "default": "8", "options": [
+      { "value": "1", "label": "1 · Seal badge" },
+      { "value": "2", "label": "2 · Scrolling ticker" },
+      { "value": "3", "label": "3 · Stitched ribbon" },
+      { "value": "4", "label": "4 · Big number" },
+      { "value": "5", "label": "5 · Yellow tag" },
+      { "value": "6", "label": "6 · Three checks" },
+      { "value": "7", "label": "7 · Day 1 to Day 100" },
+      { "value": "8", "label": "8 · Happiness, guaranteed" }
+    ] },
+    { "type": "range", "id": "speed", "label": "Seconds per design", "min": 3, "max": 12, "step": 1, "unit": "s", "default": 5 },
+    { "type": "url", "id": "link", "label": "Link", "info": "Optional. Makes the strip clickable, for example to the guarantee page." },
+    { "type": "header", "content": "Designs in the rotation" },
+    { "type": "checkbox", "id": "include_1", "label": "1 · Seal badge", "default": true },
+    { "type": "checkbox", "id": "include_2", "label": "2 · Scrolling ticker", "default": true },
+    { "type": "checkbox", "id": "include_3", "label": "3 · Stitched ribbon", "default": true },
+    { "type": "checkbox", "id": "include_4", "label": "4 · Big number", "default": true },
+    { "type": "checkbox", "id": "include_5", "label": "5 · Yellow tag", "default": true },
+    { "type": "checkbox", "id": "include_6", "label": "6 · Three checks", "default": true },
+    { "type": "checkbox", "id": "include_7", "label": "7 · Day 1 to Day 100", "default": true },
+    { "type": "checkbox", "id": "include_8", "label": "8 · Happiness, guaranteed", "default": true },
+    { "type": "header", "content": "1 · Seal badge" },
+    { "type": "text", "id": "s1_text", "label": "Text", "default": "100-day money-back guarantee" },
+    { "type": "text", "id": "s1_sub", "label": "Second line", "default": "even on opened cans" },
+    { "type": "header", "content": "2 · Scrolling ticker" },
+    { "type": "text", "id": "s2_items", "label": "Messages", "info": "Separate with commas.", "default": "100-day happiness guarantee, Even on opened cans, Love it or your money back" },
+    { "type": "header", "content": "3 · Stitched ribbon" },
+    { "type": "text", "id": "s3_script", "label": "Script words", "default": "Love it," },
+    { "type": "text", "id": "s3_text", "label": "Text", "default": "or your money back." },
+    { "type": "text", "id": "s3_caps", "label": "Small caps", "default": "100-day guarantee" },
+    { "type": "header", "content": "4 · Big number" },
+    { "type": "text", "id": "s4_num", "label": "Number", "default": "100" },
+    { "type": "text", "id": "s4_bold", "label": "Bold text", "default": "days to fall in love" },
+    { "type": "text", "id": "s4_rest", "label": "Text", "default": "or your money back" },
+    { "type": "text", "id": "s4_more", "label": "Link label", "default": "How it works ›" },
+    { "type": "header", "content": "5 · Yellow tag" },
+    { "type": "text", "id": "s5_tag", "label": "Tag", "default": "100 DAYS" },
+    { "type": "text", "id": "s5_lead", "label": "Lead-in", "default": "Try it." },
+    { "type": "text", "id": "s5_bold", "label": "Bold text", "default": "Love it, or every penny back." },
+    { "type": "header", "content": "6 · Three checks" },
+    { "type": "text", "id": "s6_1", "label": "Check 1", "default": "100-day guarantee" },
+    { "type": "text", "id": "s6_2", "label": "Check 2", "default": "Even opened cans" },
+    { "type": "text", "id": "s6_3", "label": "Check 3", "default": "Full refund" },
+    { "type": "header", "content": "7 · Day 1 to Day 100" },
+    { "type": "text", "id": "s7_text", "label": "Text", "default": "Love it or your money back" },
+    { "type": "header", "content": "8 · Happiness, guaranteed" },
+    { "type": "text", "id": "s8_script", "label": "Script line", "default": "Happiness, guaranteed." },
+    { "type": "text", "id": "s8_caps", "label": "Small caps", "default": "100 days · money back" }
+  ]
+}
+{% endschema %}
