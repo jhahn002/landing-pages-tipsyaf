@@ -171,6 +171,21 @@
   @keyframes tpmCanBob { 0%, 100% { transform: rotate(-8deg) translateY(0); } 50% { transform: rotate(-5deg) translateY(-6px); } }
   .tpm-offer__title { margin: 0; font-size: 30px; font-weight: 600; line-height: 1.02; letter-spacing: -0.035em; }
   .tpm-offer__sub { margin: 0; font-size: 14px; color: #5a3a24; }
+  .tpm-offer { transition: background .35s ease; }
+  .tpm-offer[data-flavor="1"] { background: linear-gradient(170deg, #fff1b0 0%, #ffd23f 100%); box-shadow: 0 12px 30px rgba(170,120,0,.18); }
+  .tpm-offer__top .tpm-offer__title { font-size: 26px; margin-top: 2px; }
+  .tpm-flv { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 6px; }
+  .tpm-flv__tile { position: relative; display: grid; justify-items: center; gap: 3px; padding: 26px 6px 12px; border-radius: 16px; border: 2px solid transparent; background: rgba(255,255,255,.35); color: #1f1e21; cursor: pointer; transition: background .25s, border-color .25s; font-family: inherit; }
+  .tpm-flv__tile[aria-checked="true"] { border-color: #1f1e21; background: rgba(255,255,255,.78); }
+  .tpm-flv__tile img { height: 96px; width: auto; opacity: .6; transition: transform .3s cubic-bezier(.3,1.5,.5,1), opacity .25s; filter: drop-shadow(0 8px 10px rgba(120,50,10,.22)); }
+  .tpm-flv__tile[aria-checked="true"] img { opacity: 1; transform: translateY(-4px) rotate(-6deg); }
+  .tpm-flv__tile b { font-size: 13px; font-weight: 700; line-height: 1.15; }
+  .tpm-flv__tile small { font-size: 11px; color: #6b5040; line-height: 1.25; }
+  .tpm-flv__badge { position: absolute; top: 8px; left: 8px; padding: 3px 8px; border-radius: 999px; background: #1f1e21; color: #fff; font-size: 10.5px; font-weight: 800; letter-spacing: .02em; line-height: 1.3; white-space: nowrap; }
+  .tpm-flv__tile[data-tpm-flavor="1"] .tpm-flv__badge { background: #e2462f; }
+  .tpm-flv__check { position: absolute; top: 7px; right: 7px; width: 20px; height: 20px; border-radius: 50%; background: #1f1e21; color: #ffe748; display: none; align-items: center; justify-content: center; }
+  .tpm-flv__tile[aria-checked="true"] .tpm-flv__check { display: flex; }
+  .tpm-flv__tile:disabled { opacity: .45; cursor: not-allowed; }
   .tpm-offer__perf { position: relative; height: 0; border-top: 2px dashed rgba(31,30,33,.25); margin: 0 18px; }
   .tpm-offer__perf::before, .tpm-offer__perf::after { content: ''; position: absolute; top: -12px; width: 22px; height: 22px; border-radius: 50%; background: #fff; }
   .tpm-offer__perf::before { left: -30px; } .tpm-offer__perf::after { right: -30px; }
@@ -210,16 +225,58 @@
             <button type="button" class="tpm-cart__undo" data-tpm-undo hidden>Undo</button>
           </div>
           {%- if trial != blank and tv.available -%}
-            <div class="tpm-offer">
+            {%- liquid
+              # Flavor tiles: handle | can image | taste notes | badge
+              assign offer_rows = '6-pack-trial|tipsy-can-blood-orange.webp|Tart, citrusy, salted rim|Popular;6-pack-pineapple-martini-starter-kit|tipsy-can-pineapple.webp|Sweet, tropical, shaken|🔥 New' | split: ';'
+            -%}
+            <div class="tpm-offer" data-tpm-offer-card data-flavor="0">
               <div class="tpm-offer__top">
                 <span class="tpm-offer__tag">Before you go</span>
-                <img class="tpm-offer__can" src="{{ 'tipsy-can-blood-orange.webp' | asset_url }}" alt="" width="289" height="755" loading="lazy">
-                <h3 class="tpm-offer__title">Try 6 cans<br>for {{ trial_price | money }}</h3>
-                <p class="tpm-offer__sub">{{ trial_per_can | money }} a can · felt in about 10 minutes</p>
+                <h3 class="tpm-offer__title">Try 6 cans for <span data-tpm-offer-price>{{ trial_price | money }}</span></h3>
+                <p class="tpm-offer__sub">Tap your flavor · <span data-tpm-offer-per>{{ trial_per_can | money }}</span> a can</p>
+                <div class="tpm-flv" role="radiogroup" aria-label="Flavor">
+                  {%- for row in offer_rows -%}
+                    {%- liquid
+                      assign parts = row | split: '|'
+                      assign fp = all_products[parts[0]]
+                      if fp == blank
+                        continue
+                      endif
+                      assign fv = fp.selected_or_first_available_variant
+                      assign fplan = fp.selling_plan_groups.first.selling_plans.first
+                      assign fprice = fv.price
+                      for alloc in fv.selling_plan_allocations
+                        if alloc.selling_plan.id == fplan.id
+                          assign fprice = alloc.price
+                        endif
+                      endfor
+                      assign fname = fp.title | remove: '6 Pack ' | remove: ' Starter Kit'
+                    -%}
+                    <button
+                      type="button"
+                      class="tpm-flv__tile"
+                      role="radio"
+                      aria-checked="{% if forloop.first %}true{% else %}false{% endif %}"
+                      data-tpm-flavor="{{ forloop.index0 }}"
+                      data-variant-id="{{ fv.id }}"
+                      data-plan="{{ fplan.id }}"
+                      data-price="{{ fprice | money }}"
+                      data-per="{{ fprice | divided_by: 6 | money }}"
+                      data-match="{{ fname | split: ' ' | first }}"
+                      {% unless fv.available %}disabled{% endunless %}
+                    >
+                      <span class="tpm-flv__badge">{{ parts[3] }}</span>
+                      <span class="tpm-flv__check" aria-hidden="true"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 6.5 2.5 2.5L10 3"/></svg></span>
+                      <img src="{{ parts[1] | asset_url }}" alt="" width="289" height="755" loading="lazy">
+                      <b>{{ fname | escape }}</b>
+                      <small>{{ parts[2] }}</small>
+                    </button>
+                  {%- endfor -%}
+                </div>
               </div>
               <div class="tpm-offer__perf" aria-hidden="true"></div>
               <div class="tpm-offer__bottom">
-                <button type="button" class="tpm-offer__accept" data-tpm-offer data-variant-id="{{ tv.id }}" data-plan="{{ trial_plan.id }}">Add to cart</button>
+                <button type="button" class="tpm-offer__accept" data-tpm-offer>Add to cart</button>
                 <span class="tpm-cart__chip tpm-cart__chip--good"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 6.5 2.5 2.5L10 3"/></svg>100-day money-back guarantee</span>
                 {%- if trial_plan -%}<small class="tpm-offer__terms">Then 12 cans for $49.80/mo + $2.99 shipping. Cancel anytime.</small>{%- endif -%}
               </div>
@@ -422,13 +479,33 @@
       // Only write when something changed: this runs from a MutationObserver on the drawer.
       if (btn.hidden !== !saved) btn.hidden = !saved;
       if (note && note.textContent !== text) { note.textContent = text; note.hidden = !saved; }
+      // Pre-select the flavor of the line they just removed.
+      var card = document.querySelector('[data-tpm-offer-card]');
+      if (card && saved && !card.dataset.preselected) {
+        card.dataset.preselected = '1';
+        var match = Array.prototype.find.call(card.querySelectorAll('[data-tpm-flavor]'), function (t) { return !t.disabled && saved.title.indexOf(t.dataset.match) !== -1; });
+        if (match) pickFlavor(match);
+      }
+    }
+    function pickFlavor(tile) {
+      var card = tile.closest('[data-tpm-offer-card]');
+      if (!card || tile.disabled) return;
+      card.querySelectorAll('[data-tpm-flavor]').forEach(function (t) { var on = t === tile; if (t.getAttribute('aria-checked') !== String(on)) t.setAttribute('aria-checked', on ? 'true' : 'false'); });
+      if (card.dataset.flavor !== tile.dataset.tpmFlavor) card.dataset.flavor = tile.dataset.tpmFlavor;
+      var price = card.querySelector('[data-tpm-offer-price]'), per = card.querySelector('[data-tpm-offer-per]');
+      if (price && price.textContent !== tile.dataset.price) price.textContent = tile.dataset.price;
+      if (per && per.textContent !== tile.dataset.per) per.textContent = tile.dataset.per;
     }
     document.addEventListener('click', function (e) {
+      var tile = e.target.closest('[data-tpm-flavor]');
+      if (tile) { pickFlavor(tile); return; }
       var offer = e.target.closest('[data-tpm-offer]');
       if (offer) {
+        var picked = offer.closest('[data-tpm-offer-card]').querySelector('[data-tpm-flavor][aria-checked="true"]');
+        if (!picked) return;
         offer.setAttribute('aria-busy', 'true');
-        var it = { id: +offer.dataset.variantId, quantity: 1 };
-        if (offer.dataset.plan) it.selling_plan = +offer.dataset.plan;
+        var it = { id: +picked.dataset.variantId, quantity: 1 };
+        if (picked.dataset.plan) it.selling_plan = +picked.dataset.plan;
         try { sessionStorage.removeItem(KEY); } catch (err) {}
         post(window.routes.cart_add_url + '.js', Object.assign({ items: [it] }, sections()))
           .then(function (state) { state.item_count = 1; render(state); })
