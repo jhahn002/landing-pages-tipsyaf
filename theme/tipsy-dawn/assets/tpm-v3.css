@@ -46,6 +46,8 @@
 .tpm :where(fieldset) { border: 0; }
 .tpm :where(button) { font: inherit; color: inherit; }
 .tpm :focus-visible { outline: 3px solid var(--tpm-accent); outline-offset: 3px; border-radius: 10px; }
+/* Step titles get focus from script so screen readers announce them; no visible ring needed. */
+.tpm [tabindex="-1"]:focus, .tpm [tabindex="-1"]:focus-visible { outline: none; box-shadow: none; }
 .tpm-knobbtn, .tpm-pillcard, .tpm-btn, .tpm-item { position: relative; }
 .tpm-visually-hidden { position: absolute !important; top: 0; left: 0; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
