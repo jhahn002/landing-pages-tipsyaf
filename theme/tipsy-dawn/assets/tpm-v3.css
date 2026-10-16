@@ -962,3 +962,17 @@
 .tpm-pill--ok::before { content: "✓"; font-weight: 800; }
 @media (prefers-reduced-motion: reduce) { .tpm-line, .tpm-c2__body, .tpm-pill--save { animation: none; } }
 .tpm-c2__sum > span:last-child { flex: none; white-space: nowrap; }
+
+/* Customize step, 6-pack trial: the cart drawer's "+6 cans" strip under the line */
+.tpm-sheet .tpm-up { display: flex; align-items: center; gap: 12px; margin-top: -4px; padding: 10px 10px 10px 12px; border-radius: 16px; border: 1.5px dashed #e8b98f; background: #fff7ef; animation: tpm-fade-up .35s ease; }
+.tpm-sheet .tpm-up__cans { position: relative; flex: none; width: 46px; height: 52px; }
+.tpm-sheet .tpm-up__cans img { position: absolute; bottom: 0; height: 50px; width: auto; filter: drop-shadow(0 4px 5px rgba(120,50,10,.2)); }
+.tpm-sheet .tpm-up__cans img:first-child { left: 2px; transform: rotate(-10deg); }
+.tpm-sheet .tpm-up__cans img:nth-child(2) { left: 18px; transform: rotate(8deg); }
+.tpm-sheet .tpm-up__cans span { position: absolute; right: -6px; top: -6px; min-width: 24px; height: 24px; padding: 0 5px; box-sizing: border-box; border-radius: 999px; background: #1f1e21; color: #ffe748; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; border: 2px solid #fff7ef; }
+.tpm-sheet .tpm-up__copy { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.tpm-sheet .tpm-up__copy b { font-size: 14px; font-weight: 700; }
+.tpm-sheet .tpm-up__copy small { font-size: 12px; color: #6b6870; }
+.tpm-sheet .tpm-up__btn { flex: none; min-width: 64px; height: 40px; padding: 0 16px; border: 0; border-radius: 999px; background: #1f1e21; color: #fff; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+@media (prefers-reduced-motion: reduce) { .tpm-sheet .tpm-up { animation: none; } }
+.tpm-order { margin-bottom: 24px; }

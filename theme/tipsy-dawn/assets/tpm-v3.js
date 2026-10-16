@@ -418,6 +418,13 @@
 
   function packerClick(e) {
     var t;
+    // Shelf: tapping the flavor that's already picked continues to the next step.
+    // (The label's click runs before its radio changes, so checked = picked before.)
+    if (e.target.tagName !== 'INPUT' && (t = e.target.closest('.tpm-shelf__opt'))) {
+      var r = t.querySelector('input');
+      if (r && r.checked && step === 2) { e.preventDefault(); nextBtn.click(); }
+      return;
+    }
     if ((t = e.target.closest('[data-tpm-add]'))) {
       var f = t.getAttribute('data-tpm-add');
       var empty = state.packs.indexOf(null);
@@ -494,10 +501,11 @@
           '<p class="tpm-c2__sum"><span>12 cans of ' + fname(state.case2) + ' · ' + planText().toLowerCase() + '</span><span><s>' + money(o.price) + '</s> <b>' + money(case2Price()) + '</b></span></p></div>' : '') +
       '</div>';
     } else if (state.offer === 'trial' && DATA.offers.autoship && DATA.offers.autoship.price > o.price) {
+      // Same as the cart drawer's trial upsell: a dashed strip under the line.
       var a = DATA.offers.autoship;
-      html += '<div class="tpm-c2 tpm-c2--up"><div class="tpm-c2__row"><span class="tpm-c2__icon" aria-hidden="true">+6</span>' +
-        '<span class="tpm-c2__text"><strong>Add 6 more cans for ' + money(a.price - o.price) + '</strong><span>12 cans for ' + money(a.price) + '/mo · ' + money(a.price / 12) + ' a can</span></span>' +
-        '<button type="button" class="tpm-c2__btn" data-tpm-upgrade>Upgrade</button></div></div>';
+      html += '<div class="tpm-up"><span class="tpm-up__cans" aria-hidden="true">' + canImg(f) + canImg(f) + '<span>+6</span></span>' +
+        '<span class="tpm-up__copy"><b>Add 6 more cans for ' + money(a.price - o.price) + '</b><small>Make it a 12-pack on auto ship · ' + money(a.price / 12) + ' a can</small></span>' +
+        '<button type="button" class="tpm-up__btn" data-tpm-sheet-up aria-label="Add 6 more cans for ' + money(a.price - o.price) + ': upgrade to the 12-pack on auto ship">Add</button></div>';
     }
     box.innerHTML = html;
     var pills = sheet.querySelector('[data-tpm-pills]');
@@ -514,7 +522,7 @@
       state.case2 = state.case2 ? null : (PACK_FLAVORS.filter(function (k) { return k !== cur; })[0] || cur);
     } else if ((t = e.target.closest('[data-tpm-case2-flavor]'))) {
       state.case2 = t.getAttribute('data-tpm-case2-flavor');
-    } else if ((t = e.target.closest('[data-tpm-upgrade]'))) {
+    } else if ((t = e.target.closest('[data-tpm-sheet-up]'))) {
       setOffer('autoship');
     } else return;
     renderOrder(); sync();
@@ -578,6 +586,8 @@
 
   function openCheckout(opts) {
     opts = opts || {};
+    // The second case is opt-in each time (the cart may have been cleared since).
+    state.case2 = null;
     if (opts.offer) setOffer(opts.offer);
     // "Get both" needs two six-packs, so the trial steps up to the 12-pack auto ship.
     if (opts.flavor === 'mix' && case2On && packsNeeded() === 1 && !opts.offer) setOffer('autoship');
@@ -588,6 +598,14 @@
     document.documentElement.classList.add('tpm-lock');
     showStep(opts.step || 1, true);
   }
+  // Coming back from checkout (back button) restores the page as it was; start over.
+  window.addEventListener('pageshow', function (e) {
+    if (!e.persisted) return;
+    state.case2 = null;
+    busy = false;
+    nextBtn.disabled = false;
+    if (sheet.open) closeCheckout();
+  });
   function closeCheckout() {
     if (typeof sheet.close === 'function') sheet.close(); else sheet.removeAttribute('open');
   }
