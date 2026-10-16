@@ -302,11 +302,11 @@
                     endif
                   -%}
                   <div class="tpm-cart__item" id="CartDrawer-Item-{{ idx }}">
-                    <a class="tpm-cart__thumb" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
+                    <span class="tpm-cart__thumb" aria-hidden="true">
                       {%- if item.image -%}{{ item.image | image_url: width: 160 | image_tag: alt: '', loading: 'lazy', width: 64, height: 64 }}{%- endif -%}
-                    </a>
+                    </span>
                     <div class="tpm-cart__info">
-                      <a class="tpm-cart__name cart-item__name" href="{{ item.url }}">{{ item.product.title | escape }}</a>
+                      <span class="tpm-cart__name cart-item__name">{{ item.product.title | escape }}</span>
                       <span class="tpm-cart__plan">
                         {%- if item.selling_plan_allocation -%}{{ item.selling_plan_allocation.selling_plan.name | escape }}{%- else -%}One time{%- endif -%}
                         {%- unless item.product.has_only_default_variant -%} · {{ item.variant.title | escape }}{%- endunless -%}
