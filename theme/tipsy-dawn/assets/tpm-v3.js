@@ -337,7 +337,7 @@
     clearTimeout(track._pt);
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     track.scrollTo({ left: opt.offsetLeft + opt.offsetWidth / 2 - track.clientWidth / 2, behavior: smooth && !reduce ? 'smooth' : 'auto' });
-    track._pt = setTimeout(function () { track._prog = false; }, smooth ? 600 : 80);
+    track._pt = setTimeout(function () { track._prog = false; }, smooth ? 380 : 60);
   }
   function initShelf(enter) {
     var track = packerEl.querySelector('[data-tpm-shelf-track]');
@@ -348,17 +348,18 @@
       var sel = track.querySelector('input:checked');
       shelfCenter(track, sel && sel.closest('.tpm-shelf__opt'), false);
     });
+    // Select as soon as a can crosses the center, not when the scroll stops.
     track.addEventListener('scroll', function () {
-      if (track._prog) return;
-      clearTimeout(track._st);
-      track._st = setTimeout(function () {
+      if (track._prog || track._raf) return;
+      track._raf = requestAnimationFrame(function () {
+        track._raf = 0;
         var o = shelfCentered(track);
         var input = o && o.querySelector('input');
         if (input && !input.checked) {
           input.checked = true;
           input.dispatchEvent(new Event('change', { bubbles: true }));
         }
-      }, 90);
+      });
     }, { passive: true });
   }
   // Picking a flavor updates the shelf in place so the swipe isn't interrupted.
@@ -475,7 +476,6 @@
     if (!box) return;
     var o = DATA.offers[state.offer], f = state.packs[0] || PACK_FLAVORS[0];
     var html = lineHtml(f, o.name, fname(f) + ' · ' + planText(), o.price);
-    if (state.case2) html += lineHtml(state.case2, 'Second case', fname(state.case2) + ' · ' + planText(), case2Price(), o.price, CASE2.percent + '% off');
     if (case2Available()) {
       var on = !!state.case2;
       html += '<div class="tpm-c2' + (on ? ' is-on' : '') + '">' +
@@ -485,10 +485,13 @@
           '<span class="tpm-c2__text"><strong>' + (on ? 'Saving ' + money(case2Saving()) + ' on case 2' : 'Add a 2nd case, save ' + money(case2Saving())) + '</strong>' +
           '<span>Second case ' + CASE2.percent + '% off · ' + planText().toLowerCase() + '</span></span>' +
           '<span class="tpm-c2__switch" aria-hidden="true"></span></button>' +
-        (on ? '<div class="tpm-c2__flavors" role="radiogroup" aria-label="Flavor for case 2">' + PACK_FLAVORS.map(function (k) {
-          var sel = k === state.case2;
-          return '<button type="button" role="radio" aria-checked="' + sel + '" class="tpm-c2__flavor tpm-f--' + k + '" data-tpm-case2-flavor="' + k + '">' + canImg(k) + DATA.flavors[k].short + '</button>';
-        }).join('') + '</div>' : '') +
+        (on ? '<div class="tpm-c2__body"><p class="tpm-c2__label">Pick the flavor for case 2</p>' +
+          '<div class="tpm-c2__flavors" role="radiogroup" aria-label="Flavor for case 2">' + PACK_FLAVORS.map(function (k) {
+            var sel = k === state.case2;
+            return '<button type="button" role="radio" aria-checked="' + sel + '" class="tpm-c2__flavor tpm-f--' + k + '" data-tpm-case2-flavor="' + k + '">' +
+              '<span class="tpm-c2__can">' + canImg(k) + '</span><span class="tpm-c2__fname">' + fname(k) + '</span><span class="tpm-c2__check" aria-hidden="true"></span></button>';
+          }).join('') + '</div>' +
+          '<p class="tpm-c2__sum"><span>12 cans of ' + fname(state.case2) + ' · ' + planText().toLowerCase() + '</span><span><s>' + money(o.price) + '</s> <b>' + money(case2Price()) + '</b></span></p></div>' : '') +
       '</div>';
     } else if (state.offer === 'trial' && DATA.offers.autoship && DATA.offers.autoship.price > o.price) {
       var a = DATA.offers.autoship;
