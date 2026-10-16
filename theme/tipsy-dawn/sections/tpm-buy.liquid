@@ -82,11 +82,15 @@
           </div>
           <div class="tpm-order" data-tpm-order></div>
           {%- if s.show_addons -%}<div class="tpm-addons" data-tpm-addons></div>{%- endif -%}
-          <ol class="tpm-timeline" data-tpm-timeline aria-label="How the trial works">
-            <li><strong>Today</strong><span>{{ s.timeline_1 | escape }}</span></li>
-            <li><strong>Day 25</strong><span>{{ s.timeline_2 | escape }}</span></li>
-            <li><strong>Day 28</strong><span>{{ s.timeline_3 | escape }}</span></li>
-          </ol>
+          <div class="tpm-timeline" data-tpm-timeline>
+            <p class="tpm-timeline__head">{{ s.timeline_heading | escape }}</p>
+            <ol aria-label="How the trial works">
+              <li class="is-now"><span class="tpm-timeline__when">{{ 'Today' }}</span><span class="tpm-timeline__dot" aria-hidden="true"></span><span class="tpm-timeline__text"><strong>{{ s.timeline_1 | escape }}</strong>{%- if s.timeline_1_sub != blank -%}<span>{{ s.timeline_1_sub | escape }}</span>{%- endif -%}</span></li>
+              <li><span class="tpm-timeline__when" data-tpm-tl-day="{{ s.timeline_remind_day }}">Day {{ s.timeline_remind_day }}</span><span class="tpm-timeline__dot" aria-hidden="true"></span><span class="tpm-timeline__text"><strong>{{ s.timeline_2 | escape }}</strong>{%- if s.timeline_2_sub != blank -%}<span>{{ s.timeline_2_sub | escape }}</span>{%- endif -%}</span></li>
+              <li><span class="tpm-timeline__when" data-tpm-tl-day="{{ s.timeline_ship_day }}">Day {{ s.timeline_ship_day }}</span><span class="tpm-timeline__dot" aria-hidden="true"></span><span class="tpm-timeline__text"><strong>{{ s.timeline_3 | escape }}</strong>{%- if s.timeline_3_sub != blank -%}<span>{{ s.timeline_3_sub | escape }}</span>{%- endif -%}</span></li>
+            </ol>
+            {%- if s.timeline_note != blank -%}<p class="tpm-timeline__note"><span aria-hidden="true">✋</span><span>{{ s.timeline_note | escape | replace: '[date]', '<b data-tpm-tl-date></b>' }}</span></p>{%- endif -%}
+          </div>
           {%- if s.sheet_assurance != blank -%}<p class="tpm-sheet__assure">{{ s.sheet_assurance | escape }}</p>{%- endif -%}
         </section>
       </div>
@@ -262,9 +266,16 @@
     { "type": "checkbox", "id": "show_addons", "label": "Also show one-time 12-pack add-ons", "default": false },
     { "type": "text", "id": "addon_note", "label": "Add-on note", "default": "One time, $5.00/can" },
     { "type": "text", "id": "rewards", "label": "Checkout rewards", "info": "Optional. Spend thresholds shown as a progress bar in the add-ons step, e.g. 75:Free shipping|110:Free gift. Set up the matching automatic discounts first. Leave empty to hide." },
+    { "type": "text", "id": "timeline_heading", "label": "Trial timeline: heading", "default": "What happens next" },
+    { "type": "range", "id": "timeline_remind_day", "label": "Trial timeline: reminder day", "min": 1, "max": 60, "step": 1, "default": 25, "info": "Shown as a real date counted from today." },
+    { "type": "range", "id": "timeline_ship_day", "label": "Trial timeline: next box day", "min": 1, "max": 60, "step": 1, "default": 28 },
     { "type": "text", "id": "timeline_1", "label": "Trial timeline: today", "default": "6 cans ship" },
-    { "type": "text", "id": "timeline_2", "label": "Trial timeline: day 25", "default": "We remind you" },
-    { "type": "text", "id": "timeline_3", "label": "Trial timeline: day 28", "default": "12 cans, $49.80 + $2.99 shipping" },
+    { "type": "text", "id": "timeline_1_sub", "label": "Trial timeline: today detail", "default": "Your trial is on its way" },
+    { "type": "text", "id": "timeline_2", "label": "Trial timeline: reminder", "default": "We remind you" },
+    { "type": "text", "id": "timeline_2_sub", "label": "Trial timeline: reminder detail", "default": "A heads-up before anything else ships" },
+    { "type": "text", "id": "timeline_3", "label": "Trial timeline: next box", "default": "12 cans, every month" },
+    { "type": "text", "id": "timeline_3_sub", "label": "Trial timeline: next box detail", "default": "Skip or cancel anytime" },
+    { "type": "text", "id": "timeline_note", "label": "Trial timeline: note", "info": "[date] becomes the next box date.", "default": "Not for you? Cancel before [date] and you won't pay again." },
     { "type": "text", "id": "sheet_assurance", "label": "Guarantee line", "default": "100-day money-back guarantee, even on opened cans. Cancel subscriptions anytime." },
 
     { "type": "header", "content": "Quiz" },

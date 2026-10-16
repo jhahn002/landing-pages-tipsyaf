@@ -574,6 +574,7 @@
     if (n === 3) {
       renderOrder(); renderAddons(); renderRewards();
       var tl = sheet.querySelector('[data-tpm-timeline]');
+      if (tl) trialDates(tl);
       if (tl) tl.hidden = state.offer !== 'trial';
     }
     errorEl.textContent = '';
@@ -584,6 +585,18 @@
     if (title) { title.setAttribute('tabindex', '-1'); title.focus({ preventScroll: true }); }
   }
 
+  // Trial timeline: "Day 25" becomes a real date counted from today.
+  function trialDates(tl) {
+    var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var last = '';
+    $all('[data-tpm-tl-day]', tl).forEach(function (el) {
+      var d = new Date();
+      d.setDate(d.getDate() + (parseInt(el.getAttribute('data-tpm-tl-day'), 10) || 0));
+      last = MON[d.getMonth()] + ' ' + d.getDate();
+      el.textContent = last;
+    });
+    $all('[data-tpm-tl-date]', tl).forEach(function (el) { el.textContent = last; });
+  }
   function openCheckout(opts) {
     opts = opts || {};
     // The second case is opt-in each time (the cart may have been cleared since).
