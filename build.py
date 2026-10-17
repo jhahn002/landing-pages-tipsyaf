@@ -123,7 +123,8 @@ def build(root):
                 if f.is_file():
                     shutil.copy2(f, dest / f.name)
     schema_settings = json.dumps([dict(type="text", **{k: v for k, v in st.items() if k != "preview"}) for st in settings], indent=4)
-    preview_html = html.replace('<div class="tpm" id="tpm">', '<div class="tpm" id="tpm" data-tpm-mode="preview">', 1)
+    # Mark the page's root element (the first tag) as preview mode.
+    preview_html = re.sub(r"^(\s*<div\b[^>]*?)>", r'\1 data-tpm-mode="preview">', html, count=1)
     # Relative store links point at the live store in the preview.
     preview_html = preview_html.replace('href="/', 'href="https://gettipsy.com/')
     preview_fonts = FONT_FACES.format(

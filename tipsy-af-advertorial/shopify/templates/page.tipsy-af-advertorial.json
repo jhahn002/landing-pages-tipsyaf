@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "main": {
+      "type": "tipsy-af-advertorial",
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}
