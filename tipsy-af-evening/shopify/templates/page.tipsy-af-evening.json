@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "main": {
+      "type": "tipsy-af-evening",
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}
