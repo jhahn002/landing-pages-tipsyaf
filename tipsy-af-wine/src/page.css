@@ -217,3 +217,16 @@
   .tpe .tpa-faq { margin: 0 auto; }
 }
 @media (prefers-reduced-motion: reduce) { .tpe-night li { opacity: 1 !important; transform: none !important; } }
+
+/* Wine comparison */
+.tpe-vs { margin: 26px auto 0; max-width: 760px; border-radius: 18px; overflow: hidden; background: #fff; border: 1px solid var(--line); }
+.tpe-vs__row { display: grid; grid-template-columns: 1.15fr 1fr 1fr 1fr; align-items: stretch; border-top: 1px solid var(--line); }
+.tpe-vs__row:first-child { border-top: 0; }
+.tpe-vs__row > * { display: flex; align-items: center; justify-content: center; padding: 12px 8px; font-size: 13px; line-height: 1.25; text-align: center; color: var(--muted); }
+.tpe-vs__row > [role=rowheader] { justify-content: flex-start; text-align: left; font-weight: 700; color: var(--ink); padding-left: 14px; }
+.tpe-vs__row--head > * { font-weight: 700; color: var(--ink); font-size: 12px; text-transform: uppercase; letter-spacing: .03em; }
+.tpe-vs__us { background: var(--dusk); color: #fff !important; font-weight: 700; }
+.tpe-vs__row--head .tpe-vs__us { background: var(--amber); color: var(--ink) !important; }
+.tpe-vs .y::before { content: "✓ "; font-weight: 700; }
+.tpe-vs .tpe-vs__us.y::before { color: var(--amber); }
+@media (min-width: 860px) { .tpe-vs__row > * { font-size: 15px; padding: 14px 12px; } }
